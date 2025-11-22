@@ -38,7 +38,12 @@ const MedicalHistoryManager: React.FC<MedicalHistoryManagerProps> = ({patientId,
 
 
   if (patientId && accessToken && (patientId !== currentPatientId || currentPatientId === null)) {
-    medicalHistorySend({type: 'LOAD_PATIENT_MEDICAL_HISTORY',patientId,accessToken,});
+    medicalHistorySend({
+      type: 'LOAD_PATIENT_MEDICAL_HISTORY',
+      patientId,
+      accessToken,
+      doctorId,
+    });
   }
 
   const handleDeleteHistory = (historyId: string) => {

@@ -182,7 +182,8 @@ const doctorMachine = createMachine({
                 orchestrator.sendToMachine(MEDICAL_HISTORY_MACHINE_ID, {
                   type: "LOAD_PATIENT_MEDICAL_HISTORY",
                   patientId: context.selectedPatientId,
-                  accessToken: context.accessToken
+                  accessToken: context.accessToken,
+                  doctorId: context.doctorId,
                 });
                 orchestrator.sendToMachine(DATA_MACHINE_ID, {
                   type: "LOAD_MY_TURNS"

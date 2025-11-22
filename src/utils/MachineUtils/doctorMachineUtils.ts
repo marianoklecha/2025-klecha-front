@@ -112,7 +112,10 @@ export const addMedicalHistory = async ({accessToken, doctorId, turnId, content}
 
 export const updateMedicalHistory = async ({accessToken, doctorId, patientId, medicalHistory, turnId}: UpdateMedicalHistoryParams & {turnId?: string}): Promise<MedicalHistory> => {
   try {
-    const historyEntries = await MedicalHistoryService.getPatientMedicalHistory(accessToken, patientId);
+    // When called from a doctor context, use the doctor-scoped endpoint so the backend authorizes correctly
+    const historyEntries = doctorId
+      ? await MedicalHistoryService.getPatientMedicalHistoryByDoctor(accessToken, doctorId, patientId)
+      : await MedicalHistoryService.getPatientMedicalHistory(accessToken, patientId);
     
     if (turnId) {
       const turnEntry = historyEntries.find(entry => entry.turnId === turnId);
@@ -171,12 +174,14 @@ export const deleteMedicalHistory = async ({accessToken, doctorId, historyId}: D
 }
 
 export const loadPatientMedicalHistory = async ({accessToken, patientId}: LoadPatientMedicalHistoryParams): Promise<MedicalHistory[]> => {
+  // Default to general patient endpoint; callers in doctor flows should pass through doctor-specific helpers where possible
   return await MedicalHistoryService.getPatientMedicalHistory(accessToken, patientId);
 }
 
 export const loadTurnMedicalHistory = async ({accessToken, turnId, patientId}: LoadTurnMedicalHistoryParams): Promise<MedicalHistory[]> => {
   // Load all patient medical history and filter by turnId
   // Note: This approach works since medical history is now associated with specific turns
+  // If this function is invoked from a doctor flow, consider replacing this call with the doctor-specific endpoint
   const allHistory = await MedicalHistoryService.getPatientMedicalHistory(accessToken, patientId);
   return allHistory.filter((history) => history.turnId === turnId);
 }

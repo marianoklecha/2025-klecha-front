@@ -30,6 +30,7 @@ vi.mock('../../service/medical-history-service.service', () => ({
     updateMedicalHistory: vi.fn(),
     deleteMedicalHistory: vi.fn(),
     getPatientMedicalHistory: vi.fn(),
+    getPatientMedicalHistoryByDoctor: vi.fn(),
   }
 }))
 
@@ -101,6 +102,7 @@ describe('doctorMachineUtils', () => {
       };
 
       ;(MedicalHistoryService.getPatientMedicalHistory as Mock).mockResolvedValue([])
+      ;(MedicalHistoryService.getPatientMedicalHistoryByDoctor as Mock).mockResolvedValue([])
       ;(MedicalHistoryService.addMedicalHistory as Mock).mockResolvedValue(mockMedicalHistory)
 
       const result = await updateMedicalHistory(params)

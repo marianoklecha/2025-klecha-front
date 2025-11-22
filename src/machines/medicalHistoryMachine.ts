@@ -37,7 +37,7 @@ interface MedicalHistoryMachineContext {
 }
 
 export type MedicalHistoryMachineEvent =
-  | { type: 'LOAD_PATIENT_MEDICAL_HISTORY'; patientId: string; accessToken: string }
+  | { type: 'LOAD_PATIENT_MEDICAL_HISTORY'; patientId: string; accessToken: string; doctorId?: string }
   | { type: 'ADD_HISTORY_ENTRY_FOR_TURN'; turnId: string; content: string; accessToken: string; doctorId: string; turnInfo?: { patientName?: string; scheduledAt?: string; status?: string } }
   | { type: 'UPDATE_HISTORY_ENTRY'; historyId: string; content: string; accessToken: string; doctorId: string }
   | { type: 'DELETE_HISTORY_ENTRY'; historyId: string; accessToken: string; doctorId: string }
@@ -80,6 +80,7 @@ export const medicalHistoryMachine = createMachine({
           actions: assign({
             currentPatientId: ({ event }) => event.patientId,
             accessToken: ({ event }) => event.accessToken,
+            doctorId: ({ event }) => 'doctorId' in event ? (event as any).doctorId : null,
             error: () => null,
           }),
         },
@@ -152,6 +153,7 @@ export const medicalHistoryMachine = createMachine({
         input: ({ context }) => ({ 
           patientId: context.currentPatientId!,
           accessToken: context.accessToken!,
+          doctorId: context.doctorId || undefined,
         }),
         onDone: {
           target: 'idle',
@@ -363,12 +365,17 @@ export const medicalHistoryMachine = createMachine({
   },
 }, {
   actors: {
-    loadPatientMedicalHistory: fromPromise(async ({ input }: { input: { patientId: string; accessToken: string } }) => {
+    loadPatientMedicalHistory: fromPromise(async ({ input }: { input: { patientId: string; accessToken: string; doctorId?: string } }) => {
       try {
-        // Only load medical history without trying to load patient turns
-        // This avoids the 403 error when doctors try to access patient turns
-        const medicalHistories = await MedicalHistoryService.getPatientMedicalHistory(input.accessToken, input.patientId);
-        
+        // If doctorId is provided, use the doctor-specific endpoint to retrieve only histories the doctor can access.
+        let medicalHistories;
+        if (input.doctorId) {
+          medicalHistories = await MedicalHistoryService.getPatientMedicalHistoryByDoctor(input.accessToken, input.doctorId, input.patientId);
+        } else {
+          // Fallback to the general patient endpoint (e.g., when a patient is viewing their own history)
+          medicalHistories = await MedicalHistoryService.getPatientMedicalHistory(input.accessToken, input.patientId);
+        }
+
         return {
           medicalHistories,
           patientTurns: []

@@ -14,6 +14,7 @@ vi.mock('#/core/Orchestrator', () => ({
 vi.mock('../service/medical-history-service.service', () => ({
   MedicalHistoryService: {
     getPatientMedicalHistory: vi.fn(),
+    getPatientMedicalHistoryByDoctor: vi.fn(),
     addMedicalHistory: vi.fn(),
     updateMedicalHistory: vi.fn(),
     deleteMedicalHistory: vi.fn()
