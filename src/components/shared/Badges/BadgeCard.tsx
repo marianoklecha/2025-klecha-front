@@ -1,11 +1,36 @@
 import React from 'react';
 import { Tooltip, Box, Typography } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
+import Favorite from '@mui/icons-material/Favorite';
+import Chat from '@mui/icons-material/Chat';
+import LibraryBooks from '@mui/icons-material/LibraryBooks';
+import Schedule from '@mui/icons-material/Schedule';
+import Assignment from '@mui/icons-material/Assignment';
+import GpsFixed from '@mui/icons-material/GpsFixed';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import People from '@mui/icons-material/People';
+import EmojiEvents from '@mui/icons-material/EmojiEvents';
+import Star from '@mui/icons-material/Star';
+import PanTool from '@mui/icons-material/PanTool';
+import Shield from '@mui/icons-material/Shield';
+import FitnessCenter from '@mui/icons-material/FitnessCenter';
+import Refresh from '@mui/icons-material/Refresh';
+import Psychology from '@mui/icons-material/Psychology';
+import VerifiedUser from '@mui/icons-material/VerifiedUser';
+import AccessTime from '@mui/icons-material/AccessTime';
+import WavingHand from '@mui/icons-material/WavingHand';
+import ThumbUp from '@mui/icons-material/ThumbUp';
+import Repeat from '@mui/icons-material/Repeat';
 import type { Badge, BadgeType, BadgeProgress, PatientBadgeType } from '#/models/Badge';
 import { getRarityColor, getRarityDisplayName } from '#/models/Badge';
 import { BadgeService } from '#/service/badge-service.service';
 import './BadgeStyles.css';
 import './BadgeCard.css';
+
+const iconMap: Record<string, React.ComponentType<any>> = {
+  Favorite, Chat, LibraryBooks, Schedule, Assignment, GpsFixed, CalendarToday, People, EmojiEvents, Star, 
+  PanTool, Shield, FitnessCenter, Refresh, Psychology, VerifiedUser, AccessTime, WavingHand, ThumbUp, Repeat,
+};
 
 interface BadgeCardProps {
   badgeType: BadgeType | PatientBadgeType;
@@ -113,7 +138,10 @@ const BadgeCard: React.FC<BadgeCardProps> = ({
           <Box 
             className={`badge-card__icon-container ${isEarned ? 'badge-card__icon-container--earned' : 'badge-card__icon-container--locked'}`}
           >
-            <Typography component="span" className="badge-card__icon">{finalMetadata.icon}</Typography>
+            {(() => {
+              const IconComponent = iconMap[finalMetadata.icon] || Star;
+              return <IconComponent className="badge-card__icon" style={{ color: finalMetadata.color }} />;
+            })()}
           </Box>
           <Typography className="badge-card__name">{finalMetadata.name}</Typography>
           <Typography className="badge-card__description">{finalMetadata.description}</Typography>
