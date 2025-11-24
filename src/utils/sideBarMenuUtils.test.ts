@@ -18,7 +18,8 @@ vi.mock('@mui/icons-material', () => ({
   Person: vi.fn(),
   ExitToApp: vi.fn(),
   BarChart: vi.fn(),
-  EmojiEvents: vi.fn()
+  EmojiEvents: vi.fn(),
+  WorkspacePremium: vi.fn()
 }))
 
 describe('sideBarMenuUtils', () => {
@@ -34,7 +35,7 @@ describe('sideBarMenuUtils', () => {
       expect(iconMap.Person).toBeDefined()
       expect(iconMap.ExitToApp).toBeDefined()
       expect(iconMap.BarChart).toBeDefined()
-      expect(iconMap.Trophy).toBeDefined()
+      expect(iconMap.WorkspacePremium).toBeDefined()
     })
   })
 

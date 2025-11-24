@@ -6,7 +6,7 @@ import {
   CircularProgress,
   Chip
 } from "@mui/material";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { useMachines } from "#/providers/MachineProvider";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -54,7 +54,7 @@ const PatientBadges: React.FC = () => {
           <Box className="shared-header-layout">
             <Box className="shared-header-content">
               <Avatar className="shared-header-icon patient-header-avatar">
-                <EmojiEventsIcon className="patient-header-icon" />
+                <WorkspacePremiumIcon className="patient-header-icon" />
               </Avatar>
               <Box>
                 <Typography variant="h4" component="h1" className="shared-header-title">

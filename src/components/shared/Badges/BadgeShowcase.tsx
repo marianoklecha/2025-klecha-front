@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, CircularProgress, Typography, Chip } from '@mui/material';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import BadgeCard from './BadgeCard';
 import type { Badge, BadgeProgress, BadgeType, PatientBadgeType } from '#/models/Badge';
@@ -65,7 +65,7 @@ const BadgeShowcase: React.FC<BadgeShowcaseProps> = ({
       <Box className="badge-showcase__header">
         <Box className="badge-showcase__title-section">
           <Box className="badge-showcase__title">
-            <EmojiEventsIcon className="badge-showcase__title-icon" />
+            <WorkspacePremiumIcon className="badge-showcase__title-icon" />
             Mis Logros
           </Box>
           
