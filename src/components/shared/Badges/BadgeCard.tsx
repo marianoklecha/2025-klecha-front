@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, Box, Typography } from '@mui/material';
+import { Tooltip, Box, Typography, CircularProgress } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import Favorite from '@mui/icons-material/Favorite';
 import Chat from '@mui/icons-material/Chat';
@@ -135,41 +135,49 @@ const BadgeCard: React.FC<BadgeCardProps> = ({
 
         {/* Card content */}
         <Box className="badge-card__content">
-          <Box 
-            className={`badge-card__icon-container ${isEarned ? 'badge-card__icon-container--earned' : 'badge-card__icon-container--locked'}`}
-          >
-            {(() => {
-              const IconComponent = iconMap[finalMetadata.icon] || Star;
-              return <IconComponent className="badge-card__icon" style={{ color: finalMetadata.color }} />;
-            })()}
-          </Box>
-          <Typography className="badge-card__name">{finalMetadata.name}</Typography>
-          <Typography className="badge-card__description">{finalMetadata.description}</Typography>
-
-          {isEarned && badge && (
-            <Typography className="badge-card__earned-date">
-              {BadgeService.formatEarnedDate(badge.earnedAt)}
-            </Typography>
-          )}
-
-          {/* Progress bar for unearned badges */}
-          {!isEarned && progress && (
-            <Box className="badge-card-progress-container">
-              <Box className="badge-card-progress-bar-wrapper">
-                <Box className="badge-card-progress-bar">
-                  <Box 
-                    className={`badge-card-progress-fill ${isHighProgress ? 'badge-card-progress-fill--high' : 'badge-card-progress-fill--normal'}`}
-                    style={{ width: `${progressValue}%` }}
-                  />
-                </Box>
-                <Typography 
-                  component="span" 
-                  className={`badge-card-progress-percentage ${isHighProgress ? 'badge-card-progress-percentage--high' : 'badge-card-progress-percentage--normal'}`}
-                >
-                  {progressValue.toFixed(0)}%
-                </Typography>
-              </Box>
+          {!progress ? (
+            <Box className="badge-card__loading">
+              <CircularProgress size={24} />
             </Box>
+          ) : (
+            <>
+              <Box 
+                className={`badge-card__icon-container ${isEarned ? 'badge-card__icon-container--earned' : 'badge-card__icon-container--locked'}`}
+              >
+                {(() => {
+                  const IconComponent = iconMap[finalMetadata.icon] || Star;
+                  return <IconComponent className="badge-card__icon" style={{ color: finalMetadata.color }} />;
+                })()}
+              </Box>
+              <Typography className="badge-card__name">{finalMetadata.name}</Typography>
+              <Typography className="badge-card__description">{finalMetadata.description}</Typography>
+
+              {isEarned && badge && (
+                <Typography className="badge-card__earned-date">
+                  {BadgeService.formatEarnedDate(badge.earnedAt)}
+                </Typography>
+              )}
+
+              {/* Progress bar for unearned badges */}
+              {!isEarned && progress && (
+                <Box className="badge-card-progress-container">
+                  <Box className="badge-card-progress-bar-wrapper">
+                    <Box className="badge-card-progress-bar">
+                      <Box 
+                        className={`badge-card-progress-fill ${isHighProgress ? 'badge-card-progress-fill--high' : 'badge-card-progress-fill--normal'}`}
+                        style={{ width: `${progressValue}%` }}
+                      />
+                    </Box>
+                    <Typography 
+                      component="span" 
+                      className={`badge-card-progress-percentage ${isHighProgress ? 'badge-card-progress-percentage--high' : 'badge-card-progress-percentage--normal'}`}
+                    >
+                      {progressValue.toFixed(0)}%
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+            </>
           )}
         </Box>
       </Box>

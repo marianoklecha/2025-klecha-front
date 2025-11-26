@@ -19,7 +19,6 @@ export enum BadgeType {
 
 export enum PatientBadgeType {
   MEDIBOOK_WELCOME = 'MEDIBOOK_WELCOME',
-  HEALTH_GUARDIAN = 'HEALTH_GUARDIAN',
   COMMITTED_PATIENT = 'COMMITTED_PATIENT',
   CONTINUOUS_FOLLOWUP = 'CONTINUOUS_FOLLOWUP',
   CONSTANT_PATIENT = 'CONSTANT_PATIENT',
@@ -176,10 +175,25 @@ export const getCategoryDisplayName = (category: string): string => {
 
 export const getRarityDisplayName = (rarity: string): string => {
   const names: Record<string, string> = {
-    'COMMON': 'Común',
-    'RARE': 'Raro',
-    'EPIC': 'Épico',
-    'LEGENDARY': 'Legendario',
+    'COMMON': 'Básico',
+    'RARE': 'Intermedio',
+    'EPIC': 'Avanzado',
+    'LEGENDARY': 'Elite',
   };
   return names[rarity] || rarity;
+};
+
+export const sortBadgesByRarity = <T extends { rarity: string }>(badges: T[]): T[] => {
+  const rarityOrder: Record<string, number> = {
+    'COMMON': 1,
+    'RARE': 2,
+    'EPIC': 3,
+    'LEGENDARY': 4,
+  };
+
+  return badges.sort((a, b) => {
+    const orderA = rarityOrder[a.rarity] || 0;
+    const orderB = rarityOrder[b.rarity] || 0;
+    return orderA - orderB;
+  });
 };

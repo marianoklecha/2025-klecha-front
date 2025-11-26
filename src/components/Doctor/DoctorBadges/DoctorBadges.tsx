@@ -150,12 +150,12 @@ const DoctorBadges: React.FC = () => {
 
           {sortedBadges.length === 0 && (
             <Box className="badges-empty-state">
-              <Typography variant="h6" color="textSecondary" gutterBottom>
-                No se encontraron logros
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Los logros se cargarán automáticamente
-              </Typography>
+              <Box className="badges-loading-state">
+                <CircularProgress size={40} />
+                <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+                  Cargando logros...
+                </Typography>
+              </Box>
             </Box>
           )}
         </Box>

@@ -12,7 +12,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import BadgeCard from "../../shared/Badges/BadgeCard";
 import {
-  PatientBadgeType
+  PatientBadgeType,
+  sortBadgesByRarity
 } from "#/models/Badge";
 import type { Badge, BadgeProgress } from "#/models/Badge";
 import "./PatientBadges.css";
@@ -29,14 +30,6 @@ const PatientBadges: React.FC = () => {
   const allBadgeTypes = Object.values(PatientBadgeType);
   const earnedBadgeTypes = new Set(badges.map((b: Badge) => b.badgeType.replace(/^PATIENT_/, '')));
 
-  const sorted = [...allBadgeTypes];
-  sorted.sort((a, b) => {
-    return a.localeCompare(b);
-  });
-  const sortedBadges = sorted;
-
-  const lockedBadgesCount = sortedBadges.filter(type => !earnedBadgeTypes.has(type)).length;
-
   const getBadgeObject = (badgeType: PatientBadgeType): Badge | undefined => {
     const backendBadgeType = `PATIENT_${badgeType}`;
     return badges.find((b: Badge) => b.badgeType === backendBadgeType);
@@ -46,6 +39,18 @@ const PatientBadges: React.FC = () => {
     const backendBadgeType = `PATIENT_${badgeType}`;
     return progress.find((p: BadgeProgress) => p.badgeType === backendBadgeType);
   };
+
+  const badgesWithRarity = allBadgeTypes.map(badgeType => {
+    const prog = getProgressForBadge(badgeType);
+    return {
+      badgeType,
+      rarity: prog?.rarity || 'COMMON'
+    };
+  });
+
+  const sortedBadges = sortBadgesByRarity(badgesWithRarity).map(item => item.badgeType);
+
+  const lockedBadgesCount = sortedBadges.filter(type => !earnedBadgeTypes.has(type)).length;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -141,12 +146,12 @@ const PatientBadges: React.FC = () => {
 
           {sortedBadges.length === 0 && (
             <Box className="badges-empty-state">
-              <Typography variant="h6" color="textSecondary" gutterBottom>
-                No se encontraron logros
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Los logros se cargarán automáticamente
-              </Typography>
+              <Box className="badges-loading-state">
+                <CircularProgress size={40} />
+                <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+                  Cargando logros...
+                </Typography>
+              </Box>
             </Box>
           )}
         </Box>
