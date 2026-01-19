@@ -102,11 +102,11 @@ export type TurnMachineEvent =
   | { type: "CHECK_DOCTOR_AVAILABILITY" }
   | { type: "NAVIGATE"; to: string | null };
 
-const normalizeSpecialtyKey = (value: string | null | undefined): string => {
+export const normalizeSpecialtyKey = (value: string | null | undefined): string => {
   return typeof value === "string" ? value.trim().toLowerCase() : "";
 };
 
-const formatSpecialtyLabel = (value: string): string => {
+export const formatSpecialtyLabel = (value: string): string => {
   if (!value) {
     return "";
   }
@@ -117,7 +117,7 @@ const formatSpecialtyLabel = (value: string): string => {
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 };
 
-const buildSpecialtyOptions = (doctors: Doctor[]): { value: string; label: string }[] => {
+export const buildSpecialtyOptions = (doctors: Doctor[]): { value: string; label: string }[] => {
   const seen = new Set<string>();
   const options: { value: string; label: string }[] = [];
 
@@ -135,7 +135,7 @@ const buildSpecialtyOptions = (doctors: Doctor[]): { value: string; label: strin
   return options;
 };
 
-const buildDoctorAvailabilityMap = async (
+export const buildDoctorAvailabilityMap = async (
   doctors: Doctor[],
   accessToken: string
 ): Promise<Record<string, boolean>> => {
@@ -157,7 +157,7 @@ const buildDoctorAvailabilityMap = async (
   return availability;
 };
 
-const mapDataMachineSnapshotToContext = (currentContext: TurnMachineContext): Partial<TurnMachineContext> => {
+export const mapDataMachineSnapshotToContext = (currentContext: TurnMachineContext): Partial<TurnMachineContext> => {
   try {
     const dataSnapshot = orchestrator.getSnapshot(DATA_MACHINE_ID);
     const dataContext = dataSnapshot?.context ?? {};
