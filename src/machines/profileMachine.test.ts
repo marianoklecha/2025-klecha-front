@@ -33,7 +33,7 @@ describe('profileMachine', () => {
     email: 'john@example.com',
     phone: '1234567890',
     dni: '12345678',
-    gender: 'M',
+    gender: 'MALE',
     birthdate: '1990-01-01',
     role: 'PATIENT',
     status: 'ACTIVE',
@@ -117,7 +117,7 @@ describe('profileMachine', () => {
   });
 
   describe('UPDATE_FORM Event', () => {
-    it('should update a single form field', () => {
+    it('should update a single form field and clear field error when valid', () => {
       actor = createActor(profileMachine);
       actor.start();
 
@@ -127,7 +127,9 @@ describe('profileMachine', () => {
         value: 'Jane',
       });
 
-      expect(actor.getSnapshot().context.formValues.name).toBe('Jane');
+      const snapshot = actor.getSnapshot();
+      expect(snapshot.context.formValues.name).toBe('Jane');
+      expect(snapshot.context.formErrors.name).toBe('');
     });
 
     it('should update multiple form fields independently', () => {
@@ -138,10 +140,14 @@ describe('profileMachine', () => {
       actor.send({ type: 'UPDATE_FORM', key: 'email', value: 'jane@example.com' });
       actor.send({ type: 'UPDATE_FORM', key: 'phone', value: '9876543210' });
 
-      const formValues = actor.getSnapshot().context.formValues;
+      const snapshot = actor.getSnapshot();
+      const formValues = snapshot.context.formValues;
       expect(formValues.name).toBe('Jane');
       expect(formValues.email).toBe('jane@example.com');
       expect(formValues.phone).toBe('9876543210');
+      expect(snapshot.context.formErrors.name).toBe('');
+      expect(snapshot.context.formErrors.email).toBe('');
+      expect(snapshot.context.formErrors.phone).toBe('');
     });
 
     it('should handle doctor-specific fields', () => {
@@ -149,13 +155,28 @@ describe('profileMachine', () => {
       actor.start();
 
       actor.send({ type: 'UPDATE_FORM', key: 'specialty', value: 'Cardiology' });
-      actor.send({ type: 'UPDATE_FORM', key: 'medicalLicense', value: 'ML-12345' });
+      actor.send({ type: 'UPDATE_FORM', key: 'medicalLicense', value: '12345' });
       actor.send({ type: 'UPDATE_FORM', key: 'slotDurationMin', value: 30 });
 
-      const formValues = actor.getSnapshot().context.formValues;
+      const snapshot = actor.getSnapshot();
+      const formValues = snapshot.context.formValues;
       expect(formValues.specialty).toBe('Cardiology');
-      expect(formValues.medicalLicense).toBe('ML-12345');
+      expect(formValues.medicalLicense).toBe('12345');
       expect(formValues.slotDurationMin).toBe(30);
+      expect(snapshot.context.formErrors.specialty).toBe('');
+      expect(snapshot.context.formErrors.medicalLicense).toBe('');
+      expect(snapshot.context.formErrors.slotDurationMin).toBe('');
+    });
+
+    it('should set a validation error when field value is invalid', () => {
+      actor = createActor(profileMachine);
+      actor.start();
+
+      actor.send({ type: 'UPDATE_FORM', key: 'phone', value: '123' });
+
+      const snapshot = actor.getSnapshot();
+      expect(snapshot.context.formValues.phone).toBe('123');
+      expect(snapshot.context.formErrors.phone).toBe('Solo números, de 8-15 dígitos, opcional +');
     });
   });
 
@@ -179,6 +200,7 @@ describe('profileMachine', () => {
       actor.send({ type: 'CANCEL_PROFILE_EDIT', key: 'name' });
 
       expect(actor.getSnapshot().context.formValues.name).toBe(mockProfile.name);
+            expect(actor.getSnapshot().context.formErrors.name).toBe('');
     });
 
     it('should handle missing profile data gracefully', () => {
@@ -190,6 +212,29 @@ describe('profileMachine', () => {
       // Should not crash, context remains unchanged
       expect(actor.getSnapshot().context.profile).toBeNull();
     });
+
+          it('should clear validation error when cancelling edit', async () => {
+            mockProfileUtils.loadProfile.mockResolvedValue(mockProfile);
+
+            actor = createActor(profileMachine);
+            actor.start();
+
+            actor.send({ type: 'SET_AUTH', accessToken: 'token-123', userId: 'user-123' });
+            actor.send({ type: 'LOAD_PROFILE' });
+
+            await vi.waitFor(() => {
+              expect(actor.getSnapshot().context.profile).toEqual(mockProfile);
+            });
+
+            actor.send({ type: 'UPDATE_FORM', key: 'phone', value: '123' });
+            expect(actor.getSnapshot().context.formErrors.phone).toBe('Solo números, de 8-15 dígitos, opcional +');
+
+            actor.send({ type: 'CANCEL_PROFILE_EDIT', key: 'phone' });
+
+            const snapshot = actor.getSnapshot();
+            expect(snapshot.context.formValues.phone).toBe(mockProfile.phone);
+            expect(snapshot.context.formErrors.phone).toBe('');
+          });
   });
 
   describe('CLEAR_ERROR Event', () => {
@@ -253,6 +298,7 @@ describe('profileMachine', () => {
         expect(snapshot.context.formValues.name).toBe(mockProfile.name);
         expect(snapshot.context.formValues.email).toBe(mockProfile.email);
         expect(snapshot.context.loading).toBe(false);
+        expect(snapshot.context.formErrors).toEqual({});
       });
     });
 
@@ -315,6 +361,20 @@ describe('profileMachine', () => {
       });
     });
 
+    it('should not allow profile update when there are validation errors', () => {
+      actor = createActor(profileMachine);
+      actor.start();
+
+      actor.send({ type: 'SET_AUTH', accessToken: 'token-123', userId: 'user-123' });
+      actor.send({ type: 'UPDATE_FORM', key: 'phone', value: '123' });
+      expect(actor.getSnapshot().context.formErrors.phone).toBe('Solo números, de 8-15 dígitos, opcional +');
+
+      actor.send({ type: 'UPDATE_PROFILE' });
+
+      expect(actor.getSnapshot().value).toBe('idle');
+      expect(mockProfileUtils.updateProfile).not.toHaveBeenCalled();
+    });
+
     it('should update profile successfully and show success snackbar', async () => {
       const updatedProfile = { ...mockProfile, name: 'Jane' };
       mockProfileUtils.updateProfile.mockResolvedValue(updatedProfile);
@@ -331,6 +391,7 @@ describe('profileMachine', () => {
         expect(snapshot.value).toBe('idle');
         expect(snapshot.context.profile).toEqual(updatedProfile);
         expect(snapshot.context.updatingProfile).toBe(false);
+        expect(snapshot.context.formErrors).toEqual({});
       });
 
       expect(mockOrchestrator.sendToMachine).toHaveBeenCalledWith('ui', {
