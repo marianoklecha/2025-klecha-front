@@ -3,6 +3,8 @@ import { loadProfile, updateProfile, deactivateAccount } from "../utils/MachineU
 import { orchestrator } from "#/core/Orchestrator";
 import type { ProfileResponse } from "../models/Auth";
 import { UI_MACHINE_ID } from "./uiMachine";
+import { validateField } from "../utils/authFormValidation";
+import type { AuthMachineContext } from "./authMachine";
 
 export const PROFILE_MACHINE_ID = "profile";
 export const PROFILE_MACHINE_EVENT_TYPES = [
@@ -37,6 +39,7 @@ export interface ProfileMachineContext {
     medicalLicense: string | null;
     slotDurationMin: number | null;
   };
+  formErrors: Record<string, string>;
 }
 
 export const ProfileMachineDefaultContext: ProfileMachineContext = {
@@ -58,7 +61,37 @@ export const ProfileMachineDefaultContext: ProfileMachineContext = {
     medicalLicense: null,
     slotDurationMin: null,
   },
+  formErrors: {},
 };
+
+const buildValidationContext = (
+  context: ProfileMachineContext,
+  formValues: ProfileMachineContext["formValues"],
+): AuthMachineContext => ({
+  mode: "register",
+  isPatient: (context.profile?.role ?? "PATIENT") !== "DOCTOR",
+  hasErrorsOrEmpty: false,
+  isAuthenticated: false,
+  loading: false,
+  loggingOut: false,
+  formValues: {
+    email: formValues.email ?? "",
+    password: "",
+    name: formValues.name ?? "",
+    surname: formValues.surname ?? "",
+    dni: formValues.dni ?? "",
+    gender: formValues.gender ?? "",
+    birthdate: formValues.birthdate ?? null,
+    password_confirm: "",
+    phone: formValues.phone ?? "",
+    specialty: formValues.specialty ?? null,
+    medicalLicense: formValues.medicalLicense ?? null,
+    slotDurationMin: formValues.slotDurationMin ?? null,
+  },
+  formErrors: {},
+  authResponse: null,
+  send: () => undefined,
+});
 
 export type ProfileMachineEvent =
   | { type: "SET_AUTH"; accessToken: string; userId: string; userRole?: string }
@@ -104,27 +137,47 @@ export const profileMachine = createMachine({
         },
         UPDATE_PROFILE: {
           target: "updatingProfile",
-          guard: ({ context }) => !!context.accessToken && !!context.userId,
+          guard: ({ context }) =>
+            !!context.accessToken &&
+            !!context.userId &&
+            !Object.values(context.formErrors || {}).some((error) => error && error.length > 0),
         },
         DEACTIVATE_ACCOUNT: {
           target: "deactivatingAccount",
           guard: ({ context }) => !!context.accessToken,
         },
         UPDATE_FORM: {
-          actions: assign({
-            formValues: ({ context, event }) => ({
+          actions: assign(({ context, event }) => {
+            const updatedFormValues = {
               ...context.formValues,
               [event.key]: event.value,
-            }),
+            };
+
+            const syntheticContext = buildValidationContext(context, updatedFormValues);
+            const fieldError = validateField(event.key, event.value, syntheticContext);
+
+            return {
+              formValues: updatedFormValues,
+              formErrors: {
+                ...context.formErrors,
+                [event.key]: fieldError,
+              },
+            };
           }),
         },
         CANCEL_PROFILE_EDIT: {
           actions: assign(({ context, event }) => {
             if (!context.profile) return {};
+            const originalValue = (context.profile as Record<string, unknown>)[event.key];
+            const valueToRestore = originalValue === undefined ? "" : originalValue;
             return {
               formValues: {
                 ...context.formValues,
-                [event.key]: (context.profile as any)[event.key] || "",
+                [event.key]: valueToRestore,
+              },
+              formErrors: {
+                ...context.formErrors,
+                [event.key]: "",
               },
             };
           }),
@@ -170,6 +223,7 @@ export const profileMachine = createMachine({
                 slotDurationMin: profile.slotDurationMin || null,
               };
             },
+            formErrors: () => ({}),
           }),
         },
         onError: {
@@ -240,6 +294,7 @@ export const profileMachine = createMachine({
                   slotDurationMin: profile.slotDurationMin || null,
                 };
               },
+              formErrors: () => ({}),
             }),
             () => {
               orchestrator.sendToMachine(UI_MACHINE_ID, {

@@ -95,7 +95,20 @@ const ProfileScreen: React.FC = () => {
                                 <ListItemText primary={`DNI `}  secondary={profile.dni}/>
                             </ListItem>
                             <Divider component="li" />
-                            <EditField key ="gender" label="Género" value={profile.gender === "MALE" ? "Masculino" : "Femenino"} isEditing={gender} toggleKey="editGender" fieldKey="gender" onChange={(val) => profileSend({ type: "UPDATE_FORM", key: "gender", value: val })}/>
+                                                        <EditField
+                                                            key="gender"
+                                                            label="Género"
+                                                            value={profile.gender ?? ""}
+                                                            displayValue={profile.gender === "MALE" ? "Masculino" : profile.gender === "FEMALE" ? "Femenino" : ""}
+                                                            isEditing={gender}
+                                                            toggleKey="editGender"
+                                                            fieldKey="gender"
+                                                            options={[
+                                                                { value: "MALE", label: "Masculino" },
+                                                                { value: "FEMALE", label: "Femenino" },
+                                                            ]}
+                                                            onChange={(val) => profileSend({ type: "UPDATE_FORM", key: "gender", value: val })}
+                                                        />
                             <EditField key="birthdate" label="Fecha de nacimiento" value={profile.birthdate} isEditing={birthdate} toggleKey="editBirthdate" fieldKey="birthdate" onChange={(val) => profileSend({ type: "UPDATE_FORM", key: "birthdate", value: val })}/>
 
                             {user?.role === 'DOCTOR' && (
@@ -109,7 +122,22 @@ const ProfileScreen: React.FC = () => {
                                 <ListItemText primary={`Especialidad `}  secondary={profile.specialty}/>
                                 </ListItem>
                                 <Divider component="li" />
-                                <EditField key="slotDurationMin"label="Minutos por turno" value={profile.slotDurationMin} isEditing={minutes} toggleKey="editMinutes" fieldKey="slotDurationMin" onChange={(val) => profileSend({ type: "UPDATE_FORM", key: "slotDurationMin", value: val })}/>
+                                                                <EditField
+                                                                    key="slotDurationMin"
+                                                                    label="Minutos por turno"
+                                                                    value={profile.slotDurationMin}
+                                                                    isEditing={minutes}
+                                                                    toggleKey="editMinutes"
+                                                                    fieldKey="slotDurationMin"
+                                                                    onChange={(val) => {
+                                                                        const parsed = parseInt(val, 10);
+                                                                        profileSend({
+                                                                            type: "UPDATE_FORM",
+                                                                            key: "slotDurationMin",
+                                                                            value: Number.isNaN(parsed) ? null : parsed,
+                                                                        });
+                                                                    }}
+                                                                />
 
 
                                 </>
