@@ -26,10 +26,12 @@ export const TURN_MACHINE_EVENT_TYPES = [
   "CLEAR_CANCEL_SUCCESS",
   "SUBMIT_MODIFY_REQUEST",
   "LOAD_MODIFY_AVAILABLE_SLOTS",
+  "CHECK_DOCTOR_AVAILABILITY",
   "NAVIGATE",
 ];
 
 export interface TurnMachineContext {
+  allDoctors: Doctor[];
   doctors: Doctor[];
   availableTurns: string[];
   availableDates: string[];
@@ -73,6 +75,8 @@ export interface TurnMachineContext {
   modifyError: string | null;
   accessToken: string | null;
   userId: string | null;
+  doctorAvailability: Record<string, boolean>;
+  isLoadingDoctors: boolean;
   specialties: { value: string; label: string }[];
   isLoadingAvailableDates: boolean;
   isLoadingAvailableSlots: boolean;
@@ -95,12 +99,99 @@ export type TurnMachineEvent =
   | { type: "SUBMIT_MODIFY_REQUEST" }
   | { type: "LOAD_MODIFY_AVAILABLE_SLOTS"; doctorId: string; date: string }
   | { type: "RESET_MODIFY_TURN" }
+  | { type: "CHECK_DOCTOR_AVAILABILITY" }
   | { type: "NAVIGATE"; to: string | null };
+
+export const normalizeSpecialtyKey = (value: string | null | undefined): string => {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+};
+
+export const formatSpecialtyLabel = (value: string): string => {
+  if (!value) {
+    return "";
+  }
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return "";
+  }
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+};
+
+export const buildSpecialtyOptions = (doctors: Doctor[]): { value: string; label: string }[] => {
+  const seen = new Set<string>();
+  const options: { value: string; label: string }[] = [];
+
+  doctors.forEach((doctor) => {
+    const specialty = doctor?.specialty;
+    const key = normalizeSpecialtyKey(specialty);
+    if (!key || seen.has(key) || !specialty) {
+      return;
+    }
+    seen.add(key);
+    options.push({ value: specialty, label: formatSpecialtyLabel(specialty) });
+  });
+
+  options.sort((a, b) => a.label.localeCompare(b.label, "es"));
+  return options;
+};
+
+export const buildDoctorAvailabilityMap = async (
+  doctors: Doctor[],
+  accessToken: string
+): Promise<Record<string, boolean>> => {
+  const availability: Record<string, boolean> = {};
+
+  for (const doctor of doctors) {
+    if (!doctor?.id) {
+      continue;
+    }
+    try {
+      const dates = await TurnService.getAvailableDates(doctor.id, accessToken);
+      availability[doctor.id] = Array.isArray(dates) && dates.length > 0;
+    } catch (error) {
+      console.error(`[turnMachine] Failed to load availability for doctor ${doctor.id}`, error);
+      availability[doctor.id] = false;
+    }
+  }
+
+  return availability;
+};
+
+export const mapDataMachineSnapshotToContext = (currentContext: TurnMachineContext): Partial<TurnMachineContext> => {
+  try {
+    const dataSnapshot = orchestrator.getSnapshot(DATA_MACHINE_ID);
+    const dataContext = dataSnapshot?.context ?? {};
+
+    const authSnapshot = orchestrator.getSnapshot('auth');
+    const authContext = authSnapshot?.context;
+
+    const doctors = Array.isArray(dataContext.doctors) ? [...(dataContext.doctors as Doctor[])] : [];
+    const accessToken = dataContext.accessToken || null;
+    const shouldCheckAvailability = !!accessToken && doctors.length > 0;
+    const specialties = shouldCheckAvailability ? [] : buildSpecialtyOptions(doctors);
+
+    return {
+      allDoctors: doctors,
+      doctors: shouldCheckAvailability ? [] : doctors,
+      doctorAvailability: shouldCheckAvailability ? {} : currentContext.doctorAvailability,
+      availableTurns: dataContext.availableTurns || [],
+      myTurns: dataContext.myTurns || [],
+      accessToken,
+      userId: dataContext.userId || authContext?.authResponse?.id || null,
+      specialties,
+      isLoadingDoctors: shouldCheckAvailability,
+      isLoadingMyTurns: false,
+    };
+  } catch (error) {
+    return { isLoadingMyTurns: false, isLoadingDoctors: false };
+  }
+};
 
 export const turnMachine = createMachine({
   id: "turnMachine",
   type: "parallel", 
   context: {
+    allDoctors: [],
     doctors: [],
     availableTurns: [],
     myTurns: [],
@@ -147,6 +238,8 @@ export const turnMachine = createMachine({
     
     accessToken: null,
     userId: null,
+    doctorAvailability: {},
+    isLoadingDoctors: false,
     specialties: [],
     availableDates: [],
     isLoadingAvailableDates: false,
@@ -452,34 +545,22 @@ export const turnMachine = createMachine({
         idle: {
           on: {
             DATA_LOADED: {
-              actions: assign(() => {
-                try {
-                  const dataSnapshot = orchestrator.getSnapshot(DATA_MACHINE_ID);
-                  const dataContext = dataSnapshot.context
-                  
-                  const authSnapshot = orchestrator.getSnapshot('auth');
-                  const authContext = authSnapshot?.context;
-                  
-                  const doctors = dataContext.doctors || [];
-                  
-                  const specialties = Array.from(new Set(doctors.map((doctor: any) => doctor.specialty))).map((specialty: unknown) => ({
-                    value: specialty as string,
-                    label: (specialty as string).charAt(0).toUpperCase() + (specialty as string).slice(1)
-                  }));
-                  
-                  return {
-                    doctors,
-                    availableTurns: dataContext.availableTurns || [],
-                    myTurns: dataContext.myTurns || [],
-                    accessToken: dataContext.accessToken || null,
-                    userId: dataContext.userId || authContext?.authResponse?.id || null,
-                    specialties,
-                    isLoadingMyTurns: false,
-                  };
-                } catch (error) {
-                  return { isLoadingMyTurns: false };
-                }
-              }),
+              actions: [
+                assign(({ context }) => mapDataMachineSnapshotToContext(context)),
+                ({ context, self }) => {
+                  if (!context.isLoadingDoctors) {
+                    return;
+                  }
+                  const snapshot = self.getSnapshot?.();
+                  if (snapshot?.matches?.({ dataManagement: 'idle' })) {
+                    self.send({ type: "CHECK_DOCTOR_AVAILABILITY" });
+                  }
+                },
+              ],
+            },
+            CHECK_DOCTOR_AVAILABILITY: {
+              guard: ({ context }) => context.isLoadingDoctors && !!context.accessToken,
+              target: "checkingAvailability",
             },
             LOADING: {
               actions: assign(() => ({
@@ -490,6 +571,106 @@ export const turnMachine = createMachine({
             CREATE_TURN: {
               target: "creatingTurn",
             }
+          },
+        },
+        checkingAvailability: {
+          entry: assign({
+            isLoadingDoctors: true,
+          }),
+          on: {
+            DATA_LOADED: {
+              actions: [
+                assign(({ context }) => mapDataMachineSnapshotToContext(context)),
+                ({ context, self }) => {
+                  if (!context.isLoadingDoctors) {
+                    return;
+                  }
+                  const snapshot = self.getSnapshot?.();
+                  if (snapshot?.matches?.({ dataManagement: 'idle' })) {
+                    self.send({ type: "CHECK_DOCTOR_AVAILABILITY" });
+                  }
+                },
+              ],
+              target: "checkingAvailability",
+              reenter: true,
+            },
+            CHECK_DOCTOR_AVAILABILITY: {
+              guard: ({ context }) => context.isLoadingDoctors && !!context.accessToken,
+              target: "checkingAvailability",
+              reenter: true,
+            },
+          },
+          invoke: {
+            src: fromPromise(async ({ input }: { input: { doctors: Doctor[]; accessToken: string } }) => {
+              const availability = await buildDoctorAvailabilityMap(input.doctors, input.accessToken);
+              const filteredDoctors = input.doctors.filter((doctor) => availability[doctor.id]);
+              return {
+                availability,
+                filteredDoctors,
+                specialties: buildSpecialtyOptions(filteredDoctors),
+              };
+            }),
+            input: ({ context }) => ({
+              doctors: context.allDoctors,
+              accessToken: context.accessToken!,
+            }),
+            onDone: {
+              target: "idle",
+              actions: assign({
+                doctorAvailability: ({ context, event }) => ({
+                  ...context.doctorAvailability,
+                  ...(event.output?.availability || {}),
+                }),
+                doctors: ({ event }) => event.output?.filteredDoctors || [],
+                specialties: ({ event }) => event.output?.specialties || [],
+                isLoadingDoctors: () => false,
+                takeTurn: ({ context, event }) => {
+                  const { takeTurn } = context;
+                  const filteredDoctors = event.output?.filteredDoctors || [];
+                  const availableDoctorIds = new Set(filteredDoctors.map((doctor: Doctor) => doctor.id));
+                  const availableSpecialties = new Set((event.output?.specialties || []).map((item: { value: string }) => item.value));
+
+                  const isDoctorValid = availableDoctorIds.has(takeTurn.doctorId);
+                  const isSpecialtyValid = availableSpecialties.has(takeTurn.professionSelected);
+
+                  return {
+                    ...takeTurn,
+                    professionSelected: isSpecialtyValid ? takeTurn.professionSelected : "",
+                    doctorId: isDoctorValid ? takeTurn.doctorId : "",
+                    profesionalSelected: isDoctorValid ? takeTurn.profesionalSelected : "",
+                    dateSelected: isDoctorValid ? takeTurn.dateSelected : null,
+                    timeSelected: isDoctorValid ? takeTurn.timeSelected : null,
+                    scheduledAt: isDoctorValid ? takeTurn.scheduledAt : null,
+                    needsHealthCertificate: isDoctorValid ? takeTurn.needsHealthCertificate : false,
+                  };
+                },
+                availableDates: ({ context, event }) => {
+                  const filteredDoctors = event.output?.filteredDoctors || [];
+                  const availableDoctorIds = new Set(filteredDoctors.map((doctor: Doctor) => doctor.id));
+                  return availableDoctorIds.has(context.takeTurn.doctorId) ? context.availableDates : [];
+                },
+                availableTurns: ({ context, event }) => {
+                  const filteredDoctors = event.output?.filteredDoctors || [];
+                  const availableDoctorIds = new Set(filteredDoctors.map((doctor: Doctor) => doctor.id));
+                  return availableDoctorIds.has(context.takeTurn.doctorId) ? context.availableTurns : [];
+                },
+              }),
+            },
+            onError: {
+              target: "idle",
+              actions: [
+                assign({
+                  isLoadingDoctors: () => false,
+                }),
+                () => {
+                  orchestrator.sendToMachine(UI_MACHINE_ID, {
+                    type: "OPEN_SNACKBAR",
+                    message: "No se pudo obtener la disponibilidad de los doctores",
+                    severity: "error",
+                  });
+                }
+              ],
+            },
           },
         },
         creatingTurn: {

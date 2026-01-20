@@ -225,7 +225,7 @@ const ReservationTurns: React.FC = () => {
                     value={formValues.professionSelected}
                     label="Especialidad *"
                     onChange={handleProfessionChange}
-                    disabled={turnContext.isLoadingDoctors}
+                    disabled={turnContext.isLoadingDoctors || turnContext.specialties.length === 0}
                   >
                     <MenuItem value="">
                       <em>Seleccione una especialidad</em>
@@ -312,7 +312,7 @@ const ReservationTurns: React.FC = () => {
                     value={formValues.doctorId}
                     label="Doctor *"
                     onChange={handleDoctorChange}
-                    disabled={!isProfessionSelected || turnContext.isLoadingDoctors}
+                    disabled={!isProfessionSelected || turnContext.isLoadingDoctors || filteredDoctors.length === 0}
                   >
                     <MenuItem value="">
                       <em>Seleccione un doctor</em>

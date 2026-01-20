@@ -87,6 +87,8 @@ describe('turnMachine', () => {
     // Reset mocks
     vi.clearAllMocks();
 
+    mockTurnService.getAvailableDates.mockResolvedValue(mockAvailableDates);
+
     // Setup default orchestrator mock
     mockOrchestrator.getSnapshot.mockReturnValue({
       context: {
@@ -104,6 +106,14 @@ describe('turnMachine', () => {
       actor.stop();
     }
   });
+
+  const waitForAvailabilitySync = async () => {
+    await vi.waitFor(() => {
+      const snapshot = actor.getSnapshot();
+      expect(snapshot.context.isLoadingDoctors).toBe(false);
+      expect(snapshot.value.dataManagement).toBe('idle');
+    });
+  };
 
   describe('Initial State', () => {
     it('should start with parallel regions in their initial states', () => {
@@ -351,7 +361,7 @@ describe('turnMachine', () => {
   });
 
   describe('dataManagement Region - DATA_LOADED Event', () => {
-    it('should load data from orchestrator on DATA_LOADED event', () => {
+    it('should load data from orchestrator on DATA_LOADED event', async () => {
       mockOrchestrator.getSnapshot.mockReturnValueOnce({
         context: {
           doctors: [mockDoctor],
@@ -374,14 +384,17 @@ describe('turnMachine', () => {
 
       actor.send({ type: 'DATA_LOADED' });
 
+      await waitForAvailabilitySync();
+
       const context = actor.getSnapshot().context;
-      expect(context.doctors).toEqual([mockDoctor]);
-      expect(context.availableTurns).toEqual(mockAvailableSlots);
+      expect(context.doctors).toEqual([expect.objectContaining({ id: mockDoctor.id })]);
+      expect(context.allDoctors).toEqual([expect.objectContaining({ id: mockDoctor.id })]);
+      expect(context.availableTurns).toEqual([]);
       expect(context.myTurns).toEqual([mockTurn]);
       expect(context.accessToken).toBe('token-123');
     });
 
-    it('should generate specialties from doctors', () => {
+    it('should generate specialties from doctors', async () => {
       mockOrchestrator.getSnapshot.mockReturnValueOnce({
         context: {
           doctors: [
@@ -400,13 +413,15 @@ describe('turnMachine', () => {
 
       actor.send({ type: 'DATA_LOADED' });
 
+      await waitForAvailabilitySync();
+
       const specialties = actor.getSnapshot().context.specialties;
       expect(specialties).toHaveLength(2);
       expect(specialties).toContainEqual({ value: 'cardiology', label: 'Cardiology' });
       expect(specialties).toContainEqual({ value: 'dermatology', label: 'Dermatology' });
     });
 
-    it('should handle missing data gracefully', () => {
+    it('should handle missing data gracefully', async () => {
       mockOrchestrator.getSnapshot.mockReturnValue({
         context: {}
       });
@@ -416,10 +431,97 @@ describe('turnMachine', () => {
 
       actor.send({ type: 'DATA_LOADED' });
 
+      await waitForAvailabilitySync();
+
       const context = actor.getSnapshot().context;
       expect(context.doctors).toEqual([]);
       expect(context.availableTurns).toEqual([]);
       expect(context.myTurns).toEqual([]);
+    });
+
+    it('should filter out doctors without availability and hide their specialties', async () => {
+      const unavailableDoctor: Doctor = {
+        ...mockDoctor,
+        id: 'doctor-2',
+        specialty: 'dermatology',
+        medicalLicense: 'ML67890',
+      };
+
+      mockOrchestrator.getSnapshot
+        .mockReturnValueOnce({
+          context: {
+            doctors: [mockDoctor, unavailableDoctor],
+            availableTurns: mockAvailableSlots,
+            myTurns: [mockTurn],
+            accessToken: 'token-123',
+            userId: 'patient-1',
+          },
+        })
+        .mockReturnValueOnce({
+          context: {
+            authResponse: {
+              id: 'patient-1',
+            },
+          },
+        });
+
+      mockTurnService.getAvailableDates.mockImplementation(async (doctorId: string) => {
+        if (doctorId === unavailableDoctor.id) {
+          return [];
+        }
+        return mockAvailableDates;
+      });
+
+      actor = createActor(turnMachine);
+      actor.start();
+
+      actor.send({ type: 'DATA_LOADED' });
+
+      await waitForAvailabilitySync();
+
+      const context = actor.getSnapshot().context;
+      expect(context.allDoctors).toHaveLength(2);
+      expect(context.doctors).toEqual([expect.objectContaining({ id: mockDoctor.id })]);
+      expect(context.specialties).toEqual([{ value: 'cardiology', label: 'Cardiology' }]);
+      expect(context.doctorAvailability).toMatchObject({
+        [mockDoctor.id]: true,
+        [unavailableDoctor.id]: false,
+      });
+      expect(context.availableTurns).toEqual([]);
+    });
+
+    it('should clear doctors and specialties when no availability exists', async () => {
+      mockOrchestrator.getSnapshot
+        .mockReturnValueOnce({
+          context: {
+            doctors: [mockDoctor],
+            availableTurns: mockAvailableSlots,
+            myTurns: [mockTurn],
+            accessToken: 'token-123',
+          },
+        })
+        .mockReturnValueOnce({
+          context: {
+            authResponse: {
+              id: 'patient-1',
+            },
+          },
+        });
+
+      mockTurnService.getAvailableDates.mockResolvedValue([]);
+
+      actor = createActor(turnMachine);
+      actor.start();
+
+      actor.send({ type: 'DATA_LOADED' });
+
+      await waitForAvailabilitySync();
+
+      const context = actor.getSnapshot().context;
+      expect(context.doctors).toEqual([]);
+      expect(context.specialties).toEqual([]);
+      expect(context.doctorAvailability).toMatchObject({ [mockDoctor.id]: false });
+      expect(context.availableTurns).toEqual([]);
     });
   });
 
@@ -432,6 +534,7 @@ describe('turnMachine', () => {
 
       // Setup context
       actor.send({ type: 'DATA_LOADED' });
+      await waitForAvailabilitySync();
       actor.send({
         type: 'UPDATE_FORM',
         path: ['takeTurn', 'doctorId'],
@@ -457,6 +560,7 @@ describe('turnMachine', () => {
       actor.start();
 
       actor.send({ type: 'DATA_LOADED' });
+      await waitForAvailabilitySync();
       actor.send({
         type: 'UPDATE_FORM',
         path: ['takeTurn', 'doctorId'],
@@ -495,6 +599,7 @@ describe('turnMachine', () => {
       actor.start();
 
       actor.send({ type: 'DATA_LOADED' });
+      await waitForAvailabilitySync();
       actor.send({
         type: 'UPDATE_FORM',
         path: ['takeTurn', 'doctorId'],
@@ -529,6 +634,7 @@ describe('turnMachine', () => {
       actor.start();
 
       actor.send({ type: 'DATA_LOADED' });
+      await waitForAvailabilitySync();
       actor.send({
         type: 'UPDATE_FORM',
         path: ['takeTurn', 'doctorId'],

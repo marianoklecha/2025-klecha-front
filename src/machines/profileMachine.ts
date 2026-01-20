@@ -233,7 +233,7 @@ export const profileMachine = createMachine({
             error: ({ event }) =>
               event.error instanceof Error
                 ? event.error.message
-                : "Failed to fetch profile",
+                : "Error al cargar el perfil",
           }),
         },
       },
@@ -313,7 +313,7 @@ export const profileMachine = createMachine({
               error: ({ event }) =>
                 event.error instanceof Error
                   ? event.error.message
-                  : "Failed to update profile",
+                  : "Error al actualizar el perfil",
             }),
             ({ event }) => {
               const errorMessage = event.error instanceof Error ? event.error.message : "Error al actualizar el perfil";

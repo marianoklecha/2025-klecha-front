@@ -179,7 +179,7 @@ describe('medicalHistoryMachine', () => {
         expect(actor.getSnapshot().value).toBe('idle');
       });
 
-      expect(actor.getSnapshot().context.error).toBe('Error adding medical history entry for turn: Error: Failed to add medical history');
+      expect(actor.getSnapshot().context.error).toBe('Error al agregar historia médica al turno: Error: Failed to add medical history');
       expect(actor.getSnapshot().context.isLoading).toBe(false);
     });
   });
@@ -258,7 +258,7 @@ describe('medicalHistoryMachine', () => {
         expect(actor.getSnapshot().value).toBe('idle');
       });
 
-      expect(actor.getSnapshot().context.error).toBe('Error updating medical history entry: Error: Failed to update medical history');
+      expect(actor.getSnapshot().context.error).toBe('Error actualizando la historia médica: Error: Failed to update medical history');
       expect(actor.getSnapshot().context.isLoading).toBe(false);
     });
   });
@@ -333,7 +333,7 @@ describe('medicalHistoryMachine', () => {
         expect(actor.getSnapshot().value).toBe('idle');
       });
 
-      expect(actor.getSnapshot().context.error).toBe('Error deleting medical history entry: Error: Failed to delete medical history');
+      expect(actor.getSnapshot().context.error).toBe('Error al eliminar historia médica: Error: Failed to delete medical history');
       expect(actor.getSnapshot().context.isLoading).toBe(false);
     });
   });

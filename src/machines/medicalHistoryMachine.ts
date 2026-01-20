@@ -229,7 +229,7 @@ export const medicalHistoryMachine = createMachine({
           target: 'idle',
           actions: [
             assign({
-              error: ({ event }) => `Error adding medical history entry for turn: ${event.error}`,
+              error: ({ event }) => `Error al agregar historia médica al turno: ${event.error}`,
               currentTurnId: () => null,
               currentTurnInfo: () => null,
               selectedHistory: () => null,
@@ -303,7 +303,7 @@ export const medicalHistoryMachine = createMachine({
           target: 'idle',
           actions: [
             assign({
-              error: ({ event }) => `Error updating medical history entry: ${event.error}`,
+              error: ({ event }) => `Error actualizando la historia médica: ${event.error}`,
               selectedHistory: () => null,
               editingContent: () => '',
             }),
@@ -349,7 +349,7 @@ export const medicalHistoryMachine = createMachine({
           target: 'idle',
           actions: [
             assign({
-              error: ({ event }) => `Error deleting medical history entry: ${event.error}`,
+              error: ({ event }) => `Error al eliminar historia médica: ${event.error}`,
             }),
             () => {
               orchestrator.sendToMachine(UI_MACHINE_ID, {
