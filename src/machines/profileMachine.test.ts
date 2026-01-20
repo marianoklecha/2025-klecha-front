@@ -553,7 +553,7 @@ describe('profileMachine', () => {
       await vi.waitFor(() => {
         const snapshot = actor.getSnapshot();
         expect(snapshot.value).toBe('idle');
-        expect(snapshot.context.error).toBe('Failed to fetch profile');
+        expect(snapshot.context.error).toBe('Error al cargar el perfil');
       });
     });
 

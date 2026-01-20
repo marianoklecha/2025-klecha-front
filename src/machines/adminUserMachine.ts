@@ -205,11 +205,11 @@ export const adminUserMachine = createMachine({
           actions: [
             assign(({ event }) => ({
               loading: false,
-              error: event.error instanceof Error ? event.error.message : 'Failed to approve doctor',
+              error: event.error instanceof Error ? event.error.message : 'Error al aprobar doctor',
               lastOperation: {
                 type: 'approve' as const,
                 success: false,
-                message: 'Failed to approve doctor'
+                message: 'Error al aprobar doctor'
               }
             })),
             ({ event }) => {
@@ -285,11 +285,11 @@ export const adminUserMachine = createMachine({
           actions: [
             assign(({ event }) => ({
               loading: false,
-              error: event.error instanceof Error ? event.error.message : 'Failed to reject doctor',
+              error: event.error instanceof Error ? event.error.message : 'Error al rechazar doctor',
               lastOperation: {
                 type: 'reject' as const,
                 success: false,
-                message: 'Failed to reject doctor'
+                message: 'Error al rechazar doctor'
               }
             })),
             ({ event }) => {
