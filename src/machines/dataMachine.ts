@@ -1179,6 +1179,14 @@ export const dataMachine = createMachine({
           ],
         },
       },
+      on: {
+        UPDATE_TURNS_NEEDING_RATING: {
+          actions: assign({
+            turnsNeedingRating: ({ event }) => (event as any).turns,
+            ratingModalChecked: true,
+          })
+        },
+      },
     },
   },
 });
