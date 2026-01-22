@@ -702,10 +702,18 @@ export const dataMachine = createMachine({
     },
     
     fetchingAvailableTurns: {
-      entry: assign({
-        loading: ({ context }) => ({ ...context.loading, availableTurns: true }),
-        errors: ({ context }) => ({ ...context.errors, availableTurns: null }),
-      }),
+      entry: [
+        assign({
+          loading: ({ context }) => ({ ...context.loading, availableTurns: true }),
+          errors: ({ context }) => ({ ...context.errors, availableTurns: null }),
+        }),
+        () => {
+          orchestrator.sendToMachine("turn", {
+            type: "SET_AVAILABLE_SLOTS_LOADING",
+            isLoading: true,
+          });
+        },
+      ],
       invoke: {
         src: fromPromise(async ({ input }: { input: { accessToken: string; doctorId: string; date: string } }) => {
           const result = await loadAvailableTurns(input);
@@ -718,10 +726,18 @@ export const dataMachine = createMachine({
         }),
         onDone: {
           target: "ready",
-          actions: assign({
-            availableTurns: ({ event }) => event.output,
-            loading: ({ context }) => ({ ...context.loading, availableTurns: false }),
-          }),
+          actions: [
+            assign({
+              availableTurns: ({ event }) => event.output,
+              loading: ({ context }) => ({ ...context.loading, availableTurns: false }),
+            }),
+            () => {
+              orchestrator.sendToMachine("turn", {
+                type: "SET_AVAILABLE_SLOTS_LOADING",
+                isLoading: false,
+              });
+            },
+          ],
         },
         onError: {
           target: "idle",
@@ -736,6 +752,12 @@ export const dataMachine = createMachine({
                 availableTurns: false
               })
             }),
+            () => {
+              orchestrator.sendToMachine("turn", {
+                type: "SET_AVAILABLE_SLOTS_LOADING",
+                isLoading: false,
+              });
+            },
             ({ event }) => {
               if (event.error instanceof Error && (event.error.message.includes('401') || event.error.message.toLowerCase().includes('unauthorized'))) {
                 orchestrator.sendToMachine(AUTH_MACHINE_ID, { type: "LOGOUT" });
