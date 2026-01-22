@@ -136,13 +136,9 @@ describe('uiMachine', () => {
         initialPath: '/patient/view-turns?turnId=turn456',
       });
 
-      expect(mockOrchestrator.send).toHaveBeenCalledWith({
-        type: 'OPEN_CANCEL_TURN_DIALOG',
-        turnId: 'turn456',
-        title: 'Cancelar Turno',
-        message: '¿Estás seguro de que quieres cancelar este turno? Esta acción no se puede deshacer.',
-        confirmButtonText: 'Cancelar Turno',
-        confirmButtonColor: 'error'
+      expect(mockOrchestrator.sendToMachine).toHaveBeenCalledWith('data', {
+        type: 'CHECK_URL_CANCEL_TURN',
+        turnId: 'turn456'
       });
     });
 
@@ -156,16 +152,11 @@ describe('uiMachine', () => {
         initialPath: '/doctor/view-turns?turnId=turn789',
       });
 
-      expect(mockOrchestrator.send).toHaveBeenCalledWith({
-        type: 'OPEN_CANCEL_TURN_DIALOG',
-        turnId: 'turn789',
-        title: 'Cancelar Turno',
-        message: '¿Estás seguro de que quieres cancelar este turno? Esta acción no se puede deshacer.',
-        confirmButtonText: 'Cancelar Turno',
-        confirmButtonColor: 'error'
+      expect(mockOrchestrator.sendToMachine).toHaveBeenCalledWith('data', {
+        type: 'CHECK_URL_CANCEL_TURN',
+        turnId: 'turn789'
       });
     });
-  });
 
   describe('TOGGLE Event', () => {
     it('should toggle a boolean state from false to true', () => {
@@ -1031,4 +1022,5 @@ describe('uiMachine', () => {
       expect(clearedModal.turn).toBe(null);
     });
   });
-});
+})
+})

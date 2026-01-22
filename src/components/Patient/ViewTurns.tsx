@@ -2,6 +2,7 @@ import React from "react";
 import { 
   Box, Button, Typography, CircularProgress, Chip, FormControl, InputLabel, Select, MenuItem, Avatar 
 } from "@mui/material";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { useMachines } from "#/providers/MachineProvider";
 import { useDataMachine } from "#/providers/DataProvider";
 import { dayjsArgentina, nowArgentina, formatDateTime, formatTime } from '#/utils/dateTimeUtils';
@@ -21,7 +22,6 @@ const ViewTurns: React.FC = () => {
   const { turnState, turnSend, uiSend } = useMachines();
   const { dataState } = useDataMachine();
 
-  // Hook personalizado para lógica de archivos
   const {
     fileInputRef,
     handleFileUpload,
@@ -40,7 +40,9 @@ const ViewTurns: React.FC = () => {
   const { cancellingTurnId, isCancellingTurn } = turnContext;
 
   const allTurns: TurnResponse[] = dataContext.myTurns || [];
-  const filteredTurns: TurnResponse[] = filterTurns(allTurns, showTurnsContext.statusFilter) as TurnResponse[];
+  const filteredTurns: TurnResponse[] = (filterTurns(allTurns, showTurnsContext.statusFilter) as TurnResponse[])
+    .slice()
+    .sort((a, b) => dayjsArgentina(b.scheduledAt).valueOf() - dayjsArgentina(a.scheduledAt).valueOf());
   const pendingModifyRequests = dataContext.myModifyRequests?.filter((r: TurnModifyRequest) => r.status === "PENDING") || [];
 
   const handleCancelTurn = (turnId: string) => {
@@ -98,7 +100,6 @@ const ViewTurns: React.FC = () => {
   };
 
   const canShowFileSection = (turn: TurnResponse) => {
-    // Mostrar sección de archivos para turnos programados y completados
     return turn.status === 'SCHEDULED' || turn.status === 'COMPLETED';
   };
 
@@ -133,9 +134,13 @@ const ViewTurns: React.FC = () => {
         {/* Filters Section */}
         <Box className="viewturns-filters-section">
           <Box className="viewturns-filters-header">
-            <Typography variant="h6" className="viewturns-section-title">
-              🔍 Filtros
-            </Typography>
+            <Box flexDirection={"row"} display={"flex"} justifyContent={"center"} alignItems={"center"} gap={1}>
+              <FilterAltIcon sx={{color:"#3a67c9"}}/>
+              <Typography variant="h6" className="viewturns-section-title">
+                Filtros
+              </Typography>
+            </Box>
+            
             <Box className="viewturns-filters-controls">
               <FormControl size="small" className="viewturns-filter-select">
                 <InputLabel>Estado del turno</InputLabel>

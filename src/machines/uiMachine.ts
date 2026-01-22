@@ -15,7 +15,7 @@ export interface UiMachineContext {
   };
   confirmDialog: {
     open: boolean;
-    action: 'approve' | 'reject' | 'cancel_turn' | 'complete_turn' | 'no_show_turn' | 'delete_file' | null;
+    action: 'approve' | 'reject' | 'cancel_turn' | 'complete_turn' | 'no_show_turn' | 'delete_file' | 'acknowledge' | null;
     requestId: string | null;
     turnId: string | null;
     turnData?: any;
@@ -39,7 +39,7 @@ export type UiMachineEvent =
   | { type: "NAVIGATE"; to: string | null }
   | { type: "OPEN_SNACKBAR"; message: string; severity: 'success' | 'error' | 'warning' | 'info' }
   | { type: "CLOSE_SNACKBAR" }
-  | { type: "OPEN_CONFIRMATION_DIALOG"; action: 'approve' | 'reject' | 'delete_file'; requestId?: string; turnId?: string; title?: string; message?: string; confirmButtonText?: string; confirmButtonColor?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' }
+  | { type: "OPEN_CONFIRMATION_DIALOG"; action: 'approve' | 'reject' | 'delete_file' | 'acknowledge'; requestId?: string; turnId?: string; title?: string; message?: string; confirmButtonText?: string; confirmButtonColor?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' }
   | { type: "OPEN_CANCEL_TURN_DIALOG"; turnId: string; turnData?: any; title?: string; message?: string; confirmButtonText?: string; confirmButtonColor?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' }
   | { type: "OPEN_COMPLETE_TURN_DIALOG"; turnId: string; turnData?: any; title?: string; message?: string; confirmButtonText?: string; confirmButtonColor?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' }
   | { type: "OPEN_NO_SHOW_TURN_DIALOG"; turnId: string; turnData?: any; title?: string; message?: string; confirmButtonText?: string; confirmButtonColor?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' }
@@ -102,13 +102,9 @@ export const uiMachine = createMachine({
                   const params = new URLSearchParams(query);
                   const turnId = params.get('turnId');
                   if (turnId) {
-                    orchestrator.send({
-                      type: 'OPEN_CANCEL_TURN_DIALOG',
-                      turnId,
-                      title: 'Cancelar Turno',
-                      message: '¿Estás seguro de que quieres cancelar este turno? Esta acción no se puede deshacer.',
-                      confirmButtonText: 'Cancelar Turno',
-                      confirmButtonColor: 'error'
+                    orchestrator.sendToMachine("data", {
+                      type: 'CHECK_URL_CANCEL_TURN',
+                      turnId
                     });
                   }
                 }

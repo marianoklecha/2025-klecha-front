@@ -12,6 +12,7 @@ import { filterTurns } from "#/utils/filterTurns";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import "./DoctorViewTurns.css";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 const DoctorViewTurns: React.FC = () => {
   
@@ -24,7 +25,9 @@ const DoctorViewTurns: React.FC = () => {
   const showTurnsContext = turnContext.showTurns;
   const { cancellingTurnId, isCancellingTurn } = turnContext;
 
-  const filteredTurns = filterTurns(turnContext.myTurns, showTurnsContext.statusFilter);
+  const filteredTurns = (filterTurns(turnContext.myTurns, showTurnsContext.statusFilter) || [])
+    .slice()
+    .sort((a: any, b: any) => dayjsArgentina(b.scheduledAt).valueOf() - dayjsArgentina(a.scheduledAt).valueOf());
 
   const handleCancelTurn = (turnId: string) => {
     if (!user.accessToken) return;
@@ -142,9 +145,12 @@ const DoctorViewTurns: React.FC = () => {
           {/* Filters Section */}
           <Box className="doctor-viewturns-filters-section">
             <Box className="doctor-viewturns-filters-header">
-              <Typography variant="h6" className="doctor-viewturns-section-title">
-                🔍 Filtros
-              </Typography>
+              <Box flexDirection={"row"} display={"flex"} justifyContent={"center"} alignItems={"center"} gap={1}>
+                <FilterAltIcon sx={{color:"#3a67c9"}}/>
+                <Typography variant="h6" className="viewturns-section-title">
+                  Filtros
+                </Typography>
+            </Box>
               <Box className="doctor-viewturns-filters-controls">
                 <FormControl size="small" className="doctor-viewturns-filter-select">
                   <InputLabel>Estado del turno</InputLabel>
