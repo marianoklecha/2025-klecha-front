@@ -38,6 +38,23 @@ const DoctorMetrics: React.FC = () => {
   // Display average score with proper formatting
   const displayScore = metrics?.score ? metrics.score.toFixed(2) : 'N/A';
 
+  const completionRate = React.useMemo(() => {
+    const completed = metrics?.completedTurnsThisMonth ?? 0;
+    const cancelled = metrics?.cancelledTurns ?? 0;
+
+    if (completed === 0) {
+      return null;
+    }
+
+    const total = completed + cancelled;
+
+    if (total === 0) {
+      return null;
+    }
+
+    return ((completed / total) * 100).toFixed(1);
+  }, [metrics?.completedTurnsThisMonth, metrics?.cancelledTurns]);
+
   // Parse and aggregate subcategories
   const parsedSubcategories = React.useMemo(() => {
     if (!metrics?.ratingSubcategories || metrics.ratingSubcategories.length === 0) {
@@ -149,9 +166,7 @@ const DoctorMetrics: React.FC = () => {
                   <Box className="summary-card">
                     <Typography className="summary-card-title">Tasa de Finalización</Typography>
                     <Typography className="summary-card-value">
-                      {metrics.completedTurnsThisMonth > 0 || metrics.cancelledTurns > 0
-                        ? ((metrics.completedTurnsThisMonth / (metrics.completedTurnsThisMonth + metrics.cancelledTurns)) * 100).toFixed(1)
-                        : '100'}%
+                      {completionRate !== null ? `${completionRate}%` : 'Sin datos'}
                     </Typography>
                   </Box>
                 </Box>
