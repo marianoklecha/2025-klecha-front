@@ -27,6 +27,7 @@ export const TURN_MACHINE_EVENT_TYPES = [
   "SUBMIT_MODIFY_REQUEST",
   "LOAD_MODIFY_AVAILABLE_SLOTS",
   "CHECK_DOCTOR_AVAILABILITY",
+  "SET_AVAILABLE_SLOTS_LOADING",
   "NAVIGATE",
 ];
 
@@ -100,6 +101,7 @@ export type TurnMachineEvent =
   | { type: "LOAD_MODIFY_AVAILABLE_SLOTS"; doctorId: string; date: string }
   | { type: "RESET_MODIFY_TURN" }
   | { type: "CHECK_DOCTOR_AVAILABILITY" }
+  | { type: "SET_AVAILABLE_SLOTS_LOADING"; isLoading: boolean }
   | { type: "NAVIGATE"; to: string | null };
 
 export const normalizeSpecialtyKey = (value: string | null | undefined): string => {
@@ -161,6 +163,7 @@ export const mapDataMachineSnapshotToContext = (currentContext: TurnMachineConte
   try {
     const dataSnapshot = orchestrator.getSnapshot(DATA_MACHINE_ID);
     const dataContext = dataSnapshot?.context ?? {};
+    const loadingState = dataContext.loading ?? {};
 
     const authSnapshot = orchestrator.getSnapshot('auth');
     const authContext = authSnapshot?.context;
@@ -180,6 +183,7 @@ export const mapDataMachineSnapshotToContext = (currentContext: TurnMachineConte
       userId: dataContext.userId || authContext?.authResponse?.id || null,
       specialties,
       isLoadingDoctors: shouldCheckAvailability,
+      isLoadingAvailableSlots: !!loadingState.availableTurns,
       isLoadingMyTurns: false,
     };
   } catch (error) {
@@ -924,6 +928,11 @@ export const turnMachine = createMachine({
     CLEAR_CANCEL_SUCCESS: {
       actions: assign({
         cancelSuccess: null,
+      }),
+    },
+    SET_AVAILABLE_SLOTS_LOADING: {
+      actions: assign({
+        isLoadingAvailableSlots: ({ event }) => event.isLoading,
       }),
     },
     UPDATE_FORM: {
