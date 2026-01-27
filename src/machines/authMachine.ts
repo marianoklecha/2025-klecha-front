@@ -23,7 +23,10 @@ export interface AuthMachineContext {
   hasErrorsOrEmpty: boolean;
   isAuthenticated: boolean;
   loading: boolean;
-  loggingOut: boolean; // Add this flag for logout loading
+  loggingOut: boolean; 
+  verificationToken?: string | null;
+  verificationStatus?: 'idle' | 'success' | 'error';
+  verificationMessage?: string;
   formValues: {
     // Login fields
     email: string;
@@ -53,7 +56,10 @@ export const AuthMachineDefaultContext = {
     hasErrorsOrEmpty: true,
     isAuthenticated: false,
     loading: false,
-    loggingOut: false, // Add this to default context
+    loggingOut: false,
+    verificationToken: null,
+    verificationStatus: 'idle',
+    verificationMessage: '',
     formValues: {
       email: "",
       password: "",
@@ -107,7 +113,7 @@ export const authMachine = createMachine({
             }))
           },
           {
-            target: "idle",
+            target: "checkingVerification",
             actions: [
               assign(({ event }) => ({
                 authResponse: event.output.authData,
@@ -129,7 +135,7 @@ export const authMachine = createMachine({
           }
         ],
         onError: {
-          target: "idle",
+          target: "checkingVerification",
           actions: [
             assign(() => ({
               authResponse: null,
@@ -280,6 +286,58 @@ export const authMachine = createMachine({
         }
       }
     },
+    checkingVerification: {
+      entry: assign(() => {
+        const params = new URLSearchParams(window.location.search);
+        return {
+          verificationToken: params.get('token')
+        };
+      }),
+      always : [
+        {
+          target: "verifyingEmail",
+          guard: ({context}) => !!context.verificationToken
+        },
+        {
+          target: "idle"
+        }
+      ]
+    },
+    verifyingEmail: {
+      entry: () => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      },
+      invoke: {
+        src: fromPromise(async ({ input }: { input: { token: string } }) => {
+            return await AuthService.verifyAccount(input.token);
+        }),
+        input: ({ context }) => ({ token: context.verificationToken! }),
+        onDone: {
+          target: "idle", 
+          actions: assign(({ event }) => {
+            const output = event.output as { message: string };
+            
+            const update: Partial<AuthMachineContext> = {
+                verificationStatus: 'success',
+                verificationMessage: output.message || 'Cuenta verificada correctamente. Por favor inicia sesión.',
+                verificationToken: null 
+            };
+            return update;
+          })
+        },
+        onError: {
+          target: "idle",
+          actions: assign(({ event }) => {
+            const update: Partial<AuthMachineContext> = {
+                verificationStatus: 'error',
+                verificationMessage: (event.error as Error).message || 'El enlace de verificación es inválido o ha expirado.',
+                verificationToken: null
+            };
+            return update;
+          })
+        }
+      }
+    },
     validating: {
       always: [
         {
@@ -380,7 +438,7 @@ export const authMachine = createMachine({
                 },
                 authResponse: {
                   ...response,
-                  message: "¡Registro exitoso!"
+                  message: "Registro exitoso. Por favor, revise su casilla de correo para verificar su cuenta"
                 },
                 formErrors: {},
                 hasErrorsOrEmpty: false,

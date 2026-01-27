@@ -44,6 +44,27 @@ export class AuthService {
       throw error;
     }
   }
+  
+  static async verifyAccount(token: string): Promise<{ message: string }> {
+    const url = `${buildApiUrl('/api/auth/verify')}?token=${token}`;
+    
+    try {
+      const response = await fetch(url, {
+        ...getDefaultFetchOptions(),
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData?.error || 'Error verificando la cuenta');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Account verification failed:', error);
+      throw error;
+    }
+  }
 
   static async registerDoctor(data: RegisterRequestData): Promise<RegisterResponse> {
     const url = buildApiUrl(API_CONFIG.ENDPOINTS.REGISTER_DOCTOR);

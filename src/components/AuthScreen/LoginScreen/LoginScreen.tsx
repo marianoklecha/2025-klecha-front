@@ -36,6 +36,9 @@ function LoginScreen() {
   
   // Check if user is actually authenticated based on auth machine state, not just token presence
   const isSuccess = authContext.isAuthenticated && authState?.value === 'authenticated';
+  
+  const isVerificationSuccess = authContext.verificationStatus === 'success';
+  const isVerificationError = authContext.verificationStatus === 'error';
 
   const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
 
@@ -206,18 +209,22 @@ function LoginScreen() {
                     </Typography>
                   </Box>
 
-                  {authResponse && 'error' in authResponse && (
+                  {((authResponse && 'error' in authResponse) || isVerificationError) && (
                     <Box className="auth-error-box">
                       <Typography variant="body2" color="error" className="auth-message-text">
-                        {authResponse.error || authResponse.message || 'Error en el inicio de sesión'}
+                        {isVerificationError 
+                          ? (authContext.verificationMessage || "Error en la verificación") 
+                          : (authResponse?.error || (authResponse && 'message' in authResponse ? authResponse.message : 'Error en el inicio de sesión'))}
                       </Typography>
                     </Box>
                   )}
 
-                  {authResponse && 'message' in authResponse && !('error' in authResponse) && (
+                  {((authResponse && 'message' in authResponse && !('error' in authResponse)) || isVerificationSuccess) && (
                     <Box className="auth-success-box">
                       <Typography variant="body2" color="success.main" className="auth-message-text">
-                        {authResponse.message}
+                        {isVerificationSuccess 
+                          ? (authContext.verificationMessage || "Cuenta verificada correctamente")
+                          : (authResponse && 'message' in authResponse ? authResponse.message : '')}
                       </Typography>
                     </Box>
                   )}
