@@ -65,7 +65,7 @@ const LoginLoadingScreen = () => {
               color: '#22577a',
             }}
           >
-            Iniciando sesión...
+            Aguarde un momento...
           </Typography>
         </Box>
       </Box>

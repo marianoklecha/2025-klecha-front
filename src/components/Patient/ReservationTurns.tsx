@@ -222,7 +222,9 @@ const ReservationTurns: React.FC = () => {
                   <Select
                     labelId="profession-select-label"
                     id="profession-select"
-                    value={formValues.professionSelected}
+                    value={turnContext.specialties.some((s: any) => s.value === formValues.professionSelected) 
+                      ? formValues.professionSelected 
+                      : ''}
                     label="Especialidad *"
                     onChange={handleProfessionChange}
                     disabled={turnContext.isLoadingDoctors || turnContext.specialties.length === 0}
@@ -522,7 +524,7 @@ const ReservationTurns: React.FC = () => {
                         Elige una fecha en el calendario para ver los horarios disponibles
                       </Typography>
                     </Box>
-                  ) : turnContext.isLoadingAvailableDates ? (
+                  ) : (turnContext.isLoadingAvailableDates || turnContext.isLoadingAvailableSlots) ? (
                     <Box className="reservation-loading-container">
                       <CircularProgress />
                       <Typography className="reservation-loading-text">
@@ -565,10 +567,9 @@ const ReservationTurns: React.FC = () => {
                       </Box>
                     </Box>
                   ) : (
-                    <Box className="reservation-loading-container">
-                      <CircularProgress />
-                      <Typography className="reservation-loading-text">
-                        Cargando horarios disponibles...
+                    <Box className="reservation-empty-state">
+                      <Typography>
+                        No hay horarios disponibles para la fecha seleccionada
                       </Typography>
                     </Box>
                   )}

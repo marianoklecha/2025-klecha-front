@@ -54,7 +54,6 @@ export interface TurnMachineContext {
     timeSelected: Dayjs | null;
     scheduledAt: string | null;
       motive: string;
-      // whether patient needs a health certificate (for General specialty)
       needsHealthCertificate: boolean;
   };
 
@@ -170,18 +169,42 @@ export const mapDataMachineSnapshotToContext = (currentContext: TurnMachineConte
 
     const doctors = Array.isArray(dataContext.doctors) ? [...(dataContext.doctors as Doctor[])] : [];
     const accessToken = dataContext.accessToken || null;
-    const shouldCheckAvailability = !!accessToken && doctors.length > 0;
-    const specialties = shouldCheckAvailability ? [] : buildSpecialtyOptions(doctors);
+    
+    const prevDoctorsIds = new Set(currentContext.allDoctors.map((d) => d.id));
+    let doctorsChanged = doctors.length !== currentContext.allDoctors.length;
+    if (!doctorsChanged) {
+        for (const d of doctors) {
+            if (!prevDoctorsIds.has(d.id)) {
+                doctorsChanged = true;
+                break;
+            }
+        }
+    }
+    const hasAvailabilityData = Object.keys(currentContext.doctorAvailability).length > 0;
+    
+    const shouldCheckAvailability = !!accessToken && doctors.length > 0 && (doctorsChanged || !hasAvailabilityData);
 
+    const nextDoctors = doctorsChanged
+        ? (shouldCheckAvailability ? [] : doctors)
+        : currentContext.doctors;
+
+    const nextSpecialties = doctorsChanged
+        ? (shouldCheckAvailability ? [] : buildSpecialtyOptions(doctors))
+        : currentContext.specialties;
+        
+    const nextAvailability = doctorsChanged
+        ? (shouldCheckAvailability ? {} : currentContext.doctorAvailability)
+        : currentContext.doctorAvailability;
+    
     return {
       allDoctors: doctors,
-      doctors: shouldCheckAvailability ? [] : doctors,
-      doctorAvailability: shouldCheckAvailability ? {} : currentContext.doctorAvailability,
+      doctors: nextDoctors,
+      doctorAvailability: nextAvailability,
       availableTurns: dataContext.availableTurns || [],
       myTurns: dataContext.myTurns || [],
       accessToken,
       userId: dataContext.userId || authContext?.authResponse?.id || null,
-      specialties,
+      specialties: nextSpecialties,
       isLoadingDoctors: shouldCheckAvailability,
       isLoadingAvailableSlots: !!loadingState.availableTurns,
       isLoadingMyTurns: false,
