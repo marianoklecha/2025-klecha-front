@@ -104,7 +104,7 @@ const ModifyTurn: React.FC = () => {
         <Box className="reservation-step1-container">
           <Box className="reservation-form-section">
             <Typography variant="h6" className="reservation-section-title">
-              📋 Información del Turno Actual
+              Información del Turno Actual
             </Typography>
             <Box className="reservation-info-card">
               <Typography variant="body1">
