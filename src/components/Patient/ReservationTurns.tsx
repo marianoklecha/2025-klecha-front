@@ -18,20 +18,27 @@ import { formatTime, dayjsArgentina, nowArgentina } from '#/utils/dateTimeUtils'
 import Event from "@mui/icons-material/Event";
 import "./ReservationTurns.css";
 import { buildAvailableSubcats, buildDoctorSubcatMap, buildFilteredDoctors, requestRatedCountsForDoctors } from "#/utils/reservationUtils";
+import { useDataMachine } from "#/providers/DataProvider";
+import { useAuthMachine } from "#/providers/AuthProvider";
+import { SignInResponse } from "#/models/Auth";
 
 const ReservationTurns: React.FC = () => {
-  const { turnState, turnSend } = useMachines();  
+  const { turnState, turnSend, familyState } = useMachines();
+  const { authState } = useAuthMachine();
+  const { dataState } = useDataMachine();
+  const user: SignInResponse = authState?.context?.authResponse || {};
+
   const turnContext = turnState.context;
   const formValues = turnContext.takeTurn;
+  const dataContext = dataState.context;
+  const familyContext = familyState.context;
 
   const currentStep = turnState.value.takeTurn;
 
   const isProfessionSelected = !!formValues.professionSelected;
   const isDoctorSelected = !!formValues.doctorId;
 
-  dayjs.locale('es');
-
- 
+  dayjs.locale('es'); 
 
   let ratedCountsSnapshot: Record<string, { subcategory: string | null; count: number }[]> = {};
   try {
@@ -216,6 +223,40 @@ const ReservationTurns: React.FC = () => {
               </Box>
 
               <Box className="reservation-form-section">
+
+                <FormControl required size="small" fullWidth className="reservation-select specialty-select">
+                  <InputLabel id="patient-select-label">Paciente</InputLabel>
+                  <Select
+                    labelId="patient-select-label"
+                    id="patient-select"
+                    value={(formValues.patientSelected === user.id || dataContext.myFamily.some((s: any) => s.id === formValues.patientSelected))
+                      ? formValues.patientSelected
+                      : ""
+                    }
+                    label="Paciente *"
+                    disabled={familyContext.loading}
+                    onChange={(e) => {
+                      turnSend({
+                        type: "UPDATE_FORM",
+                        path: ["takeTurn", "patientSelected"],
+                        value: e.target.value
+                      })
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em>Seleccione el paciente</em>
+                    </MenuItem>
+                    <MenuItem key={user.id} value={user.id}>
+                      {user.name} {user.surname} (Yo)
+                    </MenuItem>
+                    {dataContext.myFamily.map((familyMember: any) => (
+                      <MenuItem key={familyMember.id} value={familyMember.id}>
+                        {familyMember.name} {familyMember.surname} ({familyMember.relationship})
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {familyContext.loading && <FormHelperText>Cargando familiares...</FormHelperText>}
+                </FormControl>
 
                 <FormControl required size="small" fullWidth className="reservation-select specialty-select">
                   <InputLabel id="profession-select-label">Especialidad</InputLabel>

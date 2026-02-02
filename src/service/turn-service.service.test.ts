@@ -296,6 +296,7 @@ describe('TurnService', () => {
     const mockCreateRequest: TurnCreateRequest = {
       doctorId: 'doctor-1',
       patientId: 'patient-1',
+      familyMemberId: 'family-1',
       scheduledAt: '2024-01-15T10:00:00Z'
     };
 
@@ -305,6 +306,7 @@ describe('TurnService', () => {
       doctorName: 'Dr. John Doe',
       doctorSpecialty: 'Cardiology',
       patientId: 'patient-1',
+      familyMemberId: 'family-1',
       patientName: 'John Smith',
       scheduledAt: '2024-01-15T10:00:00Z',
       status: 'RESERVED'
@@ -357,6 +359,7 @@ describe('TurnService', () => {
         doctorName: 'Dr. John Doe',
         doctorSpecialty: 'Cardiology',
         patientId: 'patient-1',
+        familyMemberId: 'family-1',
         patientName: 'John Smith',
         scheduledAt: '2024-01-15T10:00:00Z',
         status: 'RESERVED'
@@ -427,6 +430,7 @@ describe('TurnService', () => {
         doctorName: 'Dr. John Doe',
         doctorSpecialty: 'Cardiology',
         patientId: 'patient-1',
+        familyMemberId: 'family-1',
         patientName: 'John Smith',
         scheduledAt: '2024-01-15T10:00:00Z',
         status: 'RESERVED'
@@ -497,6 +501,7 @@ describe('TurnService', () => {
         doctorName: 'Dr. John Doe',
         doctorSpecialty: 'Cardiology',
         patientId: 'patient-1',
+        familyMemberId: 'family-1',
         patientName: 'John Smith',
         scheduledAt: '2024-01-15T10:00:00Z',
         status: 'RESERVED'

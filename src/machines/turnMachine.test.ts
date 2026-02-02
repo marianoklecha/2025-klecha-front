@@ -69,6 +69,7 @@ describe('turnMachine', () => {
     doctorName: 'Dr. John Smith',
     doctorSpecialty: 'Cardiology',
     patientId: 'patient-1',
+    familyMemberId: "family-1",
     patientName: 'Jane Doe',
     scheduledAt: '2025-10-15T10:00:00Z',
     status: 'RESERVED',
