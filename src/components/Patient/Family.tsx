@@ -75,11 +75,11 @@ const Family: React.FC = () => {
                         <Avatar className="family-header-icon" sx={{mt:2}}>
                             <PersonIcon sx={{ fontSize: 28}} />
                         </Avatar>
-                        <Box>
-                            <Typography variant="h6" className="viewturns-doctor-text">
+                        <Box >
+                            <Typography variant="h6" className="viewturns-doctor-text" sx={{pl: 1}}>
                             {familyMember.name} {familyMember.surname} 
                             </Typography>
-                            <Typography variant="body1" className="viewturns-specialty-text">
+                            <Typography variant="body1" className="viewturns-specialty-text" sx={{pl: 1}}>
                             {familyMember.relationship} (DNI: {familyMember.dni})
                             </Typography>
                             <Typography variant="body1" className="viewturns-turn-datetime viewturns-date-text">

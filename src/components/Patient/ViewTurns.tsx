@@ -45,6 +45,8 @@ const ViewTurns: React.FC = () => {
     .sort((a, b) => dayjsArgentina(b.scheduledAt).valueOf() - dayjsArgentina(a.scheduledAt).valueOf());
   const pendingModifyRequests = dataContext.myModifyRequests?.filter((r: TurnModifyRequest) => r.status === "PENDING") || [];
 
+  const family = dataContext.myFamily;
+
   const handleCancelTurn = (turnId: string) => {
     const turnData = allTurns.find((turn: TurnResponse) => turn.id === turnId);
     uiSend({ 
@@ -229,11 +231,16 @@ const ViewTurns: React.FC = () => {
                         <Typography variant="h5" className="viewturns-time-text">
                           {formatTime(turn.scheduledAt)} hs
                         </Typography>
-                        <Box>
-                          <Typography variant="h6" className="viewturns-doctor-text">
+                        <Box sx={{ml: 3}}>
+                          {turn.familyMemberId && (
+                            <Typography variant="h6" className="viewturns-family-text" sx={{pl: 1}}>
+                              Paciente: {family.find((m: any) => m.id === turn.familyMemberId).name } {family.find((m: any) => m.id === turn.familyMemberId).surname} ({family.find((m: any) => m.id === turn.familyMemberId).relationship})
+                            </Typography>
+                          )}                          
+                          <Typography variant="h6" className="viewturns-doctor-text" sx={{pl: 1}}>
                             Dr. {turn.doctorName}
                           </Typography>
-                          <Typography variant="body1" className="viewturns-specialty-text">
+                          <Typography variant="body1" className="viewturns-specialty-text" sx={{pl: 1}}>
                             {turn.doctorSpecialty}
                           </Typography>
                           {turn.motive && (

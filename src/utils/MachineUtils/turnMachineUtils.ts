@@ -6,15 +6,10 @@ import type { TurnResponse } from "../../models/Turn";
  * Utility functions for turnMachine service calls
  */
 
-export interface ReserveTurnParams {
-  accessToken: string;
-  userId: string;
-  turnId: string;
-}
-
 export interface CreateTurnParams {
   accessToken: string;
   userId: string;
+  familyMemberId: string;
   doctorId: string;
   scheduledAt: string;
   motive?: string;
@@ -60,15 +55,17 @@ export interface LoadAvailableSlotsParams {
 /**
  * Create a new turn
  */
-export const createTurn = async ({ accessToken, userId, doctorId, scheduledAt, motive }: CreateTurnParams): Promise<TurnResponse> => {
+export const createTurn = async ({ accessToken, userId, doctorId, scheduledAt, motive, familyMemberId }: CreateTurnParams): Promise<TurnResponse> => {
+  const actualFamilyMemberId = (familyMemberId && familyMemberId !== userId) ? familyMemberId : null;
+  
   const payload: any = {
     doctorId,
     patientId: userId,
     scheduledAt,
+    familyMemberId: actualFamilyMemberId
   };
 
   if (motive && motive.toString().trim() !== '') {
-    // backend expects field named `motive`
     payload.motive = motive;
   }
 

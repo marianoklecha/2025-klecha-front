@@ -45,6 +45,7 @@ describe('turnMachineUtils', () => {
         accessToken: 'token123',
         userId: 'user456',
         doctorId: 'doctor789',
+        familyMemberId: 'family1',
         scheduledAt: '2024-01-01T10:00:00Z'
       }
       const mockResponse = { id: 'turn123', status: 'CONFIRMED' }
@@ -56,6 +57,7 @@ describe('turnMachineUtils', () => {
         {
           doctorId: 'doctor789',
           patientId: 'user456',
+          familyMemberId: 'family1',
           scheduledAt: '2024-01-01T10:00:00Z'
         },
         'token123'
