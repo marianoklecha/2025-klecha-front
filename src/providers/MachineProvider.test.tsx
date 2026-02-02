@@ -45,6 +45,12 @@ vi.mock('../machines/profileMachine', () => ({
   profileMachine: { id: 'profile-machine' },
 }));
 
+vi.mock('../machines/familyMachine', () => ({
+  FAMILY_MACHINE_ID: 'family-machine',
+  FAMILY_MACHINE_EVENT_TYPES: ['FAMILY_EVENT_1', 'FAMILY_EVENT_2'],
+  familyMachine: { id: 'family-machine' },
+}));
+
 vi.mock('../machines/notificationMachine', () => ({
   NOTIFICATION_MACHINE_ID: 'notification-machine',
   NOTIFICATION_MACHINE_EVENT_TYPES: ['NOTIFICATION_EVENT_1', 'NOTIFICATION_EVENT_2'],
@@ -92,6 +98,7 @@ const TestComponent = () => {
       <div data-testid="doctor-state">{JSON.stringify(machines.doctorState)}</div>
       <div data-testid="admin-state">{JSON.stringify(machines.adminUserState)}</div>
       <div data-testid="profile-state">{JSON.stringify(machines.profileState)}</div>
+      <div data-testid="family-state">{JSON.stringify(machines.familyState)}</div>
       <div data-testid="notification-state">{JSON.stringify(machines.notificationState)}</div>
       <div data-testid="medical-history-state">{JSON.stringify(machines.medicalHistoryState)}</div>
       <button
@@ -125,6 +132,12 @@ const TestComponent = () => {
         Send Profile Event
       </button>
       <button
+        data-testid="family-send"
+        onClick={() => machines.familySend({ type: 'UPDATE_FORM', key: 'test', value: 'test' })}
+      >
+        Send Family Event
+      </button>
+      <button
         data-testid="notification-send"
         onClick={() => machines.notificationSend({ type: 'LOAD_NOTIFICATIONS', accessToken: 'test' })}
       >
@@ -151,6 +164,7 @@ describe('MachineProvider', () => {
     doctorState: { value: 'idle', context: {} },
     adminUserState: { value: 'idle', context: {} },
     profileState: { value: 'idle', context: {} },
+    familyState: { value: 'idle', context: {} },
     notificationState: { value: 'idle', context: {} },
     medicalHistoryState: null,
     filesState: null,
@@ -164,6 +178,7 @@ describe('MachineProvider', () => {
     doctorSend: vi.fn(),
     adminUserSend: vi.fn(),
     profileSend: vi.fn(),
+    familySend: vi.fn(),
     notificationSend: vi.fn(),
     medicalHistorySend: vi.fn(),
     filesSend: vi.fn(),
@@ -187,6 +202,8 @@ describe('MachineProvider', () => {
           return { state: mockStates.adminUserState, send: mockSends.adminUserSend };
         case 'profile-machine':
           return { state: mockStates.profileState, send: mockSends.profileSend };
+        case 'family-machine':
+          return { state: mockStates.familyState, send: mockSends.familySend };
         case 'notification-machine':
           return { state: mockStates.notificationState, send: mockSends.notificationSend };
         case 'medical-history-machine':
@@ -302,6 +319,8 @@ describe('MachineProvider', () => {
       adminUserSend: mockSends.adminUserSend,
       profileState: mockStates.profileState,
       profileSend: mockSends.profileSend,
+      familyState: mockStates.familyState,
+      familySend: mockSends.familySend,
       notificationState: mockStates.notificationState,
       notificationSend: mockSends.notificationSend,
       medicalHistoryState: mockStates.medicalHistoryState,

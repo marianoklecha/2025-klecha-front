@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import PersonIcon from "@mui/icons-material/Person";
+import GroupIcon from '@mui/icons-material/Group';
 import { useMachines } from "#/providers/MachineProvider";
 import { useAuthMachine } from "#/providers/AuthProvider";
 import { SignInResponse } from "#/models/Auth";
@@ -33,6 +34,7 @@ const PatientDashboard: React.FC = () => {
   const isLoading = dataContext.loading?.initializing ||
                    dataContext.loading?.doctors || 
                    dataContext.loading?.myTurns || 
+                   dataContext.loading?.myFamily || 
                    dataContext.loading?.myModifyRequests ||
                    turnContext.isLoadingMyTurns;
   
@@ -107,6 +109,15 @@ const PatientDashboard: React.FC = () => {
               description="Agenda una nueva cita médica con tu especialista preferido"
               buttonText="Nuevo Turno"
               onClick={() => uiSend({ type: "NAVIGATE", to: "/patient/reservation-turns" })}
+            />
+
+            <DashboardCard
+              type="patient"
+              icon={<GroupIcon className="patient-action-icon" />}
+              title="Mi Familia"
+              description="Agrega o administra perfiles de familiares a tu cargo"
+              buttonText="Ver más"
+              onClick={() => uiSend({ type: "NAVIGATE", to: "/patient/family" })}
             />
           </Box>
 

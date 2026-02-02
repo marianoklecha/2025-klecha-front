@@ -7,6 +7,7 @@ import { turnMachine, TURN_MACHINE_ID, TURN_MACHINE_EVENT_TYPES, type TurnMachin
 import doctorMachine, { DOCTOR_MACHINE_ID, DOCTOR_MACHINE_EVENT_TYPES, type DoctorMachineEvent } from '../machines/doctorMachine';
 import { adminUserMachine, ADMIN_USER_MACHINE_ID, ADMIN_USER_MACHINE_EVENT_TYPES } from '#/machines/adminUserMachine';
 import { profileMachine, PROFILE_MACHINE_ID, PROFILE_MACHINE_EVENT_TYPES, type ProfileMachineEvent } from '../machines/profileMachine';
+import { familyMachine, FAMILY_MACHINE_ID, FAMILY_MACHINE_EVENT_TYPES, type FamilyMachineEvent } from '../machines/familyMachine';
 import { notificationMachine, NOTIFICATION_MACHINE_ID, NOTIFICATION_MACHINE_EVENT_TYPES, type NotificationMachineEvent } from '../machines/notificationMachine';
 import { medicalHistoryMachine, MEDICAL_HISTORY_MACHINE_ID, MEDICAL_HISTORY_MACHINE_EVENT_TYPES, type MedicalHistoryMachineEvent } from '#/machines/medicalHistoryMachine';
 import { filesMachine, FILES_MACHINE_ID, FILES_MACHINE_EVENT_TYPES, type FilesMachineEvent } from '../machines/filesMachine';
@@ -24,6 +25,8 @@ interface MachineInstances {
     adminUserSend: (event: any) => void;
     profileState: any;
     profileSend: (event: ProfileMachineEvent) => void;
+    familyState: any;
+    familySend: (event: FamilyMachineEvent) => void;
     notificationState: any;
     notificationSend: (event: NotificationMachineEvent) => void;
     medicalHistoryState:any;
@@ -73,6 +76,12 @@ orchestrator.registerMachine({
 });
 
 orchestrator.registerMachine({
+  id: FAMILY_MACHINE_ID,
+  machine: familyMachine,
+  eventTypes: FAMILY_MACHINE_EVENT_TYPES
+});
+
+orchestrator.registerMachine({
   id: NOTIFICATION_MACHINE_ID,
   machine: notificationMachine,
   eventTypes: NOTIFICATION_MACHINE_EVENT_TYPES
@@ -114,6 +123,7 @@ export const MachineProvider: React.FC<MachineProviderProps> = ({ children }) =>
   const { state: doctorState, send: doctorSend } = useStateMachine(DOCTOR_MACHINE_ID);
   const { state: adminUserState, send: adminUserSend } = useStateMachine(ADMIN_USER_MACHINE_ID);
   const { state: profileState, send: profileSend } = useStateMachine(PROFILE_MACHINE_ID);
+  const { state: familyState, send: familySend } = useStateMachine(FAMILY_MACHINE_ID);
   const { state: notificationState, send: notificationSend } = useStateMachine(NOTIFICATION_MACHINE_ID);
   const { state: medicalHistoryState, send: medicalHistorySend } = useStateMachine(MEDICAL_HISTORY_MACHINE_ID);
   const { state: filesState, send: filesSend } = useStateMachine(FILES_MACHINE_ID);
@@ -131,6 +141,8 @@ export const MachineProvider: React.FC<MachineProviderProps> = ({ children }) =>
       adminUserSend: adminUserSend,
       profileState: profileState,
       profileSend: profileSend,
+      familyState: familyState,
+      familySend: familySend,
       notificationState: notificationState,
       notificationSend: notificationSend,
       medicalHistoryState:medicalHistoryState,

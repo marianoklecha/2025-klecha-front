@@ -1,5 +1,5 @@
 import { createMachine, assign, fromPromise } from "xstate";
-import { loadDoctors, loadPendingDoctors, loadAdminStats, loadAvailableTurns, loadMyTurns, loadDoctorModifyRequests, loadMyModifyRequests, loadSpecialties, loadRatingSubcategories, loadAdminRatings } from "../utils/MachineUtils/dataMachineUtils";
+import { loadDoctors, loadPendingDoctors, loadAdminStats, loadAvailableTurns, loadMyTurns, loadMyFamily, loadDoctorModifyRequests, loadMyModifyRequests, loadSpecialties, loadRatingSubcategories, loadAdminRatings } from "../utils/MachineUtils/dataMachineUtils";
 import { loadDoctorPatients, loadDoctorAvailability } from "../utils/MachineUtils/doctorMachineUtils";
 import { loadCombinedBadgeData } from "../utils/MachineUtils/badgeMachineUtils";
 import { orchestrator } from "#/core/Orchestrator";
@@ -22,6 +22,7 @@ export const DATA_MACHINE_EVENT_TYPES = [
   "RELOAD_ALL",
   "LOAD_AVAILABLE_TURNS",
   "LOAD_MY_TURNS",
+  "LOAD_FAMILY",
   "LOAD_DOCTOR_PATIENTS",
   "LOAD_DOCTOR_AVAILABILITY",
   "LOAD_DOCTOR_MODIFY_REQUESTS",
@@ -42,6 +43,7 @@ export interface DataMachineContext {
   adminStats: AdminStats;
   availableTurns: string[];
   myTurns: any[];
+  myFamily: any[];
   doctorPatients: any[];
   doctorAvailability: any[];
   doctorModifyRequests: TurnModifyRequest[];
@@ -63,6 +65,7 @@ export interface DataMachineContext {
     adminStats: boolean;
     availableTurns: boolean;
     myTurns: boolean;
+    myFamily: boolean;
     doctorPatients: boolean;
     doctorAvailability: boolean;
     doctorModifyRequests: boolean;
@@ -83,6 +86,7 @@ export interface DataMachineContext {
     adminStats: string | null;
     availableTurns: string | null;
     myTurns: string | null;
+    myFamily: string | null;
     doctorPatients: string | null;
     doctorAvailability: string | null;
     doctorModifyRequests: string | null;
@@ -108,6 +112,7 @@ export const DataMachineDefaultContext: DataMachineContext = {
   adminStats: { patients: 0, doctors: 0, pending: 0 },
   availableTurns: [],
   myTurns: [],
+  myFamily: [],
   doctorPatients: [],
   doctorAvailability: [],
   doctorModifyRequests: [],
@@ -129,6 +134,7 @@ export const DataMachineDefaultContext: DataMachineContext = {
     adminStats: false,
     availableTurns: false,
     myTurns: false,
+    myFamily: false,
     doctorPatients: false,
     doctorAvailability: false,
     doctorModifyRequests: false,
@@ -149,6 +155,7 @@ export const DataMachineDefaultContext: DataMachineContext = {
     adminStats: null,
     availableTurns: null,
     myTurns: null,
+    myFamily: null,
     doctorPatients: null,
     doctorAvailability: null,
     doctorModifyRequests: null,
@@ -173,6 +180,7 @@ export type DataMachineEvent =
   | { type: "RELOAD_ALL" }
   | { type: "LOAD_AVAILABLE_TURNS"; doctorId: string; date: string }
   | { type: "LOAD_MY_TURNS"; status?: string }
+  | { type: "LOAD_MY_FAMILY" }
   | { type: "LOAD_DOCTOR_PATIENTS" }
   | { type: "LOAD_DOCTOR_AVAILABILITY"; doctorId?: string }
   | { type: "LOAD_DOCTOR_MODIFY_REQUESTS"; doctorId?: string }
@@ -248,6 +256,7 @@ export const dataMachine = createMachine({
             adminStats: { patients: 0, doctors: 0, pending: 0 },
             availableTurns: [],
             myTurns: [],
+            myFamily: [],
             doctorPatients: [],
             doctorAvailability: [],
             doctorModifyRequests: [],
@@ -287,6 +296,10 @@ export const dataMachine = createMachine({
         },
         LOAD_MY_TURNS: {
           target: "fetchingMyTurns",
+          guard: ({ context }) => !!context.accessToken,
+        },
+        LOAD_MY_FAMILY: {
+          target: "fetchingMyFamily",
           guard: ({ context }) => !!context.accessToken,
         },
         LOAD_DOCTOR_PATIENTS: {
@@ -408,6 +421,7 @@ export const dataMachine = createMachine({
             adminStats: { patients: 0, doctors: 0, pending: 0 },
             availableTurns: [],
             myTurns: [],
+            myFamily: [],
             doctorPatients: [],
             doctorAvailability: [],
             doctorModifyRequests: [],
@@ -462,6 +476,10 @@ export const dataMachine = createMachine({
         },
         LOAD_MY_TURNS: {
           target: "fetchingMyTurns",
+          guard: ({ context }) => !!context.accessToken,
+        },
+        LOAD_MY_FAMILY: {
+          target: "fetchingMyFamily",
           guard: ({ context }) => !!context.accessToken,
         },
         LOAD_DOCTOR_PATIENTS: {
@@ -802,7 +820,7 @@ export const dataMachine = createMachine({
             }),
           },
           {
-            target: "fetchingUserBadges",
+            target: "fetchingMyFamily",
             guard: ({ context }) => context.userRole === "PATIENT",
             actions: [
               assign({
@@ -862,6 +880,66 @@ export const dataMachine = createMachine({
                 orchestrator.sendToMachine(AUTH_MACHINE_ID, { type: "LOGOUT" });
               }
               const errorMessage = event.error instanceof Error ? event.error.message : "Error al cargar mis turnos";
+              orchestrator.sendToMachine(UI_MACHINE_ID, {
+                type: "OPEN_SNACKBAR",
+                message: errorMessage,
+                severity: "error"
+              });
+            }
+          ],
+        },
+      },
+    },
+
+    fetchingMyFamily: {
+      entry: assign({
+        loading: ({ context }) => ({ ...context.loading, myFamily: true }),
+        errors: ({ context }) => ({ ...context.errors, myFamily: null }),
+      }),
+      invoke: {
+        src: fromPromise(async ({ input }: { input: { accessToken: string } }) => {
+          return await loadMyFamily(input);
+        }),
+        input: ({ context, event }) => ({
+          accessToken: context.accessToken!,
+          status: (event as any).status
+        }),
+        onDone: [
+          {
+            target: "fetchingUserBadges",
+            actions: [
+              assign({
+                myFamily: ({ event }) => event.output,
+                loading: ({ context }) => ({ ...context.loading, myFamily: false }),
+              })
+            ],
+          },
+          {
+            target: "ready",
+            actions: assign({
+              myFamily: ({ event }) => event.output,
+              loading: ({ context }) => ({ ...context.loading, myFamily: false }),
+            }),
+          },
+        ],
+        onError: {
+          target: "idle",
+          actions: [
+            assign({
+              errors: ({ context, event }) => ({
+                ...context.errors,
+                myFamily: event.error instanceof Error ? event.error.message : "Error al cargar mi familia"
+              }),
+              loading: ({ context }) => ({
+                ...context.loading,
+                myFamily: false
+              })
+            }),
+            ({ event }) => {
+              if (event.error instanceof Error && (event.error.message.includes('401') || event.error.message.toLowerCase().includes('unauthorized'))) {
+                orchestrator.sendToMachine(AUTH_MACHINE_ID, { type: "LOGOUT" });
+              }
+              const errorMessage = event.error instanceof Error ? event.error.message : "Error al cargar mi familia";
               orchestrator.sendToMachine(UI_MACHINE_ID, {
                 type: "OPEN_SNACKBAR",
                 message: errorMessage,
