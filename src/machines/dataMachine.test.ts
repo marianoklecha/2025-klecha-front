@@ -40,7 +40,6 @@ describe('dataMachine', () => {
   let mockLoadAdminStats: any;
   let mockLoadAvailableTurns: any;
   let mockLoadMyTurns: any;
-  let mockLoadMyFamily: any;
   let mockLoadDoctorPatients: any;
   let mockLoadDoctorAvailability: any;
   let mockLoadDoctorModifyRequests: any;
@@ -57,7 +56,6 @@ describe('dataMachine', () => {
     mockLoadAdminStats = vi.mocked(dataMachineUtils.loadAdminStats);
     mockLoadAvailableTurns = vi.mocked(dataMachineUtils.loadAvailableTurns);
     mockLoadMyTurns = vi.mocked(dataMachineUtils.loadMyTurns);
-    mockLoadMyFamily = vi.mocked(dataMachineUtils.loadMyFamily);
     mockLoadDoctorPatients = vi.mocked(doctorMachineUtils.loadDoctorPatients);
     mockLoadDoctorAvailability = vi.mocked(doctorMachineUtils.loadDoctorAvailability);
     mockLoadDoctorModifyRequests = vi.mocked(dataMachineUtils.loadDoctorModifyRequests);
