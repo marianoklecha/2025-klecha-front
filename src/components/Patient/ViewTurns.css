@@ -43,14 +43,25 @@
   line-height: 1.5 !important;
 }
 
+.viewturns-family-text {
+  font-weight: 400 !important;
+  color: #0d2230 !important;
+  line-height: 1.5 !important;
+  border-left: 4px solid rgb(89, 157, 235);
+  
+}
+
 .viewturns-doctor-text {
   font-weight: 600 !important;
   color: #0d2230 !important;
   line-height: 1.5 !important;
+  border-left: 4px solid rgb(89, 157, 235);
+
 }
 
 .viewturns-specialty-text {
   color: #615e5eff !important;
+  border-left: 4px solid rgb(89, 157, 235);
 }
 
 .viewturns-main-actions-conditional {

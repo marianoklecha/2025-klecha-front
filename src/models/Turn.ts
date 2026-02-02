@@ -30,7 +30,7 @@ export interface TurnCreateRequest {
   doctorId: string;
   patientId: string;
   scheduledAt: string; 
-  // optional motive for the appointment (sent as `motive` to backend)
+  familyMemberId: string;
   motive?: string;
 }
 
@@ -41,6 +41,7 @@ export interface TurnResponse {
   doctorSpecialty: string;
   patientId: string;
   patientName: string;
+  familyMemberId: string;
   patientScore?: number | null;
   scheduledAt: string;
   status: string;

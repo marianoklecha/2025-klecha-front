@@ -47,6 +47,7 @@ export interface TurnMachineContext {
   cancelSuccess: string | null;
 
   takeTurn: {
+    patientSelected: string;
     professionSelected: string;
     profesionalSelected: string;
     doctorId: string;
@@ -239,6 +240,7 @@ export const turnMachine = createMachine({
     modifyError: null,
     
     takeTurn: {
+      patientSelected: "",
       professionSelected: "",
       profesionalSelected: "",
       doctorId: "",
@@ -286,6 +288,7 @@ export const turnMachine = createMachine({
               target: "step1",
               actions: assign({
                 takeTurn: {
+                  patientSelected: "",
                   professionSelected: "",
                   profesionalSelected: "",
                   doctorId: "",
@@ -310,6 +313,7 @@ export const turnMachine = createMachine({
             input: ({ context }) => ({
               doctorId: context.takeTurn.doctorId,
               accessToken: context.accessToken,
+              patientSelected: context.takeTurn.patientSelected
             }),
             onDone: {
               actions: assign({
@@ -330,6 +334,7 @@ export const turnMachine = createMachine({
               target: "step1",
               actions: assign({
                   takeTurn: {
+                    patientSelected: "",
                     professionSelected: "",
                     profesionalSelected: "",
                     doctorId: "",
@@ -706,13 +711,14 @@ export const turnMachine = createMachine({
             error: null,
           }),
           invoke: {
-            src: fromPromise(async ({ input }: { input: { accessToken: string; userId: string; doctorId: string; scheduledAt: string } }) => {
+            src: fromPromise(async ({ input }: { input: { accessToken: string; userId: string; doctorId: string; scheduledAt: string, familyMemberId: string } }) => {
               return await createTurn(input);
             }),
             input: ({ context }) => {
               const inputData = {
                 accessToken: context.accessToken!,
                 userId: context.userId!,
+                familyMemberId: context.takeTurn.patientSelected,
                 doctorId: context.takeTurn.doctorId,
                 scheduledAt: context.takeTurn.scheduledAt!,
                 motive: context.takeTurn.motive || undefined,
@@ -730,6 +736,7 @@ export const turnMachine = createMachine({
 
                 assign({
                   takeTurn: {
+                    patientSelected: "",
                     professionSelected: "",
                     profesionalSelected: "",
                     doctorId: "",
