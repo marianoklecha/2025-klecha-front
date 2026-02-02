@@ -35,8 +35,6 @@
 .viewturns-turn-details {
   display: flex !important;
   align-items: flex-start !important;
-  gap: 24px !important;
-  margin-bottom: 12px !important;
 }
 
 .viewturns-time-text {
@@ -70,7 +68,6 @@
 /* Filters Section - matching PendingScreen card style */
 .viewturns-filters-section {
   background: white !important;
-  border: 1px solid var(--tea-green) !important;
   border-radius: 12px !important;
   padding: 24px !important;
   box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
@@ -108,7 +105,6 @@
 
 .viewturns-clear-filter-btn {
   color: var(--indigo-dye) !important;
-  border-color: var(--tea-green) !important;
   border-radius: 8px !important;
   text-transform: none !important;
   font-weight: 500 !important;
@@ -123,7 +119,6 @@
 /* List Section */
 .viewturns-list-section {
   background: white !important;
-  border: 1px solid var(--tea-green) !important;
   border-radius: 12px !important;
   box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
 }
@@ -138,9 +133,9 @@
 /* Turn Items - styled as cards like PendingScreen doctor cards */
 .viewturns-turn-item {
   background: white !important;
-  border: 1px solid var(--tea-green) !important;
+  border: 1px solid  rgba(13, 34, 48, 0.08)!important;
   border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
+  box-shadow: 0 2px 2px rgba(13, 34, 48, 0.08) !important;
   transition: all 0.2s ease !important;
   padding: 23px !important;
 }

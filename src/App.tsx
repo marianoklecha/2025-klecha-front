@@ -27,6 +27,7 @@ import { useEffect } from 'react'
 import { useMachines } from './providers/MachineProvider'
 import ConfirmationModal from './components/shared/ConfirmationModal/ConfirmationModal'
 import RatingModal from './components/shared/RatingModal/RatingModal';
+import Family from './components/Patient/Family'
 
 function AppContent() {
   const { authState } = useAuthMachine();
@@ -80,6 +81,7 @@ function AppContent() {
       <Route path="/patient/view-turns" element={<ViewTurns />} />
       <Route path="/patient/modify-turn" element={<ModifyTurn />} />
       <Route path="/patient/badges" element={<PatientBadges />} />
+      <Route path="/patient/family" element={<Family />} />
     </>
   );
 
@@ -107,9 +109,9 @@ function AppContent() {
           {userRole === 'DOCTOR' && renderDoctorRoutes()}
           {userRole === 'PATIENT' && renderPatientRoutes()}
           
-          <Route path="/profile" element={<ProfileScreen />} />
-          
+          <Route path="/profile" element={<ProfileScreen />} />          
         </Routes>
+
         <SnackbarAlert />
         <ConfirmationModal />
         <RatingModal />
