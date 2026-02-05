@@ -9,7 +9,8 @@ import {
   ExitToApp as ExitIcon,
   BarChart as BarChartIcon,
   EmojiEvents as TrophyIcon,
-  WorkspacePremium as WorkspacePremiumIcon
+  WorkspacePremium as WorkspacePremiumIcon,
+  Group as GroupIcon
 } from '@mui/icons-material';
 
 export interface MenuItem {
@@ -32,6 +33,7 @@ export const iconMap = {
   BarChart: BarChartIcon,
   Trophy: TrophyIcon,
   WorkspacePremium: WorkspacePremiumIcon,
+  Group: GroupIcon
 };
 
 export const getDoctorMenuItems = (handleLogout: () => void): MenuItem[] => [
@@ -100,10 +102,10 @@ export const getPatientMenuItems = (handleLogout: () => void): MenuItem[] => [
     path: '/'
   },
   {
-    id: 'reservation',
-    title: 'Reservar Turno',
-    iconComponent: CalendarIcon,
-    path: '/patient/reservation-turns'
+    id: 'profile',
+    title: 'Mi Perfil',
+    iconComponent: PersonIcon,
+    path: '/profile'
   },
   {
     id: 'turns',
@@ -112,17 +114,25 @@ export const getPatientMenuItems = (handleLogout: () => void): MenuItem[] => [
     path: '/patient/view-turns'
   },
   {
+    id: 'reservation',
+    title: 'Reservar Turno',
+    iconComponent: CalendarIcon,
+    path: '/patient/reservation-turns'
+  },
+  {
+    id: 'family',
+    title: 'Mi Familia',
+    iconComponent: GroupIcon,
+    path: '/patient/family'
+  },
+  
+  {
     id: 'badges',
     title: 'Logros',
     iconComponent: WorkspacePremiumIcon,
     path: '/patient/badges'
   },
-  {
-    id: 'profile',
-    title: 'Mi Perfil',
-    iconComponent: PersonIcon,
-    path: '/profile'
-  },
+  
   {
     id: 'logout',
     title: 'Cerrar Sesión',

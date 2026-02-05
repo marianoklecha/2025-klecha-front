@@ -19,7 +19,8 @@ vi.mock('@mui/icons-material', () => ({
   ExitToApp: vi.fn(),
   BarChart: vi.fn(),
   EmojiEvents: vi.fn(),
-  WorkspacePremium: vi.fn()
+  WorkspacePremium: vi.fn(),
+  Group: vi.fn()
 }))
 
 describe('sideBarMenuUtils', () => {
@@ -114,14 +115,14 @@ describe('sideBarMenuUtils', () => {
     it('should return correct menu items for patient', () => {
       const menuItems = getPatientMenuItems(mockHandleLogout)
 
-      expect(menuItems).toHaveLength(6)
+      expect(menuItems).toHaveLength(7)
       expect(menuItems[0]).toEqual({
         id: 'dashboard',
         title: 'Inicio',
         iconComponent: expect.any(Function),
         path: '/'
       })
-      expect(menuItems[1]).toEqual({
+      expect(menuItems[3]).toEqual({
         id: 'reservation',
         title: 'Reservar Turno',
         iconComponent: expect.any(Function),
@@ -133,19 +134,19 @@ describe('sideBarMenuUtils', () => {
         iconComponent: expect.any(Function),
         path: '/patient/view-turns'
       })
-      expect(menuItems[3]).toEqual({
+      expect(menuItems[5]).toEqual({
         id: 'badges',
         title: 'Logros',
         iconComponent: expect.any(Function),
         path: '/patient/badges'
       })
-      expect(menuItems[4]).toEqual({
+      expect(menuItems[1]).toEqual({
         id: 'profile',
         title: 'Mi Perfil',
         iconComponent: expect.any(Function),
         path: '/profile'
       })
-      expect(menuItems[5]).toEqual({
+      expect(menuItems[6]).toEqual({
         id: 'logout',
         title: 'Cerrar Sesión',
         iconComponent: expect.any(Function),
@@ -229,8 +230,8 @@ describe('sideBarMenuUtils', () => {
       const result = getMenuItems('PATIENT', mockHandleLogout)
       const patientMenu = getPatientMenuItems(mockHandleLogout)
 
-      expect(result).toEqual(patientMenu)
-      expect(result).toHaveLength(6)
+      expect(result).toEqual(patientMenu) 
+      expect(result).toHaveLength(7)
     })
 
     it('should return admin menu items for ADMIN role', () => {

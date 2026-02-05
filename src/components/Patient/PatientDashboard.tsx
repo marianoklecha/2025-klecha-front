@@ -95,6 +95,7 @@ const PatientDashboard: React.FC = () => {
               type="patient"
               title="Mis Turnos"
               turns={upcomingTurns}
+              family={dataContext.myFamily}
               isLoading={turnContext.isLoadingMyTurns}
               error={turnContext.myTurnsError}
               emptyMessage="No tenés turnos próximos"

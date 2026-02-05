@@ -65,9 +65,9 @@ const ViewPatients: React.FC = () => {
                                 <Typography variant="h4" component="h1" className="shared-header-title">
                                     Mis Pacientes
                                 </Typography>
-                                                                <Typography variant="h6" className="shared-header-subtitle">
-                                                                        Gestiona y consulta la información de tus pacientes
-                                                                </Typography>                                                                                 
+                                <Typography variant="h6" className="shared-header-subtitle">
+                                    Gestiona y consulta la información de tus pacientes
+                                </Typography>                                                                                 
                             </Box>
                         </Box>
                         <Box className="shared-header-spacer"></Box>
@@ -75,28 +75,6 @@ const ViewPatients: React.FC = () => {
                 </Box>
 
                 <Box className="viewpatients-content">
-                    <Box className="viewpatients-search-and-count-container">
-                        <Box className="viewpatients-search-container">
-                            <TextField className="viewpatients-search-field" placeholder="Buscar por nombre..." value={searchTerm}
-                                onChange={(e) => doctorSend({ type: "SET_PATIENT_SEARCH", searchTerm: e.target.value })}
-                                disabled={isLoading}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SearchOutlined color="action" />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        </Box>
-
-                        <Box className="viewpatients-patients-count">
-                            <Typography variant="body2">
-                                {filteredPatients.length} de {patients.length} paciente{patients.length !== 1 ? 's' : ''}
-                                {searchTerm && ' encontrado' + (filteredPatients.length !== 1 ? 's' : '')}
-                            </Typography>
-                        </Box>
-                    </Box>
 
                     {error && (
                         <Alert 
@@ -123,6 +101,28 @@ const ViewPatients: React.FC = () => {
                         <>
                             {filteredPatients.length > 0 ? (
                                 <Box className="viewpatients-list-container">
+                                    <Box className="viewpatients-search-and-count-container">
+                                        <Box className="viewpatients-search-container">
+                                            <TextField className="viewpatients-search-field" placeholder="Buscar por nombre..." value={searchTerm}
+                                                onChange={(e) => doctorSend({ type: "SET_PATIENT_SEARCH", searchTerm: e.target.value })}
+                                                disabled={isLoading}
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <SearchOutlined color="action" />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        </Box>
+
+                                        <Box className="viewpatients-patients-count">
+                                            <Typography variant="body2">
+                                                {filteredPatients.length} de {patients.length} paciente{patients.length !== 1 ? 's' : ''}
+                                                {searchTerm && ' encontrado' + (filteredPatients.length !== 1 ? 's' : '')}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
                                     <List>
                                         {filteredPatients.map((patient) => (
                                             <ListItem key={patient.id} disablePadding>
