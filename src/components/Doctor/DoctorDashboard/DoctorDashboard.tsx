@@ -92,6 +92,7 @@ const DoctorDashboard: React.FC = () => {
               title="Mis Turnos"
               turns={upcomingTurns}
               isLoading={turnContext?.isLoadingMyTurns}
+              family={dataContext.doctorPatients}
               error={turnContext?.myTurnsError}
               emptyMessage="No tenés turnos próximos"
               onViewAll={() => uiSend({ type: "NAVIGATE", to: "/doctor/view-turns" })}

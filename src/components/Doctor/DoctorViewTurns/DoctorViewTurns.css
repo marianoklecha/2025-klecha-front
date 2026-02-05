@@ -92,8 +92,8 @@
 
 .doctor-viewturns-filters-header {
   display: flex !important;
-  justify-content: space-between !important;
   align-items: center !important;
+  justify-content: right;
   gap: 20px !important;
 }
 

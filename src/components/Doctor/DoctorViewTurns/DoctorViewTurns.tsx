@@ -13,10 +13,12 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import "./DoctorViewTurns.css";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { useDataMachine } from "#/providers/DataProvider";
 
 const DoctorViewTurns: React.FC = () => {
   
   const { turnState, turnSend, uiSend } = useMachines();
+  const { dataState } = useDataMachine();
   const { authState } = useAuthMachine();
   const authContext = authState?.context;
   const user = authContext?.authResponse as SignInResponse;
@@ -24,6 +26,9 @@ const DoctorViewTurns: React.FC = () => {
   const turnContext = turnState.context;
   const showTurnsContext = turnContext.showTurns;
   const { cancellingTurnId, isCancellingTurn } = turnContext;
+
+  const dataContext = dataState.context;
+  const myPatients = dataContext.doctorPatients;
 
   const filteredTurns = (filterTurns(turnContext.myTurns, showTurnsContext.statusFilter) || [])
     .slice()
@@ -118,6 +123,14 @@ const DoctorViewTurns: React.FC = () => {
     }
   };
 
+  const getFamilyMember = (familyMemberId: string) => {
+    for (const patient of myPatients) {
+      const member = patient.familyMembers?.find((m: any) => m.id === familyMemberId);
+      if (member) return member;
+    }
+    return null;
+  }
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="shared-container">
@@ -142,55 +155,54 @@ const DoctorViewTurns: React.FC = () => {
         </Box>
 
         <Box className="doctor-viewturns-content">
-          {/* Filters Section */}
-          <Box className="doctor-viewturns-filters-section">
-            <Box className="doctor-viewturns-filters-header">
-              <Box flexDirection={"row"} display={"flex"} justifyContent={"center"} alignItems={"center"} gap={1}>
-                <FilterAltIcon sx={{color:"#3a67c9"}}/>
-                <Typography variant="h6" className="viewturns-section-title">
-                  Filtros
-                </Typography>
-            </Box>
-              <Box className="doctor-viewturns-filters-controls">
-                <FormControl size="small" className="doctor-viewturns-filter-select">
-                  <InputLabel>Estado del turno</InputLabel>
-                  <Select
-                    value={showTurnsContext.statusFilter}
-                    label="Estado del turno"
-                    onChange={(e) => turnSend({
-                      type: "UPDATE_FORM",
-                      path: ["showTurns", "statusFilter"],
-                      value: e.target.value
-                    })}
-                  >
-                    <MenuItem value="">Todos los estados</MenuItem>
-                    <MenuItem value="SCHEDULED">Programados</MenuItem>
-                    <MenuItem value="CANCELED">Cancelados</MenuItem>
-                    <MenuItem value="NO_SHOW">No Asistió</MenuItem>
-                    <MenuItem value="COMPLETED">Completados</MenuItem>
-                  </Select>
-                </FormControl>
-
-                {showTurnsContext.statusFilter && (
-                  <Button
-                    variant="outlined"
-                    onClick={() => turnSend({
-                      type: "UPDATE_FORM",
-                      path: ["showTurns", "statusFilter"],
-                      value: ""
-                    })}
-                    className="doctor-viewturns-clear-filter-btn"
-                  >
-                    Limpiar filtro
-                  </Button>
-                )}
-              </Box>
-            </Box>
-          </Box>
-
+        
           {/* Turns List Section */}
           <Box className="doctor-viewturns-list-section">
             <Box className="doctor-viewturns-list-content">
+                <Box className="doctor-viewturns-filters-header">
+                  <Box flexDirection={"row"} display={"flex"} justifyContent={"center"} alignItems={"center"} gap={1}>
+                    <FilterAltIcon sx={{color:"#3a67c9"}}/>
+                    <Typography variant="subtitle1" className="viewturns-section-title">
+                      Filtros
+                    </Typography>
+                  </Box>
+                  <Box className="doctor-viewturns-filters-controls">
+                    <FormControl size="small" className="doctor-viewturns-filter-select">
+                      <InputLabel>Estado del turno</InputLabel>
+                      <Select
+                        value={showTurnsContext.statusFilter}
+                        label="Estado del turno"
+                        onChange={(e) => turnSend({
+                          type: "UPDATE_FORM",
+                          path: ["showTurns", "statusFilter"],
+                          value: e.target.value
+                        })}
+                      >
+                        <MenuItem value="">Todos los estados</MenuItem>
+                        <MenuItem value="SCHEDULED">Programados</MenuItem>
+                        <MenuItem value="CANCELED">Cancelados</MenuItem>
+                        <MenuItem value="NO_SHOW">No Asistió</MenuItem>
+                        <MenuItem value="COMPLETED">Completados</MenuItem>
+                      </Select>
+                    </FormControl>
+
+                    {showTurnsContext.statusFilter && (
+                      <Button
+                        variant="outlined"
+                        onClick={() => turnSend({
+                          type: "UPDATE_FORM",
+                          path: ["showTurns", "statusFilter"],
+                          value: ""
+                        })}
+                        className="doctor-viewturns-clear-filter-btn"
+                      >
+                        Limpiar filtro
+                      </Button>
+                    )}
+                  </Box>
+                </Box>
+
+
               {turnContext.isLoadingMyTurns ? (
                 <Box className="doctor-viewturns-loading-container">
                   <CircularProgress size={24} />
@@ -231,9 +243,28 @@ const DoctorViewTurns: React.FC = () => {
                           </Typography>
                           <Box>
                             <Box className="doctor-viewturns-patient-info">
+                              {turn.familyMemberId ? (
+                                (() => {
+
+                                const familyMember = getFamilyMember(turn.familyMemberId);
+                                return familyMember ? (
+                                  <Box>
+                                    <Typography variant="h6" className="doctor-viewturns-patient-text">
+                                      Familiar a cargo: { turn.patientName }
+                                    </Typography>
+                                    <Typography variant="h6" className="doctor-viewturns-patient-text">
+                                      Paciente: { familyMember.name } { familyMember.surname } ({ familyMember.relationship })
+                                    </Typography>
+                                    
+                                  </Box>
+                                ) : null;
+                              })()
+                            ) : (
                               <Typography variant="h6" className="doctor-viewturns-patient-text">
                                 Paciente: {turn.patientName || "Paciente"}
                               </Typography>
+                            )}
+
                               {turn.patientScore != null && (
                                 <Box className="doctor-viewturns-rating-container">
                                   <Rating 

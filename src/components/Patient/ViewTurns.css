@@ -44,24 +44,21 @@
 }
 
 .viewturns-family-text {
-  font-weight: 400 !important;
+  font-weight: 500 !important;
   color: #0d2230 !important;
-  line-height: 1.5 !important;
-  border-left: 4px solid rgb(89, 157, 235);
-  
+  line-height: 1 !important;
 }
+
 
 .viewturns-doctor-text {
   font-weight: 600 !important;
   color: #0d2230 !important;
   line-height: 1.5 !important;
-  border-left: 4px solid rgb(89, 157, 235);
 
 }
 
 .viewturns-specialty-text {
   color: #615e5eff !important;
-  border-left: 4px solid rgb(89, 157, 235);
 }
 
 .viewturns-main-actions-conditional {
@@ -86,7 +83,7 @@
 
 .viewturns-filters-header {
   display: flex !important;
-  justify-content: space-between !important;
+  justify-content: right !important;
   align-items: center !important;
   gap: 20px !important;
 }

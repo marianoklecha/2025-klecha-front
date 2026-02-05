@@ -1,7 +1,5 @@
 import React from "react";
-import { 
-  Box, Button, Typography, CircularProgress, Chip, FormControl, InputLabel, Select, MenuItem, Avatar 
-} from "@mui/material";
+import { Box, Button, Typography, CircularProgress, Chip, FormControl, InputLabel, Select, MenuItem, Avatar } from "@mui/material";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { useMachines } from "#/providers/MachineProvider";
 import { useDataMachine } from "#/providers/DataProvider";
@@ -133,56 +131,54 @@ const ViewTurns: React.FC = () => {
 
       <Box className="viewturns-content">
 
-        {/* Filters Section */}
-        <Box className="viewturns-filters-section">
-          <Box className="viewturns-filters-header">
-            <Box flexDirection={"row"} display={"flex"} justifyContent={"center"} alignItems={"center"} gap={1}>
-              <FilterAltIcon sx={{color:"#3a67c9"}}/>
-              <Typography variant="h6" className="viewturns-section-title">
-                Filtros
-              </Typography>
-            </Box>
-            
-            <Box className="viewturns-filters-controls">
-              <FormControl size="small" className="viewturns-filter-select">
-                <InputLabel>Estado del turno</InputLabel>
-                <Select
-                  value={showTurnsContext.statusFilter}
-                  label="Estado del turno"
-                  onChange={(e) => turnSend({
-                    type: "UPDATE_FORM",
-                    path: ["showTurns", "statusFilter"],
-                    value: e.target.value
-                  })}
-                >
-                  <MenuItem value="">Todos los estados</MenuItem>
-                  <MenuItem value="SCHEDULED">Programados</MenuItem>
-                  <MenuItem value="CANCELED">Cancelados</MenuItem>
-                  <MenuItem value="NO_SHOW">No Asistió</MenuItem>
-                  <MenuItem value="COMPLETED">Completados</MenuItem>
-                </Select>
-              </FormControl>
-
-              {showTurnsContext.statusFilter && (
-                <Button
-                  variant="outlined"
-                    onClick={() => turnSend({
-                      type: "UPDATE_FORM",
-                      path: ["showTurns", "statusFilter"],
-                      value: ""
-                    })}
-                  className="viewturns-clear-filter-btn"
-                >
-                  Limpiar filtro
-                </Button>
-              )}
-            </Box>
-          </Box>
-        </Box>
-
         {/* Turns List Section */}
         <Box className="viewturns-list-section">
           <Box className="viewturns-list-content">
+            <Box className="viewturns-filters-header">
+              <Box flexDirection={"row"} display={"flex"} justifyContent={"center"} alignItems={"center"} gap={1}>
+                <FilterAltIcon sx={{color:"#3a67c9"}}/>
+                <Typography variant="subtitle1" className="viewturns-section-title">
+                  Filtros
+                </Typography>
+              </Box>
+              
+              <Box className="viewturns-filters-controls">
+                <FormControl size="small" className="viewturns-filter-select">
+                  <InputLabel>Estado del turno</InputLabel>
+                  <Select
+                    value={showTurnsContext.statusFilter}
+                    label="Estado del turno"
+                    onChange={(e) => turnSend({
+                      type: "UPDATE_FORM",
+                      path: ["showTurns", "statusFilter"],
+                      value: e.target.value
+                    })}
+                  >
+                    <MenuItem value="">Todos los estados</MenuItem>
+                    <MenuItem value="SCHEDULED">Programados</MenuItem>
+                    <MenuItem value="CANCELED">Cancelados</MenuItem>
+                    <MenuItem value="NO_SHOW">No Asistió</MenuItem>
+                    <MenuItem value="COMPLETED">Completados</MenuItem>
+                  </Select>
+                </FormControl>
+
+                {showTurnsContext.statusFilter && (
+                  <Button
+                    variant="outlined"
+                      onClick={() => turnSend({
+                        type: "UPDATE_FORM",
+                        path: ["showTurns", "statusFilter"],
+                        value: ""
+                      })}
+                    className="viewturns-clear-filter-btn"
+                  >
+                    Limpiar filtro
+                  </Button>
+                )}
+              </Box>
+            </Box>
+
+
             {turnContext.isLoadingMyTurns ? (
               <Box className="viewturns-loading-container">
                 <CircularProgress size={24} />
@@ -194,8 +190,8 @@ const ViewTurns: React.FC = () => {
               filteredTurns.map((turn: TurnResponse, index: number) => (
                 <Box key={turn.id || index} className="viewturns-turn-item">
                   <Box className="viewturns-turn-content">
-                    <Box className="viewturns-turn-info">
-                      {/* Header: Fecha y Estado */}
+                    
+                    <Box className="viewturns-turn-info">                        
                       <Box className="viewturns-date-header">
                         
                         {turn.status === 'SCHEDULED' && isTurnPast(turn.scheduledAt) ? (
@@ -233,16 +229,17 @@ const ViewTurns: React.FC = () => {
                         </Typography>
                         <Box sx={{ml: 3}}>
                           {turn.familyMemberId && (
-                            <Typography variant="h6" className="viewturns-family-text" sx={{pl: 1}}>
-                              Paciente: {family.find((m: any) => m.id === turn.familyMemberId).name } {family.find((m: any) => m.id === turn.familyMemberId).surname} ({family.find((m: any) => m.id === turn.familyMemberId).relationship})
-                            </Typography>
-                          )}                          
-                          <Typography variant="h6" className="viewturns-doctor-text" sx={{pl: 1}}>
-                            Dr. {turn.doctorName}
+                            <Box sx={{mb:1}}>
+                              <Typography variant="h6" className="viewturns-family-text">
+                                Paciente: {family.find((m: any) => m.id === turn.familyMemberId).name } {family.find((m: any) => m.id === turn.familyMemberId).surname} ({family.find((m: any) => m.id === turn.familyMemberId).relationship})
+                              </Typography>
+                            </Box>
+                          )}    
+                          <Typography variant="h6" className="viewturns-doctor-text" >
+                           {turn.doctorSpecialty} - Dr. {turn.doctorName} 
                           </Typography>
-                          <Typography variant="body1" className="viewturns-specialty-text" sx={{pl: 1}}>
-                            {turn.doctorSpecialty}
-                          </Typography>
+                        
+                         
                           {turn.motive && (
                             <Typography variant="body2" className="viewturns-reason-text">
                               Motivo: {turn.motive=="HEALTH CERTIFICATE"?"Certificado de apto físico":turn.motive}
@@ -250,6 +247,9 @@ const ViewTurns: React.FC = () => {
                           )}
                         </Box>
                       </Box>
+                      
+                          
+                      
                       
                     </Box>
                     
@@ -341,5 +341,4 @@ const ViewTurns: React.FC = () => {
     </Box>
   );
 };
-
 export default ViewTurns;
