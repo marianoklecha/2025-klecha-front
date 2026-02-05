@@ -10,6 +10,16 @@ import "./DashboardUpcomingCard.css";
 
 type CardType = 'patient' | 'doctor';
 
+interface FamilyMember {
+  id: string;
+  name: string;
+  surname: string;
+  relationship: string;
+  birthdate?: string;
+  dni?: number;
+  gender?: string;
+}
+
 interface Turn {
   id: string;
   scheduledAt: string;
@@ -18,6 +28,7 @@ interface Turn {
   doctorSpecialty?: string;
   patientName?: string;
   motive?: string;
+  familyMemberId?:string;
   // legacy field
   reason?: string;
 }
@@ -26,6 +37,7 @@ interface DashboardUpcomingCardProps {
   type: CardType;
   title: string;
   turns: Turn[];
+  family?: FamilyMember[];
   isLoading?: boolean;
   error?: string;
   emptyMessage?: string;
@@ -33,10 +45,26 @@ interface DashboardUpcomingCardProps {
   onViewAll?: () => void;
 }
 
+ const getFamilyMember = (familyMemberId: string, familyMembers: FamilyMember[]) => {
+    const member = familyMembers?.find((m: any) => m.id === familyMemberId);
+    if (member) return member;
+    
+    return null;
+  }
+
+   const getFamilyMemberFromList = (familyMemberId: string, family: any[]) => {
+    for (const patient of family) {
+      const member = patient.familyMembers?.find((m: any) => m.id === familyMemberId);
+      if (member) return member;
+    }
+    return null;
+  }
+
 const DashboardUpcomingCard: React.FC<DashboardUpcomingCardProps> = ({
   type,
   title,
   turns,
+  family,
   isLoading = false,
   error,
   emptyMessage = "No hay turnos próximos",
@@ -44,17 +72,33 @@ const DashboardUpcomingCard: React.FC<DashboardUpcomingCardProps> = ({
 }) => {
   const renderTurnContent = (turn: Turn) => {
     if (type === 'patient') {
+
+     const familyMember = turn.familyMemberId && family ? getFamilyMember(turn.familyMemberId, family) : null
+
       return (
         <>
           <Typography variant="body1" className="upcoming-card-date">
             {formatDateTime(turn.scheduledAt, "DD/MM/YYYY - HH:mm")}
           </Typography>
+          <Typography variant="body2" className="upcoming-card-date">
+            {turn.doctorSpecialty || "Especialidad"}
+          </Typography>
+
+          {familyMember && (
+              <Typography variant="body2" className="upcoming-card-secondary">
+                Paciente: {familyMember.name} {familyMember.surname} ({familyMember.relationship})
+              </Typography>
+          )}
+
           <Typography variant="body2" className="upcoming-card-secondary">
-            {turn.doctorName || "Doctor"} - {turn.doctorSpecialty || "Especialidad"}
+             Dr. {turn.doctorName || "Doctor"}
           </Typography>
         </>
       );
     } else {
+
+      const familyMember = turn.familyMemberId && family ? getFamilyMemberFromList(turn.familyMemberId, family) : null
+
       return (
         <>
           <Box className="upcoming-card-header-row">
@@ -62,9 +106,22 @@ const DashboardUpcomingCard: React.FC<DashboardUpcomingCardProps> = ({
               {formatDateTime(turn.scheduledAt, "DD/MM/YYYY - HH:mm")}
             </Typography>
           </Box>
-          <Typography variant="body2" className="upcoming-card-secondary">
-            Paciente: {turn.patientName || "Paciente"}
-          </Typography>
+          {familyMember ? (
+            <>
+              <Typography variant="body2" className="upcoming-card-secondary">
+                Responsable: {turn.patientName || "Paciente"}
+              </Typography>
+              <Typography variant="body2" className="upcoming-card-secondary">
+                Paciente: {familyMember.name} {familyMember.surname} ({familyMember.relationship})
+              </Typography>
+            </>
+          ) : (
+            <Typography variant="body2" className="upcoming-card-secondary">
+              Paciente: {turn.patientName || "Paciente"}
+            </Typography>
+          )}
+
+
           {turn.motive && (
             <Typography variant="body2" className="upcoming-card-reason">
               {turn.motive=="HEALTH CERTIFICATE"?"Certificado de apto físico":turn.motive}

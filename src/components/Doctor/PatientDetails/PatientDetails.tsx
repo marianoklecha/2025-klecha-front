@@ -1,5 +1,5 @@
 import React from "react"
-import {Avatar,Box,Button,Chip,Divider,Typography,Alert,CircularProgress,Paper,TextField,Rating} from "@mui/material"
+import {Avatar,Box,Button,Chip,Divider,Typography,Alert,CircularProgress,Paper,TextField,Rating, Grid} from "@mui/material"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { useMachines } from "#/providers/MachineProvider"
@@ -23,11 +23,11 @@ const PatientDetails: React.FC = () => {
   const authContext = authState?.context;
   const medicalHistoryContext = medicalHistoryState.context;
 
-  
   const isSelectingPatient = doctorState.matches({ patientManagement: 'selectingPatient' });
   const error = dataContext.errors.doctorPatients;
 
   const patient = doctorContext.selectedPatient;
+  const familyMembers = patient?.familyMembers || [];
 
   const patientTurns: TurnResponse[] = dataContext.myTurns?.filter((turn: any) => 
     turn.patientId === patient?.id
@@ -160,7 +160,7 @@ const PatientDetails: React.FC = () => {
   const formatBirthdate = (birthdate: string | undefined) => {
     if (!birthdate) return 'No disponible';
     try {
-      return formatDateTime(birthdate, 'DD [de] MMMM [de] YYYY');
+      return formatDateTime(birthdate, ' (DD/MM/YYYY)');
     } catch {
       return birthdate;
     }
@@ -225,6 +225,16 @@ const PatientDetails: React.FC = () => {
         return gender;
     }
   };
+
+  const getFamilyMember = (familyMemberId: string) => {
+
+    const member = patient.familyMembers?.find((m: any) => m.id === familyMemberId);
+    if (member) return member;
+    
+    return null;
+  }
+
+
 
   if (error) {
     return (
@@ -323,7 +333,6 @@ const PatientDetails: React.FC = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box className="patient-details-container">
         <Box className="shared-header">
           <Box className="shared-header-layout">
             <Box className="shared-back-button-container">
@@ -367,13 +376,11 @@ const PatientDetails: React.FC = () => {
           </Box>
         </Box>
 
-        <Box className="patient-details-content">
-          
+        <Grid container size={12} className="patient-details-content">         
 
-          <Box sx={{ flex: '1 1 400px', minWidth: 0 }}>
+          <Grid size={6} >
             <Paper elevation={1} sx={{ p: 3 }} className="patient-details-info-paper">
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <PersonOutlined color="primary" />
                 Información Personal
               </Typography>
               <Divider sx={{ mb: 2 }} />
@@ -383,55 +390,9 @@ const PatientDetails: React.FC = () => {
                   <CircularProgress />
                 </Box>
               ) : patient ? (
-                <Box className="patient-details-info-grid">
-                  <Box className="patient-details-info-item">
-                    <Typography variant="body2" color="textSecondary" className="patient-details-label">
-                      <BadgeOutlined fontSize="small" sx={{ mr: 1 }} />
-                      DNI
-                    </Typography>
-                    <Typography variant="body1" className="patient-details-value">
-                      {patient.dni}
-                    </Typography>
-                  </Box>
+                <Grid container className="patient-details-info-grid">
 
-                  <Box className="patient-details-info-item">
-                    <Typography variant="body2" color="textSecondary" className="patient-details-label">
-                      <EmailOutlined fontSize="small" sx={{ mr: 1 }} />
-                      Email
-                    </Typography>
-                    <Typography variant="body1" className="patient-details-value">
-                      {patient.email}
-                    </Typography>
-                  </Box>
-
-                  {patient.phone && (
-                    <Box className="patient-details-info-item">
-                      <Typography variant="body2" color="textSecondary" className="patient-details-label">
-                        <PhoneOutlined fontSize="small" sx={{ mr: 1 }} />
-                        Teléfono
-                      </Typography>
-                      <Typography variant="body1" className="patient-details-value">
-                        {patient.phone}
-                      </Typography>
-                    </Box>
-                  )}
-
-                  <Box className="patient-details-info-item">
-                    <Typography variant="body2" color="textSecondary" className="patient-details-label">
-                      <CakeOutlined fontSize="small" sx={{ mr: 1 }} />
-                      Fecha de Nacimiento
-                    </Typography>
-                    <Typography variant="body1" className="patient-details-value">
-                      {formatBirthdate(patient.birthdate)}
-                      {calculateAge(patient.birthdate) && (
-                        <Typography variant="body2" color="textSecondary" component="span" sx={{ ml: 1 }}>
-                          ({calculateAge(patient.birthdate)} años)
-                        </Typography>
-                      )}
-                    </Typography>
-                  </Box>
-
-                  <Box className="patient-details-info-item">
+                  <Grid size={3} className="patient-details-info-item">
                     <Typography variant="body2" color="textSecondary" className="patient-details-label">
                       {getGenderIcon(patient.gender)}
                       <span style={{ marginLeft: 8 }}>Género</span>
@@ -439,7 +400,55 @@ const PatientDetails: React.FC = () => {
                     <Typography variant="body1" className="patient-details-value">
                       {getGenderLabel(patient.gender)}
                     </Typography>
-                  </Box>
+                  </Grid>
+
+                  <Grid size={5} className="patient-details-info-item">
+                    <Typography variant="body2" color="textSecondary" className="patient-details-label">
+                      <CakeOutlined fontSize="small" sx={{ mr: 1 }} />
+                      Edad
+                    </Typography>
+                    <Typography variant="body1" className="patient-details-value">
+                      {calculateAge(patient.birthdate) && (
+                        <Typography variant="body1" color="" component="span" sx={{ ml: 1 }}>
+                        {calculateAge(patient.birthdate)} años
+                        </Typography>
+                      )}
+                      { formatBirthdate(patient.birthdate)}
+                      
+                    </Typography>
+                  </Grid>
+
+                  <Grid size={3} className="patient-details-info-item">
+                    <Typography variant="body2" color="textSecondary" className="patient-details-label">
+                      <BadgeOutlined fontSize="small" sx={{ mr: 1 }} />
+                      DNI
+                    </Typography>
+                    <Typography variant="body1" className="patient-details-value">
+                      {patient.dni}
+                    </Typography>
+                  </Grid>
+
+                  <Grid size={6} className="patient-details-info-item">
+                    <Typography variant="body2" color="textSecondary" className="patient-details-label">
+                      <EmailOutlined fontSize="small" sx={{ mr: 1 }} />
+                      Email
+                    </Typography>
+                    <Typography variant="body1" className="patient-details-value">
+                      {patient.email}
+                    </Typography>
+                  </Grid>
+
+                  <Grid size={6} className="patient-details-info-item">
+                    <Typography variant="body2" color="textSecondary" className="patient-details-label">
+                      <PhoneOutlined fontSize="small" sx={{ mr: 1 }} />
+                      Teléfono
+                    </Typography>
+                    <Typography variant="body1" className="patient-details-value">
+                      {patient.phone}
+                    </Typography>
+                  </Grid>
+
+                  
                   
                   {patient.ratingSubcategories && patient.ratingSubcategories.length > 0 && (
                     <Box className="patient-details-info-item" sx={{ gridColumn: '1 / -1' }}>
@@ -462,7 +471,7 @@ const PatientDetails: React.FC = () => {
                       </Box>
                     </Box>
                   )}
-                </Box>
+                </Grid>
               ) : (
                 <Paper elevation={0} sx={{ p: 3, textAlign: 'center', backgroundColor: '#f8fafc' }}>
                   <Typography variant="body2" color="textSecondary">
@@ -471,10 +480,84 @@ const PatientDetails: React.FC = () => {
                 </Paper>
               )}
             </Paper>
-          </Box>
+
+            { patient && familyMembers.length > 0 && (
+              <>
+                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1,  marginTop:3 }}>
+                  Familiares a su cargo
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+              </>
+            )}
+
+
+            { patient && familyMembers.length > 0 && (
+                
+                familyMembers.map((familyMember: any, index: number) => (
+                  
+                  <Paper key={index} elevation={1} sx={{ p: 3, mt:2 }} className="patient-details-info-paper">
+                    
+                    <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <PersonOutlined color="primary" />
+                      {familyMember.name} {familyMember.surname} ({familyMember.relationship})
+                    </Typography>
+                    <Divider sx={{ mb: 2 }} />
+
+                      <Grid container className="patient-details-info-grid">
+                        <Grid size={4} className="patient-details-info-item">
+                          <Typography variant="body2" color="textSecondary" className="patient-details-label">
+                            {getGenderIcon(familyMember.gender)}
+                            <span style={{ marginLeft: 8 }}>Género</span>
+                          </Typography>
+                          <Typography variant="body1" className="patient-details-value">
+                            {getGenderLabel(familyMember.gender)}
+                          </Typography>
+                        </Grid>
+
+                        <Grid size={5} className="patient-details-info-item">
+                          <Typography variant="body2" color="textSecondary" className="patient-details-label">
+                            <CakeOutlined fontSize="small" sx={{ mr: 1 }} />
+                            Edad
+                          </Typography>
+                          <Typography variant="body1" className="patient-details-value">
+                            {calculateAge(familyMember.birthdate) && (
+                              <Typography variant="body1" color="" component="span" sx={{ ml: 1 }}>
+                              {calculateAge(familyMember.birthdate)} años
+                              </Typography>
+                            )}
+                            { formatBirthdate(familyMember.birthdate)}
+                            
+                          </Typography>
+                        </Grid>
+
+                        <Grid size={3} className="patient-details-info-item">
+                          <Typography variant="body2" color="textSecondary" className="patient-details-label">
+                            <BadgeOutlined fontSize="small" sx={{ mr: 1 }} />
+                            DNI
+                          </Typography>
+                          <Typography variant="body1" className="patient-details-value">
+                            {familyMember.dni}
+                          </Typography>
+                        </Grid>                     
+
+                      </Grid>
+                    
+                    
+                  </Paper>
+               
+                
+                ))
+              
+            
+            )}
+
+          </Grid>
+
+
+          
 
   
-          <Box sx={{ flex: '1 1 400px', minWidth: 0 }}>
+          <Grid size={8} sx={{ flex: '1 1 400px', minWidth: 0 }}>
             <Paper elevation={1} sx={{ p: 3 }} className="patient-details-medical-history-paper">
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <History color="primary" />
@@ -502,10 +585,11 @@ const PatientDetails: React.FC = () => {
                       const isEditing = medicalHistoryContext.selectedHistory?.turnId === turn.id;
                       const fileStatus = getFileStatus(turn.id);
                       const fileInfo = getTurnFileInfo(turn.id);
+                      const familyMember = getFamilyMember(turn.familyMemberId);
 
                       return (
                         <Paper key={turn.id} elevation={2} sx={{ p: 2 }}>
-                          <Box sx={{ mb: 2 }}>
+                          <Box sx={{mb:1}}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                                 {formatDateTime(turn.scheduledAt, "DD/MM/YYYY - HH:mm")}
@@ -516,6 +600,14 @@ const PatientDetails: React.FC = () => {
                                 size="small"
                               />
                             </Box>
+
+                            {familyMember ? (
+                            <Box>                            
+                              <Typography variant="body1" className="doctor-viewturns-patient-text">
+                                Paciente: { familyMember.name } { familyMember.surname } ({ familyMember.relationship })
+                              </Typography>                              
+                            </Box>
+                          ) : null}
                             
                             {/* File attachment info */}
                             {fileStatus === "has-file" && fileInfo && (
@@ -544,9 +636,6 @@ const PatientDetails: React.FC = () => {
                           </Box>
 
                           <Box>
-                            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                              Historia Médica:
-                            </Typography>
                             
                             {isEditing ? (
                               <Box>
@@ -637,11 +726,10 @@ const PatientDetails: React.FC = () => {
                 </Box>
               )}
             </Paper>
-          </Box>
+          </Grid>
 
-        </Box>
+        </Grid>
 
-      </Box>
     </LocalizationProvider>
   );
 };
