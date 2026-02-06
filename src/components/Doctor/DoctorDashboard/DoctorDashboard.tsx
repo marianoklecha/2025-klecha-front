@@ -10,7 +10,6 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import PersonIcon from "@mui/icons-material/Person";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import LoadingThreeDotsJumping from "../../shared/PageLoadingScreen/LoadingThreeDots";
 import BadgeShowcase from "../../shared/Badges/BadgeShowcase";
@@ -25,6 +24,7 @@ import DashboardUpcomingCard from "../../shared/DashboardUpcomingCard/DashboardU
 import { dayjsArgentina, nowArgentina } from '#/utils/dateTimeUtils';
 import "./DoctorDashboard.css";
 import { useDataMachine } from "#/providers/DataProvider";
+import { MarkEmailUnread } from '@mui/icons-material';
 
 const DoctorDashboard: React.FC = () => {
   const { dataState } = useDataMachine();
@@ -117,7 +117,7 @@ const DoctorDashboard: React.FC = () => {
                 <DashboardCard
                   type="doctor"
                   variant="primary"
-                  icon={<NotificationsIcon className="doctor-action-icon" />}
+                  icon={<MarkEmailUnread className="doctor-action-icon" />}
                   title="Solicitudes Pendientes"
                   description="Gestiona solicitudes de modificación de turnos"
                   buttonText="Ver Solicitudes"
@@ -128,7 +128,7 @@ const DoctorDashboard: React.FC = () => {
               <DashboardCard
                 type="doctor"
                 variant="primary"
-                icon={<NotificationsIcon className="doctor-action-icon" />}
+                icon={<MarkEmailUnread className="doctor-action-icon" />}
                 title="Solicitudes Pendientes"
                 description="Gestiona solicitudes de modificación de turnos"
                 buttonText="Ver Solicitudes"

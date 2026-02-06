@@ -50,10 +50,7 @@
 }
 
 .reservation-actions {
-  display: flex;
-  gap: 16px;
-  justify-content: flex-end !important;
-  margin-top: 32px;
+  
 }
 
 /* Button Styles */
@@ -61,10 +58,10 @@
   background: linear-gradient(135deg, var(--emerald) 0%, var(--verdigris) 100%) !important;
   color: var(--white) !important;
   border-radius: 8px !important;
-  text-transform: none !important;
   font-weight: 600 !important;
   padding: 12px 32px !important;
   box-shadow: 0 4px 12px rgba(87, 204, 153, 0.3) !important;
+  margin-bottom: 20px;
 }
 
 .reservation-btn-primary:hover {

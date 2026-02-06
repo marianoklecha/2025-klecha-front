@@ -18,6 +18,9 @@ vi.mock('@mui/icons-material', () => ({
   Person: vi.fn(),
   ExitToApp: vi.fn(),
   BarChart: vi.fn(),
+  EditCalendar: vi.fn(),
+  MarkEmailUnread: vi.fn(),
+  CalendarMonth: vi.fn(),
   EmojiEvents: vi.fn(),
   WorkspacePremium: vi.fn(),
   Group: vi.fn()
@@ -30,7 +33,7 @@ describe('sideBarMenuUtils', () => {
     it('should contain all required icon mappings', () => {
       expect(iconMap.Dashboard).toBeDefined()
       expect(iconMap.People).toBeDefined()
-      expect(iconMap.CalendarToday).toBeDefined()
+      expect(iconMap.CalendarMonth).toBeDefined()
       expect(iconMap.Schedule).toBeDefined()
       expect(iconMap.Notifications).toBeDefined()
       expect(iconMap.Person).toBeDefined()
@@ -124,7 +127,7 @@ describe('sideBarMenuUtils', () => {
       })
       expect(menuItems[3]).toEqual({
         id: 'reservation',
-        title: 'Reservar Turno',
+        title: 'Nuevo Turno',
         iconComponent: expect.any(Function),
         path: '/patient/reservation-turns'
       })
