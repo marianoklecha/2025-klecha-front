@@ -18,6 +18,9 @@ vi.mock('@mui/icons-material', () => ({
   Person: vi.fn(),
   ExitToApp: vi.fn(),
   BarChart: vi.fn(),
+  EditCalendar: vi.fn(),
+  MarkEmailUnread: vi.fn(),
+  CalendarMonth: vi.fn(),
   EmojiEvents: vi.fn(),
   WorkspacePremium: vi.fn(),
   Group: vi.fn()

@@ -1,6 +1,6 @@
 import { 
   Box, Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent, 
-  TextField, Typography, CircularProgress, Container, Avatar, Rating, Chip, Stack, Checkbox, ListItemText, FormControlLabel,
+  TextField, Typography, CircularProgress, Avatar, Rating, Chip, Stack, Checkbox, ListItemText, FormControlLabel,
   Grid
 } from "@mui/material";
 import React from "react";
@@ -16,7 +16,6 @@ import { Dayjs } from "dayjs";
 import dayjs from "#/utils/dayjs.config";
 import 'dayjs/locale/es';
 import { formatTime, dayjsArgentina, nowArgentina } from '#/utils/dateTimeUtils';
-import Event from "@mui/icons-material/Event";
 import "./ReservationTurns.css";
 import { buildAvailableSubcats, buildDoctorSubcatMap, buildFilteredDoctors, requestRatedCountsForDoctors } from "#/utils/reservationUtils";
 import { useDataMachine } from "#/providers/DataProvider";

@@ -4,7 +4,6 @@ import { useDataMachine } from "#/providers/DataProvider";
 import { calculateAge } from "#/models/Doctor"
 import { dayjsArgentina, formatDateTime, nowArgentina } from '#/utils/dateTimeUtils';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import PersonIcon from '@mui/icons-material/Person';
 import "./Family.css";
 import ConfirmationModal from "#/components/shared/ConfirmationModal/ConfirmationModal";
 import { FamilyMemberResponse } from "#/models/FamilyMember";
@@ -12,7 +11,7 @@ import { useMachines } from "#/providers/MachineProvider";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { motion, AnimatePresence } from "framer-motion"
-import { Group, KeyboardArrowDown, KeyboardArrowUp, MoreVert, Edit, Delete, CalendarMonth, Cake, Badge } from "@mui/icons-material";
+import { Group, KeyboardArrowDown } from "@mui/icons-material";
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 
 
@@ -26,29 +25,19 @@ const Family: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const formValues = familyState?.context?.formValues || {};
   const formErrors = familyState?.context?.formErrors || {};
+  const isLoadingMyFamily = dataContext.loading?.myFamily || dataContext.loading?.initializing;
   const loading = familyState?.context?.loading || false;
   const error = familyState?.context?.error;
 
   const hasErrors = Object.values(formErrors as Record<string, string>).some(error => error && error.length > 0);
   const allFieldsFilled = Object.values(formValues).every(value => value !== "" && value !== null && value !== undefined);
   const isButtonDisabled = loading || hasErrors || !allFieldsFilled;
-  // Invertimos la lógica para UX: por defecto cerrado (true), si toggle es true -> abierto.
-  // Ajusta según tu lógica de máquina de estados actual. Asumimos que 'CreateFamily' true es visible.
   const isCreateFamilyVisible = uiContext.toggleStates?.['CreateFamily'] || false;
 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     familySend({ type: "SAVE_FAMILY_MEMBER" });
-  };
-
-  const getRelationshipColor = (rel: string) => {
-    switch(rel?.toLowerCase()) {
-      case 'hijo': case 'hija': return 'success';
-      case 'padre': case 'madre': return 'primary';
-      case 'hermano': case 'hermana': return 'secondary';
-      default: return 'default';
-    }
   };
 
   return (
@@ -75,7 +64,6 @@ const Family: React.FC = () => {
                 startIcon={<PersonAddAlt1Icon />}
                 onClick={() => {
                    if (!isCreateFamilyVisible) uiSend({ type: "TOGGLE", key: "CreateFamily" });
-                   // Scroll to form logic could go here
                    document.getElementById('add-family-form')?.scrollIntoView({ behavior: 'smooth' });
                 }}
                 sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(34, 87, 122, 0.2)' }}
@@ -88,7 +76,15 @@ const Family: React.FC = () => {
 
       <Box className="viewturns-content">
         {/* Turns List Section */}
-        {!dataContext.isLoadingMyFamily && myFamily.length === 0 && (
+        { isLoadingMyFamily ? (
+          <Box className="reservation-loading-container">
+            <CircularProgress />
+            <Typography className="reservation-loading-text">
+              Cargando grupo familiar ...
+            </Typography>
+          </Box>
+        ) :
+        (myFamily.length) === 0 ? (
           <Box 
             className="viewturns-empty-state" 
             sx={{ 
@@ -108,16 +104,12 @@ const Family: React.FC = () => {
               Tu grupo familiar está vacío
             </Typography>
           </Box>
-        )}
+        ) : 
+        (null)
+        }
+
         <Grid container spacing={1} size = {12} className="viewturns-list-section">
-            {dataContext.isLoadingMyFamily ? (
-              <Box className="viewturns-loading-container">
-                <CircularProgress size={24} />
-                <Typography className="viewturns-loading-text">
-                  Cargando ...
-                </Typography>
-              </Box>
-            ) :               
+            {           
               myFamily.map((familyMember: FamilyMemberResponse, index: number) => (
                 <Grid size={4} key={familyMember.id || index} className="viewturns-turn-item">             
                     {/* Detalles del turno */}
@@ -205,7 +197,7 @@ const Family: React.FC = () => {
                       </Box>  
 
                       <AnimatePresence>
-                          {isCreateFamilyVisible && (
+                          {(isCreateFamilyVisible && !loading) ? (
                             <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
@@ -362,7 +354,17 @@ const Family: React.FC = () => {
                                 </Stack>
                               </Box>   
                             </motion.div>   
-                          )}
+                          ) : (loading) ? (
+                            <Box className="reservation-loading-container">
+                              <CircularProgress />
+                              <Typography className="reservation-loading-text">
+                                Guardando perfil de familiar ...
+                              </Typography>
+                            </Box>
+                          ) : (
+                            null)
+                          
+                        }
                       </AnimatePresence>
                     </CardContent>
                 </Card>

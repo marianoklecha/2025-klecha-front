@@ -4,7 +4,7 @@ import {
   People as PeopleIcon,
   CalendarMonth as CalendarIcon,
   Schedule as ScheduleIcon,
-  Notifications as NotificationsIcon,
+  MarkEmailUnread as NotificationsIcon,
   Person as PersonIcon,
   ExitToApp as ExitIcon,
   BarChart as BarChartIcon,

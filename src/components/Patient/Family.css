@@ -1,3 +1,5 @@
+@import "../shared/SharedStyles.css";
+
 .family-header-icon {
   background-color: rgb(81, 177, 255) !important;
   width: 56px !important;
@@ -19,11 +21,18 @@
   flex-shrink: 0 !important;
 }
 
-
+.reservation-loading-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 40px !important;
+  border-radius: 12px !important;
+}
 
 /* EnableHours.css - Component-specific styles */
 
-@import "../../shared/SharedStyles.css";
+
 
 /* Color palette variables - matching PatientShared */
 :root {

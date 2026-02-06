@@ -5,7 +5,6 @@ import {
   Container,
   Avatar
 } from "@mui/material";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import PersonIcon from "@mui/icons-material/Person";
 import GroupIcon from '@mui/icons-material/Group';
 import { useMachines } from "#/providers/MachineProvider";
