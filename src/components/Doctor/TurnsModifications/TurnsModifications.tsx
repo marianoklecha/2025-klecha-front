@@ -10,6 +10,7 @@ import { Patient } from "#/models/Doctor"
 import "./TurnsModifications.css";
 import { useDataMachine } from "#/providers/DataProvider"
 import PendingCard from "#/components/shared/PendingCard/PendingCard";
+import { MarkEmailUnread } from "@mui/icons-material";
 
 const TurnsModifications: React.FC = () => {
   const { dataState } = useDataMachine();
@@ -28,11 +29,9 @@ const TurnsModifications: React.FC = () => {
     if (patient) {
       return `${patient.name} ${patient.surname}`;
     } else {
-      // Si estamos cargando, mostrar estado de carga
       if (isLoadingPatients) {
         return "Cargando paciente...";
       }
-      // Si ya terminó de cargar pero no encontramos el paciente específico
       return `Paciente ID: ${patientId}`;
     }
   };
@@ -43,7 +42,7 @@ const TurnsModifications: React.FC = () => {
         <Box className="shared-header-layout">
           <Box className="shared-header-content">
             <Avatar className="shared-header-icon">
-              <ListAltIcon sx={{ fontSize: 28 }} />
+              <MarkEmailUnread sx={{ fontSize: 28 }} />
             </Avatar>
             <Box>
               <Typography variant="h4" component="h1" className="shared-header-title">

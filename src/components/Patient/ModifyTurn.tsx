@@ -99,7 +99,7 @@ const ModifyTurn: React.FC = () => {
         </Box>
       </Box>
 
-      <Container maxWidth="lg" className="shared-page-container">
+      <Container maxWidth="lg" className="shared-page-container" sx={{mb: 3}}>
 
         <Box className="reservation-step1-container">
           <Box className="reservation-form-section">
@@ -177,12 +177,13 @@ const ModifyTurn: React.FC = () => {
                     </DemoItem>
                   </DemoContainer>
                 </LocalizationProvider>
-              </Box>
-              <Typography variant="body2" color="text.secondary" textAlign="center" mt={2}>
-                👨‍⚕️ {currentTurn.doctorName}
-              </Typography>
+              </Box>            
             </Box>
             <Box className="reservation-time-section">
+              <Typography variant="body2" color="text.secondary" textAlign="center" mt={1.5}>
+                Turno con Dr. {currentTurn?.doctorName} {currentTurn?.doctorSurname}                
+              </Typography>
+              
               <Box className="reservation-time-slots">
                 <TimeSlotSelector
                   selectedDate={selectedDate ? dayjsArgentina(selectedDate) : null}
@@ -192,7 +193,23 @@ const ModifyTurn: React.FC = () => {
                   isLoadingSlots={isLoadingAvailableSlots}
                 />
               </Box>
-            </Box>
+            </Box>            
+          </Box>
+          <Box  sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              onClick={() => turnSend({ type: "SUBMIT_MODIFY_REQUEST" })}
+              className="reservation-btn-primary"
+              disabled={!selectedDate || !selectedTime || isModifyingTurn}
+            >
+              {isModifyingTurn ? (
+                <>
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                  Enviando solicitud...
+                </>
+              ) : (
+                'Solicitar Modificación'
+              )}
+            </Button>
           </Box>
         </Box>
 
@@ -204,23 +221,7 @@ const ModifyTurn: React.FC = () => {
           </Box>
         )}
 
-        <Box className="reservation-actions">
-          <Button
-            onClick={() => turnSend({ type: "SUBMIT_MODIFY_REQUEST" })}
-            variant="contained"
-            className="reservation-btn-primary"
-            disabled={!selectedDate || !selectedTime || isModifyingTurn}
-          >
-            {isModifyingTurn ? (
-              <>
-                <CircularProgress size={20} sx={{ mr: 1 }} />
-                Enviando solicitud...
-              </>
-            ) : (
-              '✓ Solicitar Modificación'
-            )}
-          </Button>
-        </Box>
+        
       </Container>
     </Box>
   );

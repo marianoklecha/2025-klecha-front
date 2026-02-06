@@ -121,7 +121,7 @@ const ViewTurns: React.FC = () => {
                 Mis Turnos
               </Typography>
               <Typography variant="h6" className="shared-header-subtitle">
-                Consulta y gestiona tus citas médicas
+                Gestiona tus citas médicas
               </Typography>
             </Box>
           </Box>
@@ -135,7 +135,7 @@ const ViewTurns: React.FC = () => {
         <Box className="viewturns-list-section">
           <Box className="viewturns-list-content">
             <Box className="viewturns-filters-header">
-              <Box flexDirection={"row"} display={"flex"} justifyContent={"center"} alignItems={"center"} gap={1}>
+              <Box flexDirection={"row"} display={"flex"} justifyContent={"flex-end"} alignItems={"center"} gap={1}>
                 <FilterAltIcon sx={{color:"#3a67c9"}}/>
                 <Typography variant="subtitle1" className="viewturns-section-title">
                   Filtros

@@ -72,21 +72,15 @@
 .reservation-step1-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  max-width: 800px;
-  margin: 0 auto;
 }
 
 .reservation-form-section {
   background: var(--white) !important;
   border-radius: 16px !important;
-  padding: 32px !important;
-  border: 1px solid var(--verdigris) !important;
+  padding: 25px !important;
+  border: 1px solid rgba(32, 117, 173, 0.1) !important;
   box-shadow: 0 4px 15px rgba(34, 87, 122, 0.1) !important;
-}
-
-.reservation-input {
-  margin-bottom: 24px !important;
+  margin-bottom: 30px;
 }
 
 .reservation-input .MuiOutlinedInput-root {
@@ -104,7 +98,7 @@
 }
 
 .reservation-select {
-  margin-bottom: 15px !important;
+  margin-bottom: 10px !important;
 }
 
 .reservation-select .MuiOutlinedInput-root {
@@ -125,17 +119,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 15px;
   gap: 20px;
 }
 
 .reservation-progress-step {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border-radius: 20px;
-  font-weight: 600;
+  padding: 10px 90px;
+  border-radius: 10px;
+  font-weight: 700;
   font-size: 1rem;
   transition: all 0.3s ease;
 }
@@ -143,7 +135,7 @@
 .reservation-progress-step.active {
   background: linear-gradient(135deg, var(--emerald) 0%, var(--verdigris) 100%);
   color: var(--white);
-  box-shadow: 0 4px 12px rgba(87, 204, 153, 0.3);
+  box-shadow: 0 4px 5px rgba(87, 204, 153, 0.3);
 }
 
 .reservation-progress-step.inactive {
@@ -155,39 +147,47 @@
 .reservation-progress-step.completed {
   background: var(--tea-green);
   color: var(--lapis-lazuli);
-  border: 1px solid var(--emerald);
 }
 
 /* Step 2 Styles */
 .reservation-step2-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  max-width: 1200px;
   margin: 0 auto;
+  max-width: 1200px;
 }
 
 .reservation-step2-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  align-items: flex-start;
+  background: var(--white) !important;
+  border-radius: 16px !important;
+  padding: 18px !important;
+  border: 1px solid rgba(32, 117, 173, 0.1) !important;
+  box-shadow: 0 4px 15px rgba(34, 87, 122, 0.1) !important;
+}
+
+/* Header del doctor */
+.reservation-doctor-header {
+  text-align: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(32, 117, 173, 0.08);
+  margin-bottom: 24px;
 }
 
 .reservation-calendar-section {
-  background: var(--white) !important;
-  border-radius: 16px !important;
-  padding: 24px !important;
-  border: 1px solid var(--verdigris) !important;
-  box-shadow: 0 4px 15px rgba(34, 87, 122, 0.1) !important;
-  height: fit-content;
+  background: transparent !important; /* Quitar fondo individual */
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-right: 1px solid rgba(32, 117, 173, 0.1) !important; /* Divisor sutil */
 }
 
 .reservation-calendar-container {
-  background: var(--white) !important;
-  border-radius: 12px !important;
-  padding: 16px !important;
-  border: 1px solid #e0e7ff !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  border: none !important;
   display: flex;
   justify-content: center;
 }
@@ -198,34 +198,29 @@
 }
 
 .reservation-time-section {
-  background: var(--white) !important;
-  border-radius: 16px !important;
-  padding: 24px !important;
-  border: 1px solid var(--verdigris) !important;
-  box-shadow: 0 4px 15px rgba(34, 87, 122, 0.1) !important;
-  height: fit-content;
+  background: transparent !important; /* Quitar fondo individual */
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  align-items: center;
+  justify-content: center;
 }
 
 .reservation-time-slots {
-  background: #f8fafc !important;
   border-radius: 12px !important;
   padding: 20px !important;
-  border: 1px solid #e0e7ff !important;
-  max-height: 400px;
   overflow-y: auto;
 }
 
 .reservation-time-grid {
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
-  gap: 12px !important;
+  gap: 15px !important;
   margin-top: 8px !important;
 }
 
 .reservation-time-slot-button {
-  padding: 12px 8px !important;
+  padding: 5px 1px !important;
   border-radius: 8px !important;
-  min-height: 48px !important;
   text-transform: none !important;
   font-weight: 600 !important;
   transition: all 0.2s ease-in-out !important;
@@ -260,9 +255,7 @@
   align-items: center !important;
   gap: 16px !important;
   padding: 40px !important;
-  background: #f8fafc !important;
   border-radius: 12px !important;
-  border: 1px solid #e0e7ff !important;
 }
 
 .reservation-loading-text {
@@ -273,9 +266,7 @@
 .reservation-empty-state {
   text-align: center !important;
   padding: 40px !important;
-  background: #f8fafc !important;
   border-radius: 12px !important;
-  border: 1px solid #e0e7ff !important;
   color: var(--indigo-dye) !important;
 }
 
@@ -284,18 +275,13 @@
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  margin: 32px !important;
-  padding-top: 24px !important;
-  border-top: 1px solid var(--verdigris) !important;
+  margin-bottom: 20px;
 }
 
 .reservation-actions-step-1 {
   display: flex !important;
-  justify-content: flex-end !important;
+  justify-content: right !important;
   align-items: center !important;
-  margin: 32px !important;
-  padding-top: 24px !important;
-  border-top: 1px solid var(--verdigris) !important;
 }
 
 .reservation-btn-secondary {
@@ -336,7 +322,7 @@
 /* Responsive Design */
 @media (max-width: 1024px) {
   .reservation-step2-content {
-    gap: 24px;
+    gap: 14px;
   }
 
   .reservation-container {
@@ -356,13 +342,13 @@
 
   .reservation-step2-content {
     grid-template-columns: 1fr !important;
-    gap: 20px;
+    gap: 10px;
   }
 
   .reservation-form-section,
   .reservation-calendar-section,
   .reservation-time-section {
-    padding: 20px !important;
+    padding: 1px !important;
   }
 
   .reservation-actions {

@@ -75,7 +75,6 @@ const ViewPatients: React.FC = () => {
                 </Box>
 
                 <Box className="viewpatients-content">
-
                     {error && (
                         <Alert 
                             severity="error" 

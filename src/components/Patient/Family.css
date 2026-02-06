@@ -1,6 +1,913 @@
+@import "../shared/SharedStyles.css";
+
 .family-header-icon {
   background-color: rgb(81, 177, 255) !important;
   width: 56px !important;
   height: 56px !important;
   margin-right: 24px !important;
+}
+
+.viewturns-filters-header {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+.viewturns-section-title {
+  font-weight: 600 !important;
+  color: var(--gunmetal) !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.reservation-loading-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 40px !important;
+  border-radius: 12px !important;
+}
+
+/* EnableHours.css - Component-specific styles */
+
+
+
+/* Color palette variables - matching PatientShared */
+:root {
+  --gunmetal: #0d2230;
+  --indigo-dye: #1f4f6f;
+  --lapis-lazuli: #22577a;
+  --cerulean: #286a85;
+  --cerulean-2: #2d7d90;
+  --verdigris: #38a3a5;
+  --emerald: #57cc99;
+  --light-green: #80ed99;
+  --tea-green: #c7f9cc;
+  --tea-green-2: #ccfad1;
+  --white: #ffffff;
+  --black: #000000;
+}
+
+/* RangeRow Component Styles */
+.enablehours-range-row {
+  display: flex !important;
+  gap: 12px !important;
+  align-items: center !important;
+  margin-bottom: 8px !important;
+  padding: 8px !important;
+  border-radius: 8px !important;
+  background-color: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  transition: all 0.3s ease !important;
+}
+
+.enablehours-range-row:hover {
+  background-color: #f3f4f6 !important;
+  border-color: var(--verdigris) !important;
+}
+
+/* DayCard Component Styles */
+.enablehours-day-card-styled {
+  height: 100% !important;
+  transition: all 0.3s ease !important;
+  border-radius: 12px !important;
+}
+
+.enablehours-day-card-styled:hover {
+  box-shadow: 0 4px 16px rgba(13, 34, 48, 0.15) !important;
+}
+
+/* Switch Styles */
+.enablehours-switch .MuiSwitch-switchBase.Mui-checked {
+  color: var(--emerald) !important;
+}
+
+.enablehours-switch .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+  background-color: var(--emerald) !important;
+}
+
+/* Calendar Icon */
+.enablehours-calendar-icon {
+  font-size: 28px !important;
+}
+
+/* Time Section Box */
+.enablehours-time-box {
+  min-height: 100px !important;
+}
+
+/* Add Range Button */
+.enablehours-add-first-button {
+  border-radius: 16px !important;
+}
+
+/* Time Input Fields */
+.enablehours-time-input {
+  flex: 1 !important;
+}
+
+.enablehours-time-input .MuiOutlinedInput-root {
+  border-radius: 16px !important;
+}
+
+/* Delete Icon Button */
+.enablehours-delete-button {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  transition: all 0.2s ease !important;
+}
+
+.enablehours-delete-button:hover {
+  transform: scale(1.1) !important;
+  background-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Add Range Button */
+.enablehours-add-range-button {
+  margin-top: 8px !important;
+  border-radius: 16px !important;
+  border-style: dashed !important;
+  color: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+}
+
+.enablehours-add-range-button:hover {
+  background-color: rgba(87, 204, 153, 0.1) !important;
+  transform: scale(1.02) !important;
+}
+
+/* End of new styles */
+
+.enablehours-container {
+  min-height: 100vh !important;
+  background-color: var(--white) !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.enablehours-content {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 24px 32px 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 32px !important;
+}
+
+.enablehours-days-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  max-width: 1000px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 0 !important;
+}
+
+.enablehours-day-container {
+  width: 100% !important;
+}
+
+.enablehours-day-card {
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(13, 34, 48, 0.1) !important;
+  transition: all 0.3s ease !important;
+  height: auto !important;
+  min-height: 120px !important;
+  border: 1px solid #e5e7eb !important;
+  width: 100% !important;
+  padding: 2px 8px !important;
+}
+
+.enablehours-day-card.enabled {
+  background-color: var(--white) !important;
+}
+
+.enablehours-day-card.disabled {
+  background-color: var(--white) !important;
+}
+
+.enablehours-day-card:hover {
+  box-shadow: 0 4px 16px rgba(13, 34, 48, 0.15) !important;
+  transform: translateY(-1px) !important;
+  border-color: var(--verdigris) !important;
+}
+
+.enablehours-day-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 2px !important;
+  padding-bottom: 12px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.enablehours-day-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  flex: 1 !important;
+}
+
+.enablehours-day-details {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.enablehours-ranges-preview {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin-left: auto !important;
+  margin-right: 16px !important;
+  text-align: right !important;
+  min-width: 120px !important;
+}
+
+.enablehours-ranges-preview .MuiTypography-root {
+  font-size: 0.875rem !important;
+  color: var(--verdigris) !important;
+  font-weight: 500 !important;
+  background: rgba(56, 163, 165, 0.1) !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(56, 163, 165, 0.2) !important;
+}
+
+.enablehours-day-title {
+  font-weight: 600 !important;
+  color: var(--gunmetal) !important;
+  margin: 0 !important;
+}
+
+.enablehours-day-status {
+  color: #6b7280 !important;
+  font-size: 0.75rem !important;
+  margin: 0 !important;
+}
+
+.enablehours-time-section {
+  overflow: hidden !important;
+}
+
+.enablehours-time-inputs {
+  display: flex !important;
+  gap: 12px !important;
+  margin-top: 8px !important;
+}
+
+.enablehours-time-input {
+  flex: 1 !important;
+}
+
+.enablehours-time-input .MuiOutlinedInput-root {
+  border-radius: 8px !important;
+  background-color: var(--white) !important;
+}
+
+.enablehours-time-input .MuiInputLabel-root {
+  color: var(--lapis-lazuli) !important;
+  font-weight: 500 !important;
+}
+
+.enablehours-time-input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--verdigris) !important;
+}
+
+.enablehours-time-input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--emerald) !important;
+}
+
+.enablehours-actions {
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: 32px !important;
+  margin-bottom: 16px !important;
+}
+
+.enablehours-save-button {
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--light-green) 100%) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 32px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  text-transform: none !important;
+  box-shadow: 0 4px 14px rgba(87, 204, 153, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.enablehours-save-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--light-green) 0%, var(--emerald) 100%) !important;
+  box-shadow: 0 6px 20px rgba(87, 204, 153, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+.enablehours-save-button:disabled {
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+.enablehours-warning {
+  margin-top: 16px !important;
+  border-radius: 8px !important;
+  background-color: #fef3c7 !important;
+  border: 1px solid #f59e0b !important;
+  color: #92400e !important;
+}
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+  .enablehours-content {
+    padding: 16px !important;
+  }
+  
+  .enablehours-content {
+    padding: 0 16px 32px 16px !important;
+  }
+  
+  .enablehours-days-container {
+    max-width: 100% !important;
+    gap: 12px !important;
+  }
+  
+  .enablehours-day-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  
+  .enablehours-ranges-preview {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    text-align: left !important;
+    min-width: auto !important;
+  }
+  
+  .enablehours-time-inputs {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+}
+
+
+.enablehours-no-config-card {
+  background: linear-gradient(135deg, #fdfeff 0%, #f2f8ff 100%) !important;
+  border: 2px solid #3c9ffb !important;
+  border-radius: 16px !important;
+  margin-bottom: 32px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.enablehours-no-config-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3c9ffb, #16a6f9, #0c91ea);
+  animation: shimmer 2s ease-in-out infinite alternate;
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.enablehours-no-config-content {
+  text-align: center !important;
+}
+
+.enablehours-no-config-icon {
+  margin-bottom: 16px !important;
+}
+
+.enablehours-no-config-calendar {
+  font-size: 80px !important;
+  color: #fb923c !important;
+  filter: drop-shadow(0 4px 12px rgba(251, 146, 60, 0.4));
+  animation: pulse-icon 3s ease-in-out infinite;
+}
+
+@keyframes pulse-icon {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.enablehours-no-config-title {
+  color: #c2410c !important;
+  font-weight: 700 !important;
+  margin-bottom: 8px !important;
+  text-shadow: 0 2px 4px rgba(194, 65, 12, 0.1);
+}
+
+.enablehours-minimize-container {
+  text-align: center !important;
+}
+
+.enablehours-no-config-description {
+  color: #9a3412 !important;
+  margin-bottom: 0 !important;
+  line-height: 1.6 !important;
+  font-size: 1.1rem !important;
+}
+
+.enablehours-no-config-layout {
+  display: flex !important;
+  gap: 32px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 300px !important;
+}
+
+.enablehours-no-config-left {
+  flex: 1 !important;
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.enablehours-no-config-right {
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .enablehours-no-config-layout {
+    flex-direction: column !important;
+  }
+  .enablehours-no-config-left,
+  .enablehours-no-config-right {
+    flex: none !important;
+  }
+  .enablehours-no-config-divider {
+    width: 100% !important;
+    height: 2px !important;
+    background: linear-gradient(to right, transparent, #fb923c, transparent) !important;
+    margin: 24px 0 !important;
+  }
+}
+
+.enablehours-no-config-divider {
+  width: 2px !important;
+  background: linear-gradient(to bottom, transparent, #fb923c, transparent) !important;
+  align-self: stretch !important;
+  margin: 0 24px !important;
+}
+
+.enablehours-steps-title {
+  color: #c2410c !important;
+  font-weight: 600 !important;
+  margin-bottom: 20px !important;
+  text-align: center !important;
+}
+
+.enablehours-no-config-steps {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+.enablehours-step-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 16px 20px !important;
+  background: linear-gradient(135deg, #fff 0%, #fef7ed 100%) !important;
+  border: 2px solid #fb923c !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(251, 146, 60, 0.1) !important;
+}
+
+.enablehours-step-card:hover {
+  transform: translateX(8px) !important;
+  box-shadow: 0 4px 16px rgba(251, 146, 60, 0.2) !important;
+  border-color: #f97316 !important;
+}
+
+.enablehours-step-text {
+  color: #7c2d12 !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  flex: 1 !important;
+}
+
+.enablehours-step-number {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%) !important;
+  color: white !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3) !important;
+}
+
+@media (max-width: 480px) {
+  .enablehours-content {
+    padding: 12px !important;
+  }
+  
+  .enablehours-save-button {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+
+  .enablehours-no-config-content {
+    padding: 32px 20px !important;
+  }
+
+  .enablehours-no-config-calendar {
+    font-size: 56px !important;
+  }
+
+  .enablehours-no-config-title {
+    font-size: 1.5rem !important;
+  }
+
+  .enablehours-no-config-description {
+    font-size: 1rem !important;
+  }
+}
+
+/* ================================== */
+/* ViewTurns styles - copied for Family customization */
+/* ================================== */
+
+/* Content Container */
+.viewturns-content {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 24px 32px 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 32px !important;
+}
+
+/* Specific inline style classes */
+.viewturns-date-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 28px !important;
+  margin-bottom: 8px !important;
+}
+
+.viewturns-date-text {
+  font-weight: 600 !important;
+  color: #1f4f6f !important;
+  line-height: 1.5 !important;
+  margin-top: 2px !important; /* Ajuste para alinear con el texto del doctor */
+}
+
+.viewturns-chip-small {
+  font-size: 0.75rem !important;
+}
+
+.viewturns-turn-details {
+  display: flex !important;
+  align-items: flex-start !important;
+}
+
+.viewturns-time-text {
+  font-weight: 500 !important;
+  color: #1145b6ff !important;
+  line-height: 1.5 !important;
+}
+
+.viewturns-family-text {
+  font-weight: 500 !important;
+  color: #0d2230 !important;
+  line-height: 1 !important;
+}
+
+
+.viewturns-doctor-text {
+  font-weight: 600 !important;
+  color: #0d2230 !important;
+  line-height: 1.5 !important;
+
+}
+
+.viewturns-specialty-text {
+  color: #615e5eff !important;
+}
+
+.viewturns-main-actions-conditional {
+  margin-bottom: 8px !important;
+}
+
+.viewturns-main-actions-no-margin {
+  margin-bottom: 0 !important;
+}
+
+.viewturns-loading-spinner {
+  margin-right: 8px !important;
+}
+
+/* Filters Section - matching PendingScreen card style */
+.viewturns-filters-section {
+  background: white !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+  box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
+}
+
+.viewturns-filters-controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+
+.viewturns-filter-select {
+  min-width: 200px !important;
+}
+
+.viewturns-filter-select .MuiOutlinedInput-root {
+  border-radius: 8px !important;
+  background: white !important;
+}
+
+.viewturns-clear-filter-btn {
+  color: var(--indigo-dye) !important;
+  border-radius: 8px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+
+.viewturns-clear-filter-btn:hover {
+  background: var(--tea-green-2) !important;
+  border-color: var(--cerulean-2) !important;
+}
+
+/* List Section */
+.viewturns-list-section {
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
+}
+
+.viewturns-list-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  padding: 24px !important;
+}
+
+/* Turn Items - styled as cards like PendingScreen doctor cards */
+.viewturns-turn-item {
+  background: white !important;
+  border: 1px solid  rgba(13, 34, 48, 0.08)!important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 2px rgba(13, 34, 48, 0.08) !important;
+  transition: all 0.2s ease !important;
+  padding: 23px !important;
+}
+
+.viewturns-turn-item:hover {
+  box-shadow: 0 4px 16px rgba(13, 34, 48, 0.12) !important;
+  border-color: var(--cerulean-2) !important;
+}
+
+.viewturns-turn-content {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+}
+
+.viewturns-turn-info {
+  flex: 1 !important;
+}
+
+.viewturns-turn-datetime {
+  font-weight: 600 !important;
+  color: var(--gunmetal) !important;
+}
+
+.viewturns-turn-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+}
+
+/* Container para botones principales (modificar/cancelar) */
+.viewturns-main-actions {
+  display: flex !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+}
+
+/* Container para botones de archivos */
+.viewturns-file-actions {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+}
+
+/* Status Chips */
+.viewturns-status-chip {
+  font-weight: 500 !important;
+}
+
+.viewturns-status-chip.status-scheduled {
+  background: var(--tea-green) !important;
+  color: var(--lapis-lazuli) !important;
+}
+
+.viewturns-status-chip.status-completed {
+  background: var(--light-green) !important;
+  color: var(--gunmetal) !important;
+}
+
+.viewturns-status-chip.status-canceled,
+.viewturns-status-chip.status-cancelled {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+
+.viewturns-status-chip.status-no_show {
+  background: #fef3c7 !important;
+  color: #d97706 !important;
+}
+
+/* Cancel Button - matching PendingScreen reject button style */
+.viewturns-cancel-btn {
+  background-color: #f55252 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  transition: all 0.2s ease !important;
+  min-width: 120px !important;
+}
+
+.viewturns-cancel-btn:hover:not(:disabled) {
+  background-color: #dc2626 !important;
+}
+
+.viewturns-cancel-btn:disabled {
+  background-color: var(--tea-green) !important;
+  color: var(--indigo-dye) !important;
+}
+
+/* Modify Button - new styles for 'Cambiar fecha/horario' button */
+.viewturns-modify-btn {
+  background-color: var(--lapis-lazuli) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.viewturns-modify-btn:hover:not(:disabled) {
+  background-color: var(--indigo-dye) !important;
+}
+
+.viewturns-modify-btn:disabled {
+  background-color: var(--tea-green) !important;
+  color: var(--indigo-dye) !important;
+}
+
+/* Loading States */
+.viewturns-loading-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 48px !important;
+  background: white !important;
+  border: 1px solid var(--tea-green) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
+}
+
+.viewturns-loading-text {
+  margin-left: 12px !important;
+  color: var(--indigo-dye) !important;
+}
+
+.viewturns-empty-state {
+  text-align: center;
+  padding: 16px 0;
+  color: #64748b;
+}
+
+.viewturns-empty-icon {
+  width: 80px !important;
+  height: 80px !important;
+  margin: 0 auto 16px auto !important;
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%) !important;
+}
+
+.viewturns-empty-icon .MuiSvgIcon-root {
+  color: white !important;
+  font-size: 40px !important;
+}
+
+.viewturns-empty-title {
+  color: var(--gunmetal) !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+.viewturns-empty-subtitle {
+  color: var(--indigo-dye) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .viewturns-content {
+    padding: 16px !important;
+  }
+
+  .viewturns-turn-item {
+    padding: 20px !important;
+  }
+
+  .viewturns-turn-content {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+
+  .viewturns-turn-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .viewturns-content {
+    padding: 12px !important;
+  }
+
+  .viewturns-turn-item {
+    padding: 16px !important;
+  }
+
+  .viewturns-turn-datetime {
+    font-size: 1rem !important;
+    margin-bottom: 12px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .viewturns-turn-actions {
+    align-items: stretch !important;
+  }
+
+  .viewturns-main-actions {
+    flex-direction: column !important;
+    gap: 12px !important;
+    justify-content: stretch !important;
+  }
+
+  .viewturns-file-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+    justify-content: stretch !important;
+  }
+
+  .viewturns-cancel-btn,
+  .viewturns-modify-btn {
+    width: 100% !important;
+    padding: 10px 16px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .viewturns-turn-datetime {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .viewturns-status-chip {
+    align-self: flex-start !important;
+  }
 }
