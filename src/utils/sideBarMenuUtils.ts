@@ -2,7 +2,7 @@
 import {
   Dashboard as DashboardIcon,
   People as PeopleIcon,
-  CalendarToday as CalendarIcon,
+  CalendarMonth as CalendarIcon,
   Schedule as ScheduleIcon,
   Notifications as NotificationsIcon,
   Person as PersonIcon,
@@ -10,7 +10,9 @@ import {
   BarChart as BarChartIcon,
   EmojiEvents as TrophyIcon,
   WorkspacePremium as WorkspacePremiumIcon,
-  Group as GroupIcon
+  Group as GroupIcon,
+  EditCalendar as EditCalendarIcon,
+  
 } from '@mui/icons-material';
 
 export interface MenuItem {
@@ -25,7 +27,8 @@ export interface MenuItem {
 export const iconMap = {
   Dashboard: DashboardIcon,
   People: PeopleIcon,
-  CalendarToday: CalendarIcon,
+  CalendarMonth: CalendarIcon,
+  EditCalendarIcon: EditCalendarIcon,
   Schedule: ScheduleIcon,
   Notifications: NotificationsIcon,
   Person: PersonIcon,
@@ -115,8 +118,8 @@ export const getPatientMenuItems = (handleLogout: () => void): MenuItem[] => [
   },
   {
     id: 'reservation',
-    title: 'Reservar Turno',
-    iconComponent: CalendarIcon,
+    title: 'Nuevo Turno',
+    iconComponent: EditCalendarIcon,
     path: '/patient/reservation-turns'
   },
   {

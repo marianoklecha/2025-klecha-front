@@ -20,6 +20,7 @@ import { dayjsArgentina, nowArgentina } from '#/utils/dateTimeUtils';
 import "./PatientDashboard.css";
 import LoadingThreeDotsJumping from "../shared/PageLoadingScreen/LoadingThreeDots";
 import { useDataMachine } from "#/providers/DataProvider";
+import { EditCalendar } from "@mui/icons-material";
 
 const PatientDashboard: React.FC = () => {
   const { uiSend, turnState, badgeState } = useMachines();
@@ -105,8 +106,8 @@ const PatientDashboard: React.FC = () => {
             <DashboardCard
               type="patient"
               variant="secondary"
-              icon={<CalendarTodayIcon className="patient-action-icon" />}
-              title="Reservar Turno"
+              icon={<EditCalendar className="patient-action-icon" />}
+              title="Nuevo Turno"
               description="Agenda una nueva cita médica con tu especialista preferido"
               buttonText="Nuevo Turno"
               onClick={() => uiSend({ type: "NAVIGATE", to: "/patient/reservation-turns" })}

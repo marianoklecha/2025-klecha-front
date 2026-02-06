@@ -83,7 +83,7 @@
 
 .viewturns-filters-header {
   display: flex !important;
-  justify-content: right !important;
+  justify-content: flex-end !important;
   align-items: center !important;
   gap: 20px !important;
 }
