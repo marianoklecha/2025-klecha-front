@@ -28,7 +28,7 @@ export class FamilyMemberService {
         throw new Error(
           errorData?.message || 
           errorData?.error ||
-          `Failed to create family member! Status: ${response.status}`
+          `Error al crear familiar (Status: ${response.status})`
         );
       }
 
@@ -55,13 +55,46 @@ export class FamilyMemberService {
         throw new Error(
           errorData?.message || 
           errorData?.error ||
-          `Failed to fetch my family! Status: ${response.status}`
+          `Error al obtener grupo familiar (Status: ${response.status})`
         );
       }
       const result: FamilyMemberResponse[] = await response.json();
       return result;
     } catch (error) {
         console.error('[FamilyService] getMyFamily - Exception:', error);
+      throw error;
+    }
+  }
+
+  static async updateFamilyMember(
+    id: string,
+    data: FamilyMemberCreateRequest,
+    accessToken: string
+
+  ): Promise<FamilyMemberResponse> {
+    const url = buildApiUrl(API_CONFIG.ENDPOINTS.UPDATE_FAMILY_MEMBER.replace('{id}', id));
+
+    try {
+      const response = await fetch(url, {
+      ...getAuthenticatedFetchOptions(accessToken),
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+        const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
+        
+        throw new Error(
+          errorData?.message || 
+          errorData?.error ||
+          `Error al actualizar familiar (Status: ${response.status})`
+        );
+      }
+
+      const result: FamilyMemberResponse = await response.json();
+      
+      return result;
+    } catch (error) {
       throw error;
     }
   }

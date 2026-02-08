@@ -15,6 +15,7 @@ import { filterTurns } from "#/utils/filterTurns";
 import ConfirmationModal from "#/components/shared/ConfirmationModal/ConfirmationModal";
 import { useTurnFileLogic } from "#/hooks/useTurnFileLogic";
 import FileActions from "#/utils/FileActions/FileActions";
+import { FamilyMemberResponse } from "#/models/FamilyMember";
 
 const ViewTurns: React.FC = () => {
   const { turnState, turnSend, uiSend } = useMachines();
@@ -38,7 +39,7 @@ const ViewTurns: React.FC = () => {
   const { cancellingTurnId, isCancellingTurn } = turnContext;
 
   const allTurns: TurnResponse[] = dataContext.myTurns || [];
-  const filteredTurns: TurnResponse[] = (filterTurns(allTurns, showTurnsContext.statusFilter) as TurnResponse[])
+  const filteredTurns: TurnResponse[] = (filterTurns(allTurns, showTurnsContext.statusFilter, showTurnsContext.familyFilter) as TurnResponse[])
     .slice()
     .sort((a, b) => dayjsArgentina(b.scheduledAt).valueOf() - dayjsArgentina(a.scheduledAt).valueOf());
   const pendingModifyRequests = dataContext.myModifyRequests?.filter((r: TurnModifyRequest) => r.status === "PENDING") || [];
@@ -162,14 +163,46 @@ const ViewTurns: React.FC = () => {
                   </Select>
                 </FormControl>
 
-                {showTurnsContext.statusFilter && (
+                <FormControl size="small" className="viewturns-filter-select">
+                  <InputLabel>Paciente</InputLabel>
+                  <Select
+                    value={showTurnsContext.familyFilter}
+                    label="Paciente"
+                    onChange={(e) => turnSend({
+                      type: "UPDATE_FORM",
+                      path: ["showTurns", "familyFilter"],
+                      value: e.target.value
+                    })}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+
+                    { family && family.map((familyMember: FamilyMemberResponse) => (
+                       <MenuItem key={familyMember.id} value={familyMember.id}>
+                          {familyMember.name}
+                        </MenuItem>
+                      ))
+                    }
+                  
+                  </Select>
+                </FormControl>
+
+                {(showTurnsContext.statusFilter || showTurnsContext.familyFilter) && (
                   <Button
                     variant="outlined"
-                      onClick={() => turnSend({
-                        type: "UPDATE_FORM",
-                        path: ["showTurns", "statusFilter"],
-                        value: ""
-                      })}
+                      onClick={() => 
+                        {
+                          turnSend({
+                            type: "UPDATE_FORM",
+                            path: ["showTurns", "statusFilter"],
+                            value: ""
+                          });
+                          turnSend({
+                            type: "UPDATE_FORM",
+                            path: ["showTurns", "familyFilter"],
+                            value: ""
+                          }); 
+                        }
+                    }
                     className="viewturns-clear-filter-btn"
                   >
                     Limpiar filtro

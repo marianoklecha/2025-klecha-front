@@ -20,7 +20,6 @@ const RatingModal = () => {
   const { dataState } = useDataMachine();
   const { authState } = useAuthMachine();
   
-  // Get values directly from state machines without memoization
   const user = authState?.context?.authResponse as SignInResponse;
   const modalData = uiState.context.ratingModal;
   const open = modalData.open;
@@ -36,7 +35,6 @@ const RatingModal = () => {
   const subcategories = ratingState?.context?.subcategories || [];
   const loading = ratingState?.context?.loading || false;
   
-  // Calculate position values directly
   const currentTurnIndex = turnsNeedingRating.findIndex((t: any) => t.id === turn?.id);
   const currentPosition = currentTurnIndex >= 0 ? currentTurnIndex + 1 : 1;
   const totalTurns = turnsNeedingRating.length;
@@ -44,7 +42,23 @@ const RatingModal = () => {
   
   const isDoctor = user?.role === 'DOCTOR';
   const displayName = isDoctor ? turn?.patientName : `Dr. ${turn?.doctorName}`;
+ 
   const displayInfo = isDoctor ? 'Paciente' : (turn?.doctorSpecialty || 'Medicina General');
+
+  const dataContext = dataState.context;
+  const myPatients = isDoctor ? dataContext.doctorPatients : null;
+
+  const getFamilyMember = (familyMemberId: string) => {
+    if (!myPatients || !Array.isArray(myPatients)) return null;
+
+    for (const patient of myPatients) {
+      const member = patient.familyMembers?.find((m: any) => m.id === familyMemberId);
+      if (member) return member;
+    }
+    return null;
+  }
+
+  const displayFamilyMemberName = turn?.familyMemberId ? getFamilyMember(turn.familyMemberId) : null;
   
   const handleClose = () => {
     if (isDoctor) {
@@ -139,9 +153,24 @@ const RatingModal = () => {
           <Paper className="rating-modal-info-card">
             <Box className="rating-modal-doctor-info">
               <Box className="rating-modal-doctor-details">
-                <Typography variant="h6" className="rating-modal-doctor-name">
-                  {displayName}
-                </Typography>
+                {
+                  (displayFamilyMemberName && isDoctor) ? (
+                    <>
+                      <Typography variant="h6" className="rating-modal-doctor-name">
+                        Paciente: {displayFamilyMemberName.name} {displayFamilyMemberName.surname} ({displayFamilyMemberName.relationship})
+                      </Typography>
+                      <Typography variant="h6" className="rating-modal-doctor-name">
+                        Familiar: {displayName}
+                      </Typography>
+                    </>
+                    
+                  ) : (
+                    <Typography variant="h6" className="rating-modal-doctor-name">
+                      {displayName}
+                    </Typography>
+                  )
+                }
+                
                 <Typography variant="body2" className="rating-modal-doctor-specialty">
                   {displayInfo}
                 </Typography>

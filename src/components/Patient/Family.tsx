@@ -11,7 +11,7 @@ import { useMachines } from "#/providers/MachineProvider";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { motion, AnimatePresence } from "framer-motion"
-import { Group, KeyboardArrowDown } from "@mui/icons-material";
+import { Edit, Group, KeyboardArrowDown } from "@mui/icons-material";
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 
 
@@ -33,6 +33,8 @@ const Family: React.FC = () => {
   const allFieldsFilled = Object.values(formValues).every(value => value !== "" && value !== null && value !== undefined);
   const isButtonDisabled = loading || hasErrors || !allFieldsFilled;
   const isCreateFamilyVisible = uiContext.toggleStates?.['CreateFamily'] || false;
+  const editingId = familyState?.context?.editingFamilyMemberId;
+  const isEditing = Boolean(editingId);
 
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -57,19 +59,6 @@ const Family: React.FC = () => {
                 Administra los perfiles de tus familiares
               </Typography>
             </Box>
-          </Box>
-          <Box className="shared-header-spacer">
-             <Button 
-                variant="contained" 
-                startIcon={<PersonAddAlt1Icon />}
-                onClick={() => {
-                   if (!isCreateFamilyVisible) uiSend({ type: "TOGGLE", key: "CreateFamily" });
-                   document.getElementById('add-family-form')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(34, 87, 122, 0.2)' }}
-             >
-                Añadir Familiar
-             </Button>
           </Box>
         </Box>
       </Box>
@@ -139,6 +128,19 @@ const Family: React.FC = () => {
                                DNI: {familyMember.dni}
                             </Typography>
                         </Box>
+                        <IconButton 
+                          onClick= {() => {
+                            familySend({ type: "SET_EDIT_FAMILY_MEMBER", member: familyMember});
+                            if (!isCreateFamilyVisible) {
+                              uiSend({type: "TOGGLE", key: "CreateFamily"});
+                            }
+                            setTimeout(() => {
+                              document.getElementById('add-family-form')?.scrollIntoView({ behavior: 'smooth' });
+                            }, 100);
+                          }}
+                        >
+                          <Edit></Edit>
+                        </IconButton>
                     </Box>
                 </Grid>
               ))
@@ -163,7 +165,10 @@ const Family: React.FC = () => {
                     <CardContent className="enablehours-no-config-content" sx={{ p: '24px !important', textAlign: 'left !important' }}>
                       <Box 
                         className="viewturns-filters-header" 
-                        onClick={() => uiSend({ type: "TOGGLE", key: "CreateFamily" })}
+                        onClick={() => {
+                            uiSend({ type: "TOGGLE", key: "CreateFamily" });
+                            familySend({type: "CANCEL_EDIT"});
+                          }}
                         sx={{ 
                           cursor: 'pointer', 
                           justifyContent: 'space-between !important',
@@ -176,7 +181,7 @@ const Family: React.FC = () => {
                             </Avatar>
                             <Box textAlign="left">
                               <Typography variant="h6" className="viewturns-section-title">
-                                  Añadir nuevo familiar
+                                  {isEditing ? "Editar Familiar" : "Añadir nuevo familiar"}
                               </Typography>
                               {!isCreateFamilyVisible && (
                                 <Typography variant="body2" color="text.secondary">
@@ -341,7 +346,8 @@ const Family: React.FC = () => {
                                       disabled={isButtonDisabled}
                                       className="auth-submit-button"
                                   >
-                                  {loading ? "Añadiendo familiar..." : "Añadir"}
+                                  { isEditing ? "Guardar Cambios" : "Añadir" }
+                                  { loading ? (isEditing ? "Guardando cambios..." : "Añadiendo familiar..." ) : null}
                                   </Button>
 
                                   {error && (
