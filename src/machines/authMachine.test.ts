@@ -5,6 +5,7 @@ import { createActor } from 'xstate';
 vi.mock('#/core/Orchestrator', () => ({
   orchestrator: {
     send: vi.fn(),
+    sendToMachine: vi.fn(),
     registerMachine: vi.fn(),
   }
 }));

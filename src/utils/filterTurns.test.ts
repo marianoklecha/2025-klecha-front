@@ -74,37 +74,37 @@ describe('filterTurns', () => {
   ]
 
   it('should return all turns when no status filter is provided', () => {
-    const result = filterTurns(mockTurns, null)
+    const result = filterTurns(mockTurns, null, null)
     expect(result).toHaveLength(5)
     expect(result.map((t: any) => t.id)).toEqual([1, 5, 2, 3, 4]) // sorted by priority and date ascending
   })
 
   it('should filter turns by status when statusFilter is provided', () => {
-    const result = filterTurns(mockTurns, 'SCHEDULED')
+    const result = filterTurns(mockTurns, 'SCHEDULED', null)
     expect(result).toHaveLength(3)
     expect(result.every((turn: any) => turn.status === 'SCHEDULED')).toBe(true)
     expect(result.map((t: any) => t.id)).toEqual([1, 5, 2]) // future first ascending, then past ascending
   })
 
   it('should filter turns by CANCELED status', () => {
-    const result = filterTurns(mockTurns, 'CANCELED')
+    const result = filterTurns(mockTurns, 'CANCELED', null)
     expect(result).toHaveLength(1)
     expect(result[0].id).toBe(3)
   })
 
   it('should filter turns by COMPLETED status', () => {
-    const result = filterTurns(mockTurns, 'COMPLETED')
+    const result = filterTurns(mockTurns, 'COMPLETED', null)
     expect(result).toHaveLength(1)
     expect(result[0].id).toBe(4)
   })
 
   it('should return empty array when no turns match the status filter', () => {
-    const result = filterTurns(mockTurns, 'NONEXISTENT')
+    const result = filterTurns(mockTurns, 'NONEXISTENT', null)
     expect(result).toEqual([])
   })
 
   it('should sort turns by status priority and scheduled date', () => {
-    const result = filterTurns(mockTurns, null)
+    const result = filterTurns(mockTurns, null, null)
 
     // Expected order by priority:
     // 1. SCHEDULED (future) - id 1, then id 5 (ascending date order)
@@ -115,18 +115,18 @@ describe('filterTurns', () => {
   })
 
   it('should handle empty turns array', () => {
-    const result = filterTurns([], null)
+    const result = filterTurns([], null, null)
     expect(result).toEqual([])
   })
 
   it('should handle empty turns array with status filter', () => {
-    const result = filterTurns([], 'SCHEDULED')
+    const result = filterTurns([], 'SCHEDULED', null)
     expect(result).toEqual([])
   })
 
   it('should sort SCHEDULED turns with future dates first, then past dates', () => {
     const scheduledTurns = mockTurns.filter(t => t.status === 'SCHEDULED')
-    const result = filterTurns(scheduledTurns, null)
+    const result = filterTurns(scheduledTurns, null, null)
 
     expect(result.map((t: any) => t.id)).toEqual([1, 5, 2]) // future dates first ascending (1, 5), then past (2)
   })
@@ -153,7 +153,7 @@ describe('filterTurns', () => {
       }
     ]
 
-    const result = filterTurns(futureScheduledTurns, null)
+    const result = filterTurns(futureScheduledTurns, null, null)
     expect(result.map((t: any) => t.id)).toEqual([1, 3, 2]) // sorted by date asc: 16, 17, 18
   })
 
@@ -173,7 +173,7 @@ describe('filterTurns', () => {
       }
     ]
 
-    const result = filterTurns(sameDateTurns, null)
+    const result = filterTurns(sameDateTurns, null, null)
     // When dates are equal, the sort is stable, so original order should be preserved
     expect(result).toHaveLength(2)
     expect(result.every((t: any) => t.status === 'SCHEDULED')).toBe(true)

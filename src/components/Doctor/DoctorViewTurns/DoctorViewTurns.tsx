@@ -30,7 +30,7 @@ const DoctorViewTurns: React.FC = () => {
   const dataContext = dataState.context;
   const myPatients = dataContext.doctorPatients;
 
-  const filteredTurns = (filterTurns(turnContext.myTurns, showTurnsContext.statusFilter) || [])
+  const filteredTurns = (filterTurns(turnContext.myTurns, showTurnsContext.statusFilter, null) || [])
     .slice()
     .sort((a: any, b: any) => dayjsArgentina(b.scheduledAt).valueOf() - dayjsArgentina(a.scheduledAt).valueOf());
 

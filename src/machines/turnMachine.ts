@@ -61,6 +61,7 @@ export interface TurnMachineContext {
   showTurns: {
     dateSelected: Dayjs | null;
     statusFilter: string;
+    familyFilter: string;
   };
 
   modifyTurn?: {
@@ -254,6 +255,7 @@ export const turnMachine = createMachine({
     showTurns: {
       dateSelected: null,
       statusFilter: "",
+      familyFilter: "",
     },
     modifyTurn: {
       turnId: null,
@@ -363,6 +365,7 @@ export const turnMachine = createMachine({
                 showTurns: { 
                   dateSelected: null,
                   statusFilter: "",
+                  familyFilter: ""
                 },
               }),
             },
@@ -372,12 +375,30 @@ export const turnMachine = createMachine({
     },
     modifyTurn: {
       initial: "idle",
+      on: {
+        RESET_MODIFY_TURN: {
+          target: ".idle",
+          actions: assign({
+            modifyTurn: {
+              turnId: null,
+              currentTurn: null,
+              selectedDate: null,
+              selectedTime: null,
+              availableSlots: [],
+              availableDates: [],
+              motive: "",
+            },
+            isLoadingAvailableDates: false
+          })
+        }
+      },
       states: {
         idle: {
           always: {
             guard: ({ context }) => !!context.modifyTurn?.turnId,
             target: "modifying"
           },
+          
           on: {
             NAVIGATE: {
               actions: assign({

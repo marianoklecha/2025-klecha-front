@@ -66,6 +66,7 @@ export const API_CONFIG = {
     
     GET_PROFILE: '/api/profile/{profileId}',
     UPDATE_PROFILE: '/api/profile/{profileId}',
+    UPDATE_FAMILY_MEMBER: '/api/family/{id}',
     DEACTIVATE_ACCOUNT: '/api/profile/me/deactivate',
   },
 

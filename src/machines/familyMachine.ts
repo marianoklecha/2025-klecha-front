@@ -2,7 +2,8 @@ import { createMachine, assign, fromPromise } from "xstate";
 import { orchestrator } from "#/core/Orchestrator";
 import { FamilyMemberResponse } from "#/models/FamilyMember";
 import { validateField } from "#/utils/MachineUtils/familyFormValidation";
-import { createFamilyMember } from "#/utils/MachineUtils/familyMachineUtils";
+import { FamilyMemberService } from "#/service/family-service.service";
+import { DATA_MACHINE_ID } from "./dataMachine";
 
 
 export const FAMILY_MACHINE_ID = "family";
@@ -14,11 +15,14 @@ export const FAMILY_MACHINE_EVENT_TYPES = [
   "UPDATE_FAMILY_MEMBER", 
   "CANCEL_FAMILY_MEMBER_EDIT",
   "UPDATE_FORM",
-  "CLEAR_ERROR"
+  "CLEAR_ERROR",
+  "SET_EDIT_FAMILY_MEMBER",
+  "CANCEL_EDIT"
 ];
 
 export interface FamilyMachineContext {
   familyMember: FamilyMemberResponse | null;
+  editingFamilyMemberId: string | null;
   updatingFamilyMember: boolean;
   loading: boolean;
   error: string | null;
@@ -37,6 +41,7 @@ export interface FamilyMachineContext {
 
 export const FamilyMachineDefaultContext: FamilyMachineContext = {
   familyMember: null,
+  editingFamilyMemberId: null,
   updatingFamilyMember: false,
   loading: false,
   error: null,
@@ -62,7 +67,9 @@ export type FamilyMachineEvent =
   | { type: "CANCEL_FAMILY_MEMBER_EDIT"; key: string }
   | { type: "UPDATE_FORM"; key: string; value: any }
   | { type: "INIT_FAMILY_MEMBER_PAGE" }
-  | { type: "CLEAR_ERROR" };
+  | { type: "CLEAR_ERROR" }
+  | { type: "SET_EDIT_FAMILY_MEMBER"; member: FamilyMemberResponse }
+  | { type: "CANCEL_EDIT" };
 
 export const familyMachine = createMachine({
   id: "family",
@@ -123,6 +130,29 @@ export const familyMachine = createMachine({
           }),
         },
 
+        SET_EDIT_FAMILY_MEMBER: {
+          actions: assign(({ event }) => ({
+            editingFamilyMemberId: event.member.id,
+            formValues: {
+              name: event.member.name,
+              surname: event.member.surname,
+              dni: String(event.member.dni),
+              gender: event.member.gender,
+              birthdate: event.member.birthdate,
+              relationship: event.member.relationship
+            },
+            formErrors: {}
+          })),
+        },
+
+        CANCEL_EDIT: {
+          actions: assign({
+            editingFamilyMemberId: null,
+            formValues: FamilyMachineDefaultContext.formValues,
+            formErrors: {}
+          }),
+        },
+
         CANCEL_FAMILY_MEMBER_EDIT: {
           actions: assign(({ context, event }) => {
             if (!context.familyMember) return {};
@@ -158,17 +188,32 @@ export const familyMachine = createMachine({
             input: { 
                 accessToken: string;
                 userId: string;
+                editingId: string | null;
                 formValues: FamilyMachineContext['formValues']
             } }) => {
-          return await createFamilyMember({
-            accessToken: input.accessToken,
-            userId: input.userId,
-            formValues: input.formValues
-          });
+          
+          const requestData = {
+              ...input.formValues,
+              holderId: input.userId
+          };
+
+          if (input.editingId) {
+             return await FamilyMemberService.updateFamilyMember(
+               input.editingId,
+               requestData,
+               input.accessToken
+             );
+          } else {
+             return await FamilyMemberService.createFamilyMember(
+               requestData,
+               input.accessToken
+             );
+          }
         }),
         input: ({ context }) => ({
           accessToken: context.accessToken!,
           userId: context.userId!,
+          editingId: context.editingFamilyMemberId,
           formValues: context.formValues
         }),
         onDone: {
@@ -178,6 +223,7 @@ export const familyMachine = createMachine({
             
             assign({
                 loading: false,
+                editingFamilyMemberId: null,
                 formValues: () => ({
                     name: "",
                     surname: "",
@@ -190,19 +236,39 @@ export const familyMachine = createMachine({
             }),
 
             () => {
-                orchestrator.send('LOAD_MY_FAMILY');
+                orchestrator.sendToMachine(DATA_MACHINE_ID, {type: 'LOAD_MY_FAMILY'});
+                
+                orchestrator.sendToMachine("ui", {type: "TOGGLE", key: "CreateFamily"});
+
+                orchestrator.sendToMachine("ui", {
+                  type: "OPEN_SNACKBAR",
+                  message: "Familiar guardado correctamente",
+                  severity: "success"
+                })
             }
         ],
         },
+
         onError: {
           target: "idle",
-          actions: assign({
-            loading: false,
-            error: ({ event }) =>
-              event.error instanceof Error
-                ? event.error.message
-                : "Error al crear el familiar",
-          }),
+          actions: [
+            assign({
+              loading: false,
+              error: ({ event }) =>
+                event.error instanceof Error
+                  ? event.error.message
+                  : "Error al guardar el familiar",
+            }),
+            ({event}) => {
+              const errorMsg = event.error instanceof Error ? event.error.message : "Error al guardar el familiar";
+
+              orchestrator.sendToMachine("ui", {
+                type: "OPEN_SNACKBAR",
+                message: errorMsg,
+                severity: "error"
+              });
+            }
+        ]
         },
       },
     },

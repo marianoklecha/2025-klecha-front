@@ -1,12 +1,21 @@
 import { dayjsArgentina, nowArgentina } from './dateTimeUtils';
 
-export function filterTurns (myTurns: any, statusFilter: any) {
-    return myTurns.filter((turn: any) => {
-      let matchesStatus = true;
-      if (statusFilter) {
-        matchesStatus = turn.status === statusFilter;
-      }
-      return matchesStatus;
+export function filterTurns (myTurns: any, statusFilter: any, familyFilter: any) {
+    return myTurns.filter(
+      (turn: any) => {
+        let matchesStatus = true;
+        if (statusFilter) {
+          matchesStatus = turn.status === statusFilter;
+        }
+        return matchesStatus;
+    })
+    .filter(
+      (turn: any) => {
+        let matchesFamily = true;
+        if (familyFilter) {
+          matchesFamily = turn.familyMemberId === familyFilter;
+        }
+        return matchesFamily;
     })
     .sort((a: any, b: any) => {
       const getStatusPriority = (turn: any) => {
@@ -28,8 +37,6 @@ export function filterTurns (myTurns: any, statusFilter: any) {
       return dayjsArgentina(a.scheduledAt).valueOf() - dayjsArgentina(b.scheduledAt).valueOf();
     })
 }
-
-
 
 export function turnsOfTheMonth (myTurns: any) {
     const currentMonth = nowArgentina().month();
