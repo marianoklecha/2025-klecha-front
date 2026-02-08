@@ -84,7 +84,6 @@
 /* Filters Section - matching PendingScreen card style */
 .doctor-viewturns-filters-section {
   background: white !important;
-  border: 1px solid var(--tea-green) !important;
   border-radius: 12px !important;
   padding: 24px !important;
   box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
@@ -122,7 +121,6 @@
 
 .doctor-viewturns-clear-filter-btn {
   color: var(--indigo-dye) !important;
-  border-color: var(--tea-green) !important;
   border-radius: 8px !important;
   text-transform: none !important;
   font-weight: 500 !important;
@@ -137,7 +135,6 @@
 /* List Section */
 .doctor-viewturns-list-section {
   background: white !important;
-  border: 1px solid var(--tea-green) !important;
   border-radius: 12px !important;
   box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
 }
@@ -152,7 +149,6 @@
 /* Turn Items - styled as cards like PendingScreen doctor cards */
 .doctor-viewturns-turn-item {
   background: white !important;
-  border: 1px solid var(--tea-green) !important;
   border-radius: 12px !important;
   box-shadow: 0 2px 8px rgba(13, 34, 48, 0.08) !important;
   transition: all 0.2s ease !important;
