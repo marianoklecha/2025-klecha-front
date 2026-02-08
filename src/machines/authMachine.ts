@@ -204,6 +204,7 @@ export const authMachine = createMachine({
           })),
           () => {
             orchestrator.send({ type: "CLEAR_ACCESS_TOKEN" });
+            orchestrator.sendToMachine("turn", { type: "RESET_MODIFY_TURN" });
             orchestrator.send({ type: "NAVIGATE", to: "/" });
           }
           ],

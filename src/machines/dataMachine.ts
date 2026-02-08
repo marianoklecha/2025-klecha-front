@@ -907,6 +907,7 @@ export const dataMachine = createMachine({
         onDone: [
           {
             target: "fetchingUserBadges",
+            guard: ({ context }) => context.loading.initializing,
             actions: [
               assign({
                 myFamily: ({ event }) => event.output,
