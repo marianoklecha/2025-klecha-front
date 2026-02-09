@@ -330,109 +330,116 @@
   }
 }
 
+/* Tablet & Mobile shared adjustments */
 @media (max-width: 768px) {
   .patient-container {
-    padding: 16px 8px;
+    padding: 0 !important;
   }
 
   .reservation-step1-container,
   .reservation-step2-container {
     max-width: none;
+    padding: 0 16px;
   }
 
   .reservation-step2-content {
-    grid-template-columns: 1fr !important;
-    gap: 10px;
+    /* Remove grid-template-columns since we use MUI Grid now, but keep padding adjustments */
+    padding: 16px !important;
+    gap: 24px !important;
   }
 
+  /* Separate sections visually on mobile */
+  .reservation-calendar-section {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(32, 117, 173, 0.1) !important;
+    padding-bottom: 24px !important;
+    margin-bottom: 8px !important;
+  }
+  
   .reservation-form-section,
   .reservation-calendar-section,
   .reservation-time-section {
-    padding: 1px !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
-  .reservation-actions {
+  .reservation-actions-step-1,
+  .reservation-actions-step-2 {
     flex-direction: column-reverse;
-    gap: 16px;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .reservation-actions-step-1 {
+    flex-direction: column; /* Step 1 only has "Continue", so column is fine */
   }
 
   .reservation-btn-secondary,
   .reservation-btn-primary {
-    width: 100%;
-    padding: 14px !important;
+    width: 100% !important;
+    padding: 12px !important;
+    margin: 0 !important;
+  }
+
+  /* Actions container padding fix */
+  .reservation-actions-step-2 {
+    margin-top: 24px !important;
+    margin-bottom: 32px !important;
   }
 
   .reservation-time-grid {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
-    gap: 10px !important;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important; 
+    gap: 12px !important;
   }
 
+  /* Progress Indicator Mobile */
   .reservation-progress-indicator {
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
+    margin-bottom: 24px;
   }
 
   .reservation-progress-step {
     width: 100%;
     justify-content: center;
-    padding: 10px 16px !important;
+    padding: 12px 16px !important;
+    font-size: 0.9rem !important;
   }
 }
 
 @media (max-width: 480px) {
-  .patient-container {
-    padding: 12px 4px;
+  .reservation-step1-container,
+  .reservation-step2-container {
+    padding: 0 12px;
   }
 
-  /* Ensure chips and menu items don't zoom on hover anywhere in this component */
-  /* MUI classes targeted to be safe and specific to this component's usage */
-  .ReservationTurnsChipOverride .MuiChip-root,
-  .reservation-select .MuiList-root .MuiMenuItem-root,
-  .reservation-select .MuiList-root .MuiMenuItem-root:hover,
-  .reservation-time-slot-button,
-  .reservation-time-slot-button:hover {
-    transition: none !important;
-    transform: none !important;
-    box-shadow: none !important;
+  /* Ensure inputs are easy to tap */
+  .reservation-select .MuiSelect-select,
+  .reservation-input input {
+    min-height: 1.5em; /* Ensure good tap target */
   }
 
-  /* Also disable hover transform for chips globally inside this component */
-  .MuiChip-root:hover {
-    transform: none !important;
-  }
-
-  .reservation-form-section,
-  .reservation-calendar-section,
-  .reservation-time-section {
-    padding: 16px !important;
-  }
-
-/* Global safety: disable unexpected hover/zoom effects on chips, menu items and time-slot buttons */
-.MuiChip-root,
-.MuiChip-root:hover,
-.MuiMenuItem-root,
-.MuiMenuItem-root:hover,
-.reservation-time-slot-button,
-.reservation-time-slot-button:hover {
-  transition: none !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-  .reservation-time-grid {
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)) !important;
-    gap: 8px !important;
+  /* Calendar tweaks for small screens */
+  .reservation-calendar-container .MuiDateCalendar-root {
+    width: 100% !important;
   }
 
   .reservation-time-slot-button {
-    padding: 8px 4px !important;
-    min-height: 40px !important;
-    font-size: 0.875rem !important;
+    padding: 10px 4px !important;
+    font-size: 0.9rem !important;
+    min-height: 44px !important; /* Larger touch target */
   }
-
+  
+  /* Buttons font size */
   .reservation-btn-secondary,
   .reservation-btn-primary {
-    padding: 12px !important;
-    font-size: 0.9rem !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* Fix header text wrapping on mobile */
+  .shared-header-title {
+    white-space: nowrap !important;
+    font-size: 1.4rem !important;
   }
 }

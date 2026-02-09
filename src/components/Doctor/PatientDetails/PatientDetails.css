@@ -177,6 +177,45 @@
   .patient-details-name {
     font-size: 1.75rem !important;
   }
+
+  /* Fix for "apretada y encimada" content */
+  .patient-details-content {
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 20px !important;
+  }
+
+  /* Make direct children (the two main columns) full width */
+  .patient-details-content > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-basis: auto !important;
+  }
+
+  /* Layout for info items inside cards */
+  .patient-details-info-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .patient-details-info-item {
+     width: 100% !important;
+     max-width: 100% !important;
+     padding: 12px !important;
+     /* Reset any grid sizing */
+     flex-basis: auto !important;
+     background-color: #f8fafc; /* slightly distinguish items */
+  }
+
+  .patient-details-label {
+    margin-bottom: 4px;
+  }
+
+  .patient-details-value {
+    margin-left: 0 !important; /* Align left to save space */
+    font-size: 1rem !important;
+  }
 }
 
 

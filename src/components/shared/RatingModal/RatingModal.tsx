@@ -1,7 +1,7 @@
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography,
-  Rating, Box, Paper, Chip
+  Rating, Box, Paper, Chip, useTheme, useMediaQuery
 } from '@mui/material';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -19,6 +19,8 @@ const RatingModal = () => {
   const { uiState, ratingState, ratingSend } = useMachines();
   const { dataState } = useDataMachine();
   const { authState } = useAuthMachine();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   const user = authState?.context?.authResponse as SignInResponse;
   const modalData = uiState.context.ratingModal;
@@ -129,6 +131,7 @@ const RatingModal = () => {
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
+      fullScreen={isMobile}
       disableEscapeKeyDown={!isDoctor}
       className="rating-modal"
     >

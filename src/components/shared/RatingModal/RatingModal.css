@@ -203,53 +203,89 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .rating-modal .MuiDialog-paper {
-    margin: 16px !important;
-    max-width: calc(100vw - 32px) !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    height: 100% !important;
   }
 
   .rating-modal-header {
-    padding: 20px 16px !important;
+    padding: 16px !important;
+    border-radius: 0 !important;
+    flex-shrink: 0;
+  }
+
+  .rating-modal-head-content {
+      flex-direction: column;
   }
 
   .rating-modal-content {
-    padding: 20px 16px !important;
+    padding: 16px !important;
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .rating-modal-info-card {
+    padding: 16px !important;
+    margin-bottom: 20px !important;
+    box-shadow: none !important;
+    border: 1px solid #e0e0e0 !important;
+  }
+
+  /* Make rating section more compact on mobile */
+  .rating-modal-rating-section {
+    margin-bottom: 20px !important;
+  }
+  
+  .rating-modal-rating-container {
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+
+  .rating-modal-stars {
+    font-size: 2rem !important;
   }
 
   .rating-modal-actions {
     padding: 16px !important;
-  }
-
-  .rating-modal-stars {
-    font-size: 1.75rem !important;
+    border-radius: 0 !important;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
   }
 
   .rating-modal-submit-btn {
     width: 100% !important;
-    padding: 14px 16px !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
   }
 }
 
 @media (max-width: 480px) {
   .rating-modal-header-content {
-    flex-direction: column !important;
-    gap: 8px !important;
+    flex-direction: row !important;
+    gap: 12px !important;
   }
 
   .rating-modal-title {
     font-size: 1.25rem !important;
+    text-align: left !important;
   }
 
   .rating-modal-doctor-info {
     flex-direction: column !important;
-    text-align: center !important;
+    text-align: left !important;
+    align-items: flex-start !important;
   }
 
   .rating-modal-appointment-details {
-    justify-content: center !important;
+    justify-content: flex-start !important;
     flex-wrap: wrap !important;
   }
 
   .rating-modal-stars {
-    font-size: 1.5rem !important;
+    font-size: 1.75rem !important;
   }
 }
