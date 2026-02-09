@@ -195,7 +195,7 @@ const ModifyTurn: React.FC = () => {
               </Box>
             </Box>            
           </Box>
-          <Box  sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box className="modify-turn-actions-container">
             <Button
               onClick={() => turnSend({ type: "SUBMIT_MODIFY_REQUEST" })}
               className="reservation-btn-primary"

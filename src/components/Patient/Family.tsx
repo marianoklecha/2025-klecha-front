@@ -97,38 +97,42 @@ const Family: React.FC = () => {
         (null)
         }
 
-        <Grid container spacing={1} size = {12} className="viewturns-list-section">
+        <Grid container spacing={2} size={12} className="viewturns-list-section">
             {           
               myFamily.map((familyMember: FamilyMemberResponse, index: number) => (
-                <Grid size={4} key={familyMember.id || index} className="viewturns-turn-item">             
+                <Grid size={{ xs: 12, md: 6, lg: 4 }} key={familyMember.id || index} className="viewturns-turn-item">             
                     {/* Detalles del turno */}
-                    <Box className="viewturns-turn-details" alignItems="center" justifyContent="left" gap={2}>
-                        <Avatar 
-                          sx={{ 
-                            width: 50, 
-                            height: 50, 
-                            bgcolor: 'var(--cerulean)',
-                            fontSize: 20,
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-                          }}
-                        >
-                            {familyMember.name.charAt(0)}{familyMember.surname.charAt(0)}
-                        </Avatar>
-                        <Box >
-                            <Typography variant="h6" className="viewturns-doctor-text" >
-                            {familyMember.name} {familyMember.surname}
-                            </Typography>
-                            <Typography variant="body1" className="viewturns-specialty-text">
-                                Relación: {familyMember.relationship}
-                            </Typography>
-                            <Typography variant="body1" className="viewturns-specialty-text">
-                                Edad: {calculateAge(familyMember.birthdate)} años ({formatDateTime(familyMember.birthdate, "DD/MM/YYYY")})
-                            </Typography>
-                            <Typography variant="body1" className="viewturns-specialty-text" >
-                               DNI: {familyMember.dni}
-                            </Typography>
+                    <Box className="viewturns-turn-details" display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                        <Box display="flex" alignItems="center" gap={2} flex={1} overflow="hidden">
+                          <Avatar 
+                            sx={{ 
+                              width: 50, 
+                              height: 50, 
+                              bgcolor: 'var(--cerulean)',
+                              fontSize: 20,
+                              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                              flexShrink: 0
+                            }}
+                          >
+                              {familyMember.name.charAt(0)}{familyMember.surname.charAt(0)}
+                          </Avatar>
+                          <Box sx={{ minWidth: 0 }}>
+                              <Typography variant="h6" className="viewturns-doctor-text" noWrap>
+                              {familyMember.name} {familyMember.surname}
+                              </Typography>
+                              <Typography variant="body1" className="viewturns-specialty-text" noWrap>
+                                  Relación: {familyMember.relationship}
+                              </Typography>
+                              <Typography variant="body1" className="viewturns-specialty-text" noWrap>
+                                  Edad: {calculateAge(familyMember.birthdate)} años
+                              </Typography>
+                              <Typography variant="body1" className="viewturns-specialty-text" noWrap>
+                                DNI: {familyMember.dni}
+                              </Typography>
+                          </Box>
                         </Box>
                         <IconButton 
+                          sx={{ ml: 1, flexShrink: 0 }}
                           onClick= {() => {
                             familySend({ type: "SET_EDIT_FAMILY_MEMBER", member: familyMember});
                             if (!isCreateFamilyVisible) {
@@ -325,12 +329,16 @@ const Family: React.FC = () => {
                                         fullWidth
                                         onChange={(e) => familySend({ type: "UPDATE_FORM", key: "relationship", value: e.target.value })}
                                         >
+                                        <MenuItem value={"Nieto"}>Nieto</MenuItem>
+                                        <MenuItem value={"Nieta"}>Nieta</MenuItem>
                                         <MenuItem value={"Hijo"}>Hijo</MenuItem>
                                         <MenuItem value={"Hija"}>Hija</MenuItem>
                                         <MenuItem value={"Hermano"}>Hermano</MenuItem>
                                         <MenuItem value={"Hermana"}>Hermana</MenuItem>
                                         <MenuItem value={"Padre"}>Padre</MenuItem>
                                         <MenuItem value={"Madre"}>Madre</MenuItem>
+                                        <MenuItem value={"Abuelo"}>Abuelo</MenuItem>
+                                        <MenuItem value={"Abuela"}>Abuela</MenuItem>
                                         </Select>
                                         <FormHelperText>
                                         {formErrors.relationship || " "}

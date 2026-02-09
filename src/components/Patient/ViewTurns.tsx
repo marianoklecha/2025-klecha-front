@@ -16,10 +16,13 @@ import ConfirmationModal from "#/components/shared/ConfirmationModal/Confirmatio
 import { useTurnFileLogic } from "#/hooks/useTurnFileLogic";
 import FileActions from "#/utils/FileActions/FileActions";
 import { FamilyMemberResponse } from "#/models/FamilyMember";
+import { SignInResponse } from "#/models/Auth";
+import { useAuthMachine } from "#/providers/AuthProvider";
 
 const ViewTurns: React.FC = () => {
   const { turnState, turnSend, uiSend } = useMachines();
   const { dataState } = useDataMachine();
+  const { authState } = useAuthMachine();
 
   const {
     fileInputRef,
@@ -37,6 +40,7 @@ const ViewTurns: React.FC = () => {
   const dataContext = dataState.context;
   const showTurnsContext = turnContext.showTurns;
   const { cancellingTurnId, isCancellingTurn } = turnContext;
+  const user: SignInResponse = authState?.context?.authResponse || {};
 
   const allTurns: TurnResponse[] = dataContext.myTurns || [];
   const filteredTurns: TurnResponse[] = (filterTurns(allTurns, showTurnsContext.statusFilter, showTurnsContext.familyFilter) as TurnResponse[])
@@ -176,9 +180,11 @@ const ViewTurns: React.FC = () => {
                   >
                     <MenuItem value="">Todos</MenuItem>
 
+                    <MenuItem value="MYSELF">{user.name} {user.surname} (Yo)</MenuItem>
+
                     { family && family.map((familyMember: FamilyMemberResponse) => (
                        <MenuItem key={familyMember.id} value={familyMember.id}>
-                          {familyMember.name}
+                          {familyMember.name} {familyMember.surname}
                         </MenuItem>
                       ))
                     }
@@ -260,9 +266,9 @@ const ViewTurns: React.FC = () => {
                         <Typography variant="h5" className="viewturns-time-text">
                           {formatTime(turn.scheduledAt)} hs
                         </Typography>
-                        <Box sx={{ml: 3}}>
+                        <Box className="viewturns-details-content">
                           {turn.familyMemberId && (
-                            <Box sx={{mb:1}}>
+                            <Box className="viewturns-family-container">
                               <Typography variant="h6" className="viewturns-family-text">
                                 Paciente: {family.find((m: any) => m.id === turn.familyMemberId).name } {family.find((m: any) => m.id === turn.familyMemberId).surname} ({family.find((m: any) => m.id === turn.familyMemberId).relationship})
                               </Typography>

@@ -846,19 +846,30 @@
     padding: 16px !important;
   }
 
+  /* Make grid items stack cleanly on mobile */
   .viewturns-turn-item {
-    padding: 20px !important;
-  }
-
-  .viewturns-turn-content {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 16px !important;
-  }
-
-  .viewturns-turn-actions {
+    padding: 16px !important;
     width: 100% !important;
-    justify-content: flex-start !important;
+  }
+
+  .viewturns-turn-details {
+    /* Ensure flex direction allows wrapping if absolutely needed, but row is usually fine for person cards */
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+
+  /* Adjust typography for cleaner look on small screens */
+  .viewturns-doctor-text {
+    font-size: 1rem !important;
+  }
+
+  .viewturns-specialty-text {
+    font-size: 0.85rem !important;
+  }
+
+  .viewturns-filters-controls {
+    flex-direction: column !important;
+    align-items: stretch !important;
   }
 }
 
@@ -871,9 +882,15 @@
     padding: 16px !important;
   }
 
-  .viewturns-turn-datetime {
-    font-size: 1rem !important;
-    margin-bottom: 12px !important;
+  /* Fix header text wrapping on mobile */
+  .shared-header-title {
+    font-size: 1.4rem !important;
+    white-space: nowrap !important;
+  }
+
+  .shared-header-subtitle {
+     font-size: 0.85rem !important;
+     line-height: 1.2 !important;
   }
 }
 

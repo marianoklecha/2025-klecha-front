@@ -13,7 +13,15 @@
   gap: 32px !important;
 }
 
-/* Specific inline style classes */
+/* Specific inline style classes replacements */
+.viewturns-details-content {
+  margin-left: 24px !important;
+}
+
+.viewturns-family-container {
+  margin-bottom: 8px !important;
+}
+
 .viewturns-date-header {
   display: flex !important;
   align-items: flex-start !important;
@@ -373,5 +381,43 @@
 
   .viewturns-status-chip {
     align-self: flex-start !important;
+  }
+
+  /* Improved Turn Details Layout for Mobile */
+  .viewturns-turn-details {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .viewturns-details-content {
+    margin-left: 0 !important;
+    padding-left: 12px !important;
+    border-left: 3px solid var(--tea-green) !important;
+  }
+
+  .viewturns-time-text {
+    font-size: 1.2rem !important;
+    color: var(--lapis-lazuli) !important;
+  }
+
+  .viewturns-family-text,
+  .viewturns-doctor-text {
+    font-size: 0.95rem !important;
+  }
+
+  .viewturns-reason-text {
+    font-size: 0.85rem !important;
+  }
+
+  /* Filters on Mobile */
+  .viewturns-filters-controls {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .viewturns-filter-select,
+  .viewturns-clear-filter-btn {
+    width: 100% !important;
+    min-width: 0 !important;
   }
 }
