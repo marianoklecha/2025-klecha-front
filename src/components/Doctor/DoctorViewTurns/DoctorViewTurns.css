@@ -32,6 +32,66 @@
   font-size: 0.75rem !important;
 }
 
+/* Mobile responsive adjustments for turn details */
+.doctor-viewturns-details-content {
+  /* No margin needed on desktop as parent uses gap */
+}
+
+@media (max-width: 600px) {
+  /* Override details-content margin on mobile */
+  .doctor-viewturns-details-content {
+    margin-left: 0 !important;
+    padding-left: 12px !important;
+    border-left: 3px solid var(--tea-green) !important;
+  }
+  
+  .doctor-viewturns-turn-details {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .doctor-viewturns-time-text {
+    font-size: 1.2rem !important;
+    color: var(--lapis-lazuli) !important;
+  }
+
+  /* Stack main actions buttons and make them full width */
+  .doctor-viewturns-main-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .doctor-viewturns-cancel-btn,
+  .doctor-viewturns-complete-btn,
+  .doctor-viewturns-noshow-btn, 
+  .doctor-viewturns-rate-btn {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10px 16px !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Improve layout of patient info wrapping */
+  .doctor-viewturns-patient-info {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Header mobile adjustments */
+  .shared-header-layout {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+
+  .shared-header-title {
+    font-size: 1.5rem !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* Base styles for turn details */
 .doctor-viewturns-turn-details {
   display: flex !important;
   align-items: flex-start !important;
@@ -488,13 +548,27 @@
     justify-content: space-between;
   }
 
+  /* Filters Mobile Layout */
+  .doctor-viewturns-filters-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
   .doctor-viewturns-filters-controls {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 12px !important;
   }
 
   .doctor-viewturns-filter-select {
     min-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .doctor-viewturns-clear-filter-btn {
+    width: 100% !important;
   }
 
   .doctor-viewturns-actions {

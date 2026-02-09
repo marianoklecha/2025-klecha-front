@@ -370,7 +370,7 @@ const ReservationTurns: React.FC = () => {
                         <Box sx={{ mr: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {doctor.name} {doctor.surname}
                           {ratedCountsSnapshot[doctor.id] && ratedCountsSnapshot[doctor.id].length > 0 && (
-                            <Stack direction="row" spacing={0.5} sx={{ mt: 0.5, flexWrap: 'wrap' }}>
+                            <Stack direction="row" spacing={0.5} sx={{ mt: 0.5, flexWrap: 'wrap', display: { xs: 'none', sm: 'flex' } }}>
                                   {(() => {                                    
                                     
                                     const raw = ratedCountsSnapshot[doctor.id] || [];
@@ -505,7 +505,7 @@ const ReservationTurns: React.FC = () => {
           </Box>
           
           <Grid container spacing={2} className="reservation-step2-content">
-            <Grid size={6} className="reservation-calendar-section">              
+            <Grid size={{ xs: 12, md: 6 }} className="reservation-calendar-section">              
               
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es" localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}>
                 <DemoContainer components={['DateCalendar']}>
@@ -552,7 +552,7 @@ const ReservationTurns: React.FC = () => {
               </LocalizationProvider>              
             </Grid>
 
-            <Grid size={6} className="reservation-time-section">
+            <Grid size={{ xs: 12, md: 6 }} className="reservation-time-section">
               <Typography variant="body2" color="text.secondary" textAlign="center" mt={1.5}>
                 Turno con Dr. {selectedDoctor?.name} {selectedDoctor?.surname}                
               </Typography>

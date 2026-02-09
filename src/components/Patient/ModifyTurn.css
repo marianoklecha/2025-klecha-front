@@ -306,34 +306,92 @@
   text-align: center;
 }
 
+.modify-turn-actions-container {
+  display: flex !important;
+  justify-content: flex-end !important;
+  margin-top: 24px !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-  .modify-turn-step2-content {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .modify-turn-page-title {
-    font-size: 2rem !important;
-  }
-  
-  .modify-turn-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .modify-turn-actions button {
-    width: 100%;
-    max-width: 300px;
-  }
-  
   .modify-turn-container {
     padding: 20px 0;
+  }
+
+  .reservation-step2-content {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+
+  .reservation-calendar-section,
+  .reservation-time-section {
+    min-width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Make actions stack and full width */
+  .modify-turn-actions-container {
+    justify-content: stretch !important;
+    flex-direction: column !important;
+  }
+
+  .reservation-btn-primary {
+    width: 100% !important;
+    padding: 14px !important;
+  }
+
+  /* Info card adjustments */
+  .reservation-step1-container {
+    max-width: 100% !important;
+  }
+
+  .reservation-info-card {
+    padding: 16px !important;
   }
 }
 
 @media (max-width: 480px) {
-  /* No specific header overrides for ModifyTurn */
+  /* Header Adjustments */
+  .shared-header-layout {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+
+  .shared-back-button-container {
+    width: 100% !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .shared-back-button {
+    width: 100% !important;
+  }
+
+  .shared-header-title {
+    font-size: 1.5rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  .shared-header-subtitle {
+     font-size: 0.9rem !important;
+     line-height: 1.3 !important;
+  }
+
+  /* Reduce calendar padding */
+  .reservation-calendar-container {
+    padding: 4px !important;
+  }
+  
+  .reservation-time-section {
+    padding: 16px !important;
+  }
+
+  /* Time slots grid on very small screens */
+  .reservation-time-slots {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
 }
 
 /* Reason Section */

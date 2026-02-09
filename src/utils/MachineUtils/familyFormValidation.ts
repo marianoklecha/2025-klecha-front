@@ -42,12 +42,7 @@ export const validateField = (key: string, value: any) => {
     }
     
     const now = nowArgentina();
-    const eighteenYearsAgo = now.subtract(18, 'years');
     const maxAge = now.subtract(120, 'years');
-    
-    if (date.isAfter(eighteenYearsAgo)) {
-      return "Debe ser mayor de 18 años";
-    }
     
     if (date.isBefore(maxAge)) {
       return "Fecha de nacimiento inválida";
@@ -66,7 +61,7 @@ export const validateField = (key: string, value: any) => {
 
   // Relationship validation
   if (key.includes("relationship")) {
-    if (!["Hijo", "Hija", "Madre", "Padre", "Hermano", "Hermana"].includes(value)) {
+    if (!["Nieto", "Nieta", "Hijo", "Hija", "Madre", "Padre", "Hermano", "Hermana", "Abuelo", "Abuela"].includes(value)) {
       return "La relación introducida no es válida";
     }
     return "";

@@ -241,7 +241,7 @@ const DoctorViewTurns: React.FC = () => {
                           <Typography variant="h5" className="doctor-viewturns-time-text">
                             {formatTime(turn.scheduledAt)} hs
                           </Typography>
-                          <Box>
+                          <Box className="doctor-viewturns-details-content">
                             <Box className="doctor-viewturns-patient-info">
                               {turn.familyMemberId ? (
                                 (() => {

@@ -15,6 +15,8 @@ import {
   Paper,
   CircularProgress,
   Backdrop,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { 
   Close, 
@@ -38,6 +40,8 @@ interface NotificationModalProps {
 const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) => {
   const { notificationState, notificationSend, uiSend, doctorSend } = useMachines();
   const { dataState } = useDataMachine();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   const notifications: NotificationResponse[] = notificationState?.context?.notifications || [];
   const isDeletingNotification = notificationState?.context?.isDeletingNotification || false;
@@ -111,13 +115,14 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
       onClose={isDeletingAllNotifications ? undefined : onClose}
       maxWidth="md"
       fullWidth
+      fullScreen={isMobile}
       disableEscapeKeyDown={isDeletingAllNotifications}
       PaperProps={{
         sx: {
-          maxHeight: '85vh',
-          borderRadius: '16px',
+          maxHeight: isMobile ? '100vh' : '85vh',
+          borderRadius: isMobile ? 0 : '16px',
           boxShadow: '0 12px 30px rgba(34, 87, 122, 0.15)',
-          border: '1px solid #e2e8f0',
+          border: isMobile ? 'none' : '1px solid #e2e8f0',
         },
       }}
     >
@@ -152,8 +157,8 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
         sx={{ 
           background: 'linear-gradient(135deg, #22577a 0%, #2d7d90 100%)',
           color: 'white',
-          padding: '24px 32px',
-          borderRadius: '16px 16px 0 0',
+          padding: isMobile ? '16px' : '24px 32px',
+          borderRadius: isMobile ? 0 : '16px 16px 0 0',
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center',
@@ -163,14 +168,14 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Avatar sx={{ 
             bgcolor: 'rgba(255, 255, 255, 0.2)', 
-            width: 40, 
-            height: 40,
+            width: isMobile ? 32 : 40, 
+            height: isMobile ? 32 : 40,
             backdropFilter: 'blur(10px)',
           }}>
-            <NotificationsActive sx={{ color: 'white' }} />
+            <NotificationsActive sx={{ color: 'white', fontSize: isMobile ? 20 : 24 }} />
           </Avatar>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, fontSize: isMobile ? '1.1rem' : '1.25rem' }}>
               Notificaciones
             </Typography>
             <Typography variant="caption" sx={{ opacity: 0.9 }}>
@@ -203,9 +208,11 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
                 },
                 textTransform: 'none',
                 fontWeight: 500,
+                minWidth: isMobile ? 'auto' : 'inherit',
+                px: isMobile ? 1 : undefined
               }}
             >
-              {isDeletingAllNotifications ? 'Eliminando...' : 'Marcar todas como leídas'}
+              {isDeletingAllNotifications ? 'Eliminando...' : (isMobile ? 'Leídas' : 'Marcar todas como leídas')}
             </Button>
           )}
           <IconButton 
@@ -277,8 +284,8 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
                     sx={{
                       display: 'flex',
                       alignItems: 'flex-start',
-                      py: 3,
-                      px: 3,
+                      py: isMobile ? 2 : 3,
+                      px: isMobile ? 2 : 3,
                       backgroundColor: 'white',
                       position: 'relative',
                       cursor: 'pointer',
@@ -293,12 +300,12 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
                       }
                     }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', width: '100%', ml: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', width: '100%', ml: isMobile ? 0 : 1 }}>
                       <Avatar sx={{ 
-                        mr: 2, 
+                        mr: isMobile ? 1.5 : 2, 
                         mt: 0.5,
-                        width: 48,
-                        height: 48,
+                        width: isMobile ? 40 : 48,
+                        height: isMobile ? 40 : 48,
                         bgcolor: getSeverityColor(notification.message) === 'warning' 
                           ? 'rgba(245, 158, 11, 0.1)' 
                           : 'rgba(87, 204, 153, 0.1)',
@@ -308,10 +315,11 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
                       </Avatar>
                       
                       <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, flexWrap: 'wrap' }}>
                           <Typography variant="subtitle1" component="div" sx={{ 
                             fontWeight: 600, 
                             color: '#0d2230',
+                            fontSize: isMobile ? '0.95rem' : '1rem'
                           }}>
                             Nueva Notificación
                           </Typography>
@@ -335,7 +343,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
                             lineHeight: 1.6,
                             wordWrap: 'break-word',
                             mb: 2,
-                            fontSize: '0.95rem',
+                            fontSize: isMobile ? '0.875rem' : '0.95rem',
                           }}
                         >
                           {notification.message}

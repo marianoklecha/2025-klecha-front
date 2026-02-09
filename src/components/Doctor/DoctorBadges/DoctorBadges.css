@@ -164,39 +164,69 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .badges-stats-summary {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+  .badges-content {
+    padding: 16px !important;
   }
 
-  .stat-card {
-    padding: 1.5rem;
+  .doctor-badges-stats-summary {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
   }
 
-  .stat-value {
-    font-size: 2rem !important;
+  .doctor-stat-card {
+    padding: 12px !important;
+  }
+
+  .doctor-stat-value,
+  .doctor-stat-locked-value {
+    font-size: 1.5rem !important;
   }
 
   .badges-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+    gap: 16px !important;
   }
 
   .badges-section {
-    padding: 1.5rem;
+    padding: 16px !important;
   }
 
   .badges-filters {
-    padding: 1rem;
+    padding: 16px !important;
   }
 }
 
 @media (max-width: 480px) {
-  .badges-stats-summary {
-    grid-template-columns: 1fr;
+  .badges-content {
+    padding: 12px !important;
+  }
+
+  .doctor-badges-stats-summary {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .doctor-stat-value,
+  .doctor-stat-locked-value {
+    font-size: 1.25rem !important;
+  }
+  
+  .doctor-stat-label {
+    font-size: 0.75rem !important;
   }
 
   .badges-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Header adjustments */
+  .shared-header-title {
+    font-size: 1.4rem !important;
+    white-space: nowrap !important;
+  }
+
+  .shared-header-subtitle {
+     font-size: 0.85rem !important;
+     line-height: 1.2 !important;
   }
 }
