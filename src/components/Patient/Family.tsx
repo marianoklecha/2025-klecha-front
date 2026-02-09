@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography, CircularProgress, Avatar, Grid, Stack, TextField, useMediaQuery, useTheme, FormControl, InputLabel, Select, MenuItem, FormHelperText, Button, Divider, Card, CardContent, IconButton } from "@mui/material";
 import { useDataMachine } from "#/providers/DataProvider";
 import { calculateAge } from "#/models/Doctor"
-import { dayjsArgentina, formatDateTime, nowArgentina } from '#/utils/dateTimeUtils';
+import { dayjsArgentina, nowArgentina } from '#/utils/dateTimeUtils';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import "./Family.css";
 import ConfirmationModal from "#/components/shared/ConfirmationModal/ConfirmationModal";
