@@ -25,6 +25,7 @@ export interface AdminStats {
   patients: number;
   doctors: number;
   pending: number;
+  familyMembers: number;
 }
 
 export interface ApiErrorResponse {

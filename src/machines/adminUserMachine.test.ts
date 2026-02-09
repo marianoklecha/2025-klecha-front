@@ -41,7 +41,7 @@ describe('adminUserMachine', () => {
     mockOrchestrator.getSnapshot.mockReturnValue({
       context: {
         pendingDoctors: [],
-        adminStats: { patients: 0, doctors: 0, pending: 0, specialties: [] }
+        adminStats: { patients: 0, doctors: 0, pending: 0, familyMembers: 0, specialties: [] }
       }
     });
   });
@@ -68,7 +68,7 @@ describe('adminUserMachine', () => {
       expect(context.loading).toBe(true);
       expect(context.error).toBe(null);
       expect(context.pendingDoctors).toEqual([]);
-      expect(context.adminStats).toEqual({ patients: 0, doctors: 0, pending: 0, specialties: [] });
+      expect(context.adminStats).toEqual({ patients: 0, doctors: 0, pending: 0, familyMembers: 0, specialties: [] });
       expect(context.lastOperation).toBe(null);
       expect(context.selectedDoctor).toBe(null);
     });
@@ -85,7 +85,7 @@ describe('adminUserMachine', () => {
         pendingDoctors: [
           { id: '1', name: 'Dr. Smith', email: 'smith@test.com' }
         ],
-        adminStats: { patients: 10, doctors: 5, pending: 1, specialties: [] }
+        adminStats: { patients: 10, doctors: 5, pending: 1, familyMembers: 0, specialties: [] }
       };
 
       mockOrchestrator.getSnapshot.mockReturnValue({
@@ -141,7 +141,7 @@ describe('adminUserMachine', () => {
           loading: false,
           error: 'Some error occurred',
           pendingDoctors: [],
-          adminStats: { patients: 0, doctors: 0, pending: 0, specialties: [] },
+          adminStats: { patients: 0, doctors: 0, pending: 0, familyMembers: 0, specialties: [] },
           lastOperation: {
             type: 'approve',
             doctorId: '123',
@@ -212,7 +212,7 @@ describe('adminUserMachine', () => {
       // Load data
       const mockData = {
         pendingDoctors: [{ id: '1', name: 'Dr. Smith', email: 'smith@test.com' }],
-        adminStats: { patients: 10, doctors: 5, pending: 1, specialties: [] }
+        adminStats: { patients: 10, doctors: 5, pending: 1, familyMembers: 0, specialties: [] }
       };
       mockOrchestrator.getSnapshot.mockReturnValue({
         context: mockData

@@ -117,7 +117,8 @@ export default function AdminPatients() {
     {
       icon: <PersonIcon />,
       value: patientStats.totalPatients,
-      label: "Pacientes Activos"
+      label: "Pacientes Activos",
+      subValue: `Familiares registrados: ${adminContext.adminStats?.familyMembers || 0}`
     },
     {
       icon: <RateReviewIcon />,

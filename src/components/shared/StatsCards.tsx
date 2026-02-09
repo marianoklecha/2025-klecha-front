@@ -6,6 +6,7 @@ export interface StatCardData {
   icon: ReactNode;
   value: string | number;
   label: string;
+  subValue?: string;
 }
 
 interface StatsCardsProps {
@@ -29,6 +30,11 @@ export default function StatsCards({ stats, loading = false }: StatsCardsProps) 
               <Typography variant="caption" className="stats-card-label">
                 {stat.label}
               </Typography>
+              {stat.subValue && !loading && (
+                 <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', mt: 0.5 }}>
+                   {stat.subValue}
+                 </Typography>
+               )}
             </Box>
           </Box>
         </Box>
