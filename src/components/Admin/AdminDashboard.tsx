@@ -108,7 +108,7 @@ export default function AdminDashboard() {
               variant="primary"
               icon={<PersonIcon className="admin-action-icon" />}
               title={`Pacientes (${stats?.patients || 0})`}
-              description={`Ver más estadísticas y detalles`}
+              description={`Familiares registrados: ${stats?.familyMembers || 0}`}
               buttonText="Ver Pacientes"
               onClick={() => uiSend({type:'NAVIGATE', to:'/admin/patients'})}
             />

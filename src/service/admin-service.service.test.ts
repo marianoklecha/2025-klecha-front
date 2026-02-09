@@ -218,7 +218,8 @@ describe('AdminService', () => {
       const mockStats = {
         patients: 150,
         doctors: 25,
-        pending: 5
+        pending: 5,
+        familyMembers: 0
       }
 
       const mockResponse = {
@@ -250,7 +251,8 @@ describe('AdminService', () => {
       expect(result).toEqual({
         patients: 0,
         doctors: 0,
-        pending: 0
+        pending: 0,
+        familyMembers: 0
       })
     })
 
@@ -268,7 +270,8 @@ describe('AdminService', () => {
       expect(result).toEqual({
         patients: 0,
         doctors: 0,
-        pending: 0
+        pending: 0,
+        familyMembers: 0
       })
     })
 
@@ -286,7 +289,8 @@ describe('AdminService', () => {
       expect(result).toEqual({
         patients: 0,
         doctors: 0,
-        pending: 0
+        pending: 0,
+        familyMembers: 0
       })
     })
   })

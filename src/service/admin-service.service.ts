@@ -116,7 +116,8 @@ export class AdminService {
       return {
         patients: 0,
         doctors: 0,
-        pending: 0
+        pending: 0,
+        familyMembers: 0
       };
     }
   }
