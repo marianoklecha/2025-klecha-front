@@ -142,7 +142,7 @@ const ViewPatients: React.FC = () => {
                                                         }
                                                         secondary="Ver detalles del paciente"
                                                     />
-                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mr: 1 }}>
+                                                    <Box className="viewpatients-rating-container" sx={{ display: 'flex', alignItems: 'center', gap: 1, mr: 1 }}>
                                                         {((patient as any).score) != null ? (
                                                             <>
                                                                 <Rating value={(patient as any).score} precision={0.1} readOnly size="small" />
