@@ -13,7 +13,11 @@ export function filterTurns (myTurns: any, statusFilter: any, familyFilter: any)
       (turn: any) => {
         let matchesFamily = true;
         if (familyFilter) {
-          matchesFamily = turn.familyMemberId === familyFilter;
+          if (familyFilter === 'MYSELF') {
+             matchesFamily = !turn.familyMemberId;
+          } else {
+             matchesFamily = turn.familyMemberId === familyFilter;
+          }
         }
         return matchesFamily;
     })
