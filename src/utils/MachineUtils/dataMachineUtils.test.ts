@@ -86,7 +86,7 @@ describe('dataMachineUtils', () => {
   describe('loadAdminStats', () => {
     it('should return admin stats when user is admin', async () => {
       const params = { accessToken: 'token123', isAdmin: true }
-      const mockStats = { patients: 100, doctors: 20, pending: 5 }
+      const mockStats = { patients: 100, doctors: 20, pending: 5, familyMembers: 0}
       ;(AdminService.getAdminStats as Mock).mockResolvedValue(mockStats)
 
       const result = await loadAdminStats(params)
@@ -101,7 +101,7 @@ describe('dataMachineUtils', () => {
       const result = await loadAdminStats(params)
 
       expect(AdminService.getAdminStats).not.toHaveBeenCalled()
-      expect(result).toEqual({ patients: 0, doctors: 0, pending: 0 })
+      expect(result).toEqual({ patients: 0, doctors: 0, pending: 0, familyMembers: 0 })
     })
   })
 

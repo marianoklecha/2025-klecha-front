@@ -77,7 +77,7 @@ export const loadPendingDoctors = async ({ accessToken, isAdmin }: LoadPendingDo
 };
 
 export const loadAdminStats = async ({ accessToken, isAdmin }: LoadAdminStatsParams): Promise<AdminStats> => {
-  if (!isAdmin) return { patients: 0, doctors: 0, pending: 0 };
+  if (!isAdmin) return { patients: 0, doctors: 0, pending: 0, familyMembers: 0 };
   return await  AdminService.getAdminStats(accessToken)
 };
 

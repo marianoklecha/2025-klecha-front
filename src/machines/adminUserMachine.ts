@@ -27,6 +27,7 @@ export interface AdminUserMachineContext {
     patients: number;
     doctors: number;
     pending: number;
+    familyMembers: number;
     specialties: string[];
   };
   adminRatings: any;
@@ -49,6 +50,7 @@ export const AdminUserMachineDefaultContext: AdminUserMachineContext = {
     patients: 0,
     doctors: 0,
     pending: 0,
+    familyMembers: 0,
     specialties:[]
   },
   adminRatings: null,
@@ -92,6 +94,7 @@ export const adminUserMachine = createMachine({
                   patients: dataContext.adminStats?.patients || 0, 
                   doctors: dataContext.adminStats?.doctors || 0, 
                   pending: dataContext.adminStats?.pending || 0,
+                  familyMembers: dataContext.adminStats?.familyMembers || 0,
                   specialties: dataContext.specialties || []
                 },
                 adminRatings: dataContext.adminRatings || null,
